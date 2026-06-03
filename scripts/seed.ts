@@ -1,6 +1,6 @@
 /**
  * Database Seed Script
- * Populates the database with top 200 anime from AniList API
+ * Populates the database with top 1000 anime from AniList API
  * Also integrates filler data and generates watch orders
  * 
  * Usage: npx tsx scripts/seed.ts
@@ -8,26 +8,69 @@
 
 import { PrismaClient } from "@prisma/client";
 import { fetchPopularAnime, normalizeAniListMedia, generateSlug } from "../src/lib/anilist";
-import { getAllFillerData, calculateFillerStats, type FillerEntry } from "../src/lib/filler-data";
+import { fetchFillerDataFromGitHub, getAllFillerData, calculateFillerStats, type FillerEntry } from "../src/lib/filler-data";
+import { sleep, jikanLimiter } from "../src/lib/rate-limiter";
 
 const prisma = new PrismaClient();
 
-async function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+interface JikanEpisode {
+  mal_id: number;
+  title: string;
+  title_japanese: string | null;
+  title_romanji: string | null;
+  aired: string | null;
+  filler: boolean;
+  recap: boolean;
+}
+
+interface JikanEpisodesResponse {
+  data: JikanEpisode[];
+  pagination: {
+    last_visible_page: number;
+    has_next_page: boolean;
+  };
+}
+
+async function fetchWithRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  label: string = "request"
+): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      const message = (err as Error).message;
+      if (attempt === maxRetries) {
+        throw err;
+      }
+      const delay = Math.pow(2, attempt) * 1000; // exponential backoff: 2s, 4s, 8s
+      console.log(`  ⚠️ ${label} failed (attempt ${attempt}/${maxRetries}): ${message}`);
+      console.log(`  ⏳ Retrying in ${delay / 1000}s...`);
+      await sleep(delay);
+    }
+  }
+  throw new Error(`${label} failed after ${maxRetries} retries`);
 }
 
 async function seedAnimeFromAniList() {
   console.log("🎌 Starting anime database seed...\n");
 
-  const totalPages = 4; // 4 pages x 50 = 200 anime
+  const totalPages = 20; // 20 pages x 50 = 1000 anime
   let totalSeeded = 0;
 
   for (let page = 1; page <= totalPages; page++) {
     console.log(`📥 Fetching page ${page}/${totalPages} from AniList...`);
 
     try {
-      const response = await fetchPopularAnime(page, 50);
+      const response = await fetchWithRetry(
+        () => fetchPopularAnime(page, 50),
+        3,
+        `AniList page ${page}`
+      );
       const mediaList = response.data.Page.media;
+
+      console.log(`  📦 Processing ${mediaList.length} anime from page ${page}...`);
 
       for (const media of mediaList) {
         try {
@@ -133,7 +176,7 @@ async function seedAnimeFromAniList() {
           }
 
           totalSeeded++;
-          if (totalSeeded % 10 === 0) {
+          if (totalSeeded % 50 === 0) {
             console.log(`  ✅ Seeded ${totalSeeded} anime...`);
           }
         } catch (err) {
@@ -143,11 +186,11 @@ async function seedAnimeFromAniList() {
 
       // Rate limit: wait between pages
       if (page < totalPages) {
-        console.log("  ⏳ Waiting to respect rate limits...");
+        console.log(`  ⏳ Page ${page} complete. Waiting to respect rate limits...`);
         await sleep(2000);
       }
     } catch (err) {
-      console.error(`❌ Failed to fetch page ${page}:`, (err as Error).message);
+      console.error(`❌ Failed to fetch page ${page} after retries:`, (err as Error).message);
       await sleep(5000);
     }
   }
@@ -158,7 +201,16 @@ async function seedAnimeFromAniList() {
 async function seedFillerData() {
   console.log("\n📊 Seeding filler episode data...\n");
 
-  const fillerData = getAllFillerData();
+  console.log("  📡 Fetching filler data from GitHub...");
+  let fillerData: FillerEntry[];
+  try {
+    fillerData = await fetchFillerDataFromGitHub();
+    console.log(`  ✅ Fetched ${fillerData.length} filler entries from remote`);
+  } catch {
+    console.log("  ⚠️ Remote fetch failed, falling back to local data");
+    fillerData = getAllFillerData();
+  }
+
   let matched = 0;
 
   for (const entry of fillerData) {
@@ -215,6 +267,109 @@ async function seedFillerData() {
   }
 
   console.log(`\n✅ Filler data matched: ${matched}/${fillerData.length}`);
+}
+
+async function seedEpisodeTitles() {
+  console.log("\n📝 Fetching episode titles from Jikan API...\n");
+
+  // Get all anime with malId and episodes
+  const animeList = await prisma.anime.findMany({
+    where: {
+      malId: { not: null },
+      totalEpisodes: { gt: 0 },
+    },
+    select: {
+      id: true,
+      malId: true,
+      title: true,
+      totalEpisodes: true,
+    },
+  });
+
+  console.log(`  📋 Found ${animeList.length} anime with MAL IDs and episodes`);
+
+  // Filter to only anime that have episodes without titles
+  const animeNeedingTitles: typeof animeList = [];
+  for (const anime of animeList) {
+    const episodesWithoutTitles = await prisma.episode.count({
+      where: {
+        animeId: anime.id,
+        title: null,
+      },
+    });
+    if (episodesWithoutTitles > 0) {
+      animeNeedingTitles.push(anime);
+    }
+  }
+
+  console.log(`  📋 ${animeNeedingTitles.length} anime need episode titles\n`);
+
+  let processed = 0;
+  let titlesUpdated = 0;
+  const batchSize = 10;
+
+  for (let i = 0; i < animeNeedingTitles.length; i += batchSize) {
+    const batch = animeNeedingTitles.slice(i, i + batchSize);
+
+    for (const anime of batch) {
+      try {
+        let page = 1;
+        let hasNextPage = true;
+
+        while (hasNextPage) {
+          await jikanLimiter.wait();
+
+          const response = await fetch(
+            `https://api.jikan.moe/v4/anime/${anime.malId}/episodes?page=${page}`,
+            { headers: { Accept: "application/json" } }
+          );
+
+          if (response.status === 429) {
+            console.log("  ⏳ Jikan rate limited, waiting 2s...");
+            await sleep(2000);
+            continue;
+          }
+
+          if (!response.ok) {
+            console.log(`  ⚠️ Jikan returned ${response.status} for ${anime.title}, skipping`);
+            break;
+          }
+
+          const data: JikanEpisodesResponse = await response.json();
+
+          for (const ep of data.data) {
+            const title = ep.title || ep.title_romanji || ep.title_japanese;
+            if (title) {
+              await prisma.episode.updateMany({
+                where: {
+                  animeId: anime.id,
+                  episodeNumber: ep.mal_id,
+                },
+                data: { title },
+              });
+              titlesUpdated++;
+            }
+          }
+
+          hasNextPage = data.pagination.has_next_page;
+          page++;
+        }
+
+        processed++;
+        if (processed % 10 === 0) {
+          console.log(`  ✅ Processed ${processed}/${animeNeedingTitles.length} anime (${titlesUpdated} titles updated)`);
+        }
+      } catch (err) {
+        console.error(`  ❌ Error fetching episodes for ${anime.title}:`, (err as Error).message);
+      }
+    }
+
+    if (i + batchSize < animeNeedingTitles.length) {
+      console.log(`  📦 Batch complete (${Math.min(i + batchSize, animeNeedingTitles.length)}/${animeNeedingTitles.length}). Continuing...`);
+    }
+  }
+
+  console.log(`\n✅ Episode titles updated: ${titlesUpdated} across ${processed} anime`);
 }
 
 async function findAnimeMatch(entry: FillerEntry) {
@@ -290,9 +445,6 @@ async function generateSEOPages() {
   let pagesCreated = 0;
 
   for (const anime of allAnime) {
-    const genres: string[] = JSON.parse(anime.genres || "[]");
-    const animeData = { ...anime, genres };
-
     // Filler page
     if (anime.fillerMapping) {
       const slug = `${anime.slug}-filler-list`;
@@ -408,6 +560,7 @@ async function main() {
   try {
     await seedAnimeFromAniList();
     await seedFillerData();
+    await seedEpisodeTitles();
     await generateWatchOrders();
     await generateSEOPages();
 
