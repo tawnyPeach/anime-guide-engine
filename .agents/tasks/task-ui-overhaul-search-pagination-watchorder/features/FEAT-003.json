@@ -1,0 +1,28 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Add pagination to the homepage anime grid, genre pages, and year pages. Use a 'Load More' button approach that fetches additional anime via an API route, keeping the SSG/ISR benefits for the initial page load.",
+  "status": "completed",
+  "steps": [
+    "Step 1: Create a pagination API route at src/app/api/anime/route.ts - Accept query parameters: page (number), limit (number, default 20), genre (optional string), year (optional number), sort (optional: popularity, score, recent). Query Prisma with skip/take pagination. Return JSON with items array and metadata (total count, hasMore, currentPage).",
+    "Step 2: Create src/components/Pagination.tsx as a 'use client' component - Implement a 'Load More' button that calls the pagination API and appends results. Show a loading spinner while fetching. Show the current count vs total (e.g., 'Showing 20 of 200 anime'). Style with the anime theme (gradient button, hover effects). Accept props for the API endpoint params (genre, year, sort) and initial items.",
+    "Step 3: Update src/app/page.tsx - Change the 'Most Popular Anime' section to show initial 20 items server-side (already does this) and add the Pagination/LoadMore component below the grid to load more. Pass the initial anime data and total count. Keep the server component rendering the initial grid, wrap just the load-more button in the client component.",
+    "Step 4: Update src/app/genre/[genre]/page.tsx - Add pagination. The page currently shows take: 50 anime. Change to show initial 20 with a Load More button that fetches more via the API route with genre filter.",
+    "Step 5: Update src/app/year/[year]/page.tsx - Add pagination. Similar approach - show initial batch server-side, add Load More for additional results via the API with year filter."
+  ],
+  "acceptance_criteria": [
+    "Homepage shows a 'Load More' button below the popular anime grid that fetches and appends more anime",
+    "Genre pages show a Load More button that loads additional anime for that genre",
+    "Year pages show a Load More button that loads additional anime for that year",
+    "The API route at /api/anime returns paginated results with proper metadata",
+    "A count indicator shows how many anime are displayed vs total available",
+    "The Load More button shows a loading state while fetching",
+    "The build completes successfully"
+  ],
+  "verification": [
+    "Run npm run build and confirm it completes without errors",
+    "Verify the API route file exists at src/app/api/anime/route.ts and exports a GET function"
+  ],
+  "blocked_reason": null,
+  "findings": "Build successful with 611 static pages generated. The /api/anime route is correctly marked as dynamic (server-rendered on demand). LoadMore component uses 'use client' and imports AnimeCard (server-compatible component) without issues. Genre page initial load reduced from 50 to 20 items. Year page keeps seasonal grouping for initial items with LoadMore adding ungrouped cards below."
+}

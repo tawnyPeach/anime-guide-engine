@@ -1,0 +1,28 @@
+{
+  "id": "FEAT-004",
+  "type": "fix",
+  "description": "Fix the watch order system to build COMPLETE franchise watch orders by recursively traversing the full relation graph. Currently, watch orders only show direct relations from a single anime. For franchises like Attack on Titan (AOT), it needs to traverse the entire prequel/sequel chain to build a full ordered list of all entries (seasons, movies, OVAs) in the franchise.",
+  "status": "completed",
+  "steps": [
+    "Step 1: Create a new utility at src/lib/watch-order-builder.ts - Implement a function buildFullWatchOrder(animeId: number) that: (a) Starts from the given anime, (b) Recursively follows ALL PREQUEL and SEQUEL relations in both directions (relationsFrom and relationsTo) to find every anime in the franchise chain, (c) Builds a directed graph of all entries, (d) Topologically sorts them to produce a chronological watch order (prequels first, then main series, then sequels), (e) Also includes SIDE_STORY, SPIN_OFF, and PARENT entries but marks them as optional side content, (f) Returns an ordered array with: title, slug, type (TV/MOVIE/OVA/SPECIAL/ONA), format label, episode count, relation type, and a boolean for whether it's a main entry or side content. Use Prisma to query the AnimeRelation table. Handle cycles in the graph (some relations can be circular).",
+    "Step 2: Update src/app/anime/[slug]/watch-order/page.tsx - Replace the current simple allRelated logic with a call to buildFullWatchOrder. Display the complete franchise timeline with: (a) Numbered main entries in order (the core watch path), (b) Optional entries (OVAs, movies, specials) shown inline where they fit chronologically or grouped at the end, (c) Clear visual labels for each entry type (TV, Movie, OVA, Special), (d) Episode counts for each entry, (e) Links to each anime's page if it exists in the database, (f) A note for entries not in the database (title only, no link). Improve the empty state to say 'standalone series' more helpfully.",
+    "Step 3: Update the watch order page UI to clearly distinguish between the main sequential watch path and optional supplementary content. Add a 'Quick Watch Order' summary at the top (just numbered titles) and the detailed breakdown below with full cards."
+  ],
+  "acceptance_criteria": [
+    "The watch order builder recursively traverses the full relation graph following PREQUEL/SEQUEL chains in both directions",
+    "For franchises with multiple seasons (like AOT), the complete chain from first to last entry is shown",
+    "Side stories, OVAs, movies are included but clearly marked as optional",
+    "The order is topologically sorted (prequels before sequels)",
+    "Cycles in the relation graph are handled without infinite loops",
+    "Each entry shows its type (TV, Movie, OVA, Special), episode count, and links to its page",
+    "A quick summary list at the top shows the essential watch order",
+    "Standalone anime (no relations) shows a helpful message",
+    "The build completes successfully"
+  ],
+  "verification": [
+    "Run npm run build and confirm it completes without errors",
+    "Verify src/lib/watch-order-builder.ts exists and exports the buildFullWatchOrder function"
+  ],
+  "blocked_reason": null,
+  "findings": "Build completes successfully with 611 static pages generated. The watch order builder uses BFS for graph traversal and Kahn's algorithm for topological sorting. The WatchOrderEntry type does not use the titleEnglish field directly - it resolves to title at build time (titleEnglish || title). The content-generator generateWatchOrderContent function signature accepts a simple array of {title, slug, type} so we map our WatchOrderEntry to that format for SEO content generation."
+}

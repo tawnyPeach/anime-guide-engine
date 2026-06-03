@@ -1,0 +1,26 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Add search functionality with a prominent search bar in the header and an API route that queries the SQLite database. Search should work across anime titles (romaji, english, japanese) and show results as a dropdown.",
+  "status": "completed",
+  "steps": [
+    "Step 1: Create the search API route at src/app/api/search/route.ts - Accept a 'q' query parameter, query the Prisma database searching across title, titleEnglish, and titleJapanese fields using 'contains' (case-insensitive for SQLite). Return the top 10 results with id, title, titleEnglish, slug, coverImage, genres, format, and averageScore. Follow the Route Handler pattern from Next.js 16 docs (export async function GET(request: Request)).",
+    "Step 2: Create src/components/SearchBar.tsx as a 'use client' component - Implement a search input with debounced API calls (300ms debounce). Show a dropdown of results below the input as the user types. Each result links to /anime/[slug]. Style with the new anime theme (gradient border on focus, glass-effect dropdown background, purple/blue accent colors). Include a search icon (SVG inline). Handle loading state, empty state, and no-results state. Close dropdown on outside click and on Escape key.",
+    "Step 3: Update src/components/Header.tsx - Integrate the SearchBar component into the header between the logo and the navigation links. Make it responsive (full-width on mobile, constrained width on desktop). Ensure the dropdown z-index is above other content."
+  ],
+  "acceptance_criteria": [
+    "A search bar is visible in the header on all pages",
+    "Typing in the search bar triggers API calls after a debounce delay",
+    "Search results appear in a styled dropdown showing anime title, cover image, and basic info",
+    "Clicking a search result navigates to the anime page",
+    "The search works across romaji title, english title, and japanese title",
+    "The API route at /api/search returns correct JSON results",
+    "The build completes successfully"
+  ],
+  "verification": [
+    "Run npm run build and confirm it completes without errors",
+    "Verify the API route file exists at src/app/api/search/route.ts and exports a GET function"
+  ],
+  "blocked_reason": null,
+  "findings": "Build successful with 610 static pages generated. The /api/search route is correctly marked as dynamic (server-rendered on demand). Route Handler uses the standard Next.js 16 pattern (export async function GET(request: Request)). SearchBar uses 'use client' and is imported into the server-component Header without issues."
+}
