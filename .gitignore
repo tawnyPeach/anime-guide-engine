@@ -38,8 +38,7 @@ yarn-error.log*
 # keep example env
 !.env.example
 
-# prisma
-prisma/dev.db
+# prisma db journal files (but keep the db itself for deployment)
 prisma/dev.db-journal
 
 # vercel

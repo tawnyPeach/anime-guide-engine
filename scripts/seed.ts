@@ -128,7 +128,6 @@ async function seedAnimeFromAniList() {
 
               await prisma.episode.createMany({
                 data: episodes,
-                skipDuplicates: true,
               });
             }
           }

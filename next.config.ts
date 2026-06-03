@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   images: {
@@ -17,8 +18,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Enable ISR
-  experimental: {},
+  // Include the SQLite database in the serverless function bundle
+  outputFileTracingIncludes: {
+    "/*": [path.join(__dirname, "prisma", "dev.db")],
+  },
 };
 
 export default nextConfig;
