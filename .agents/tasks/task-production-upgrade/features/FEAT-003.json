@@ -1,0 +1,33 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "SEO enhancements: canonical URLs, OG image generation, FAQ schema on filler/watch-order pages, improved internal linking, and API caching layer with stale-while-revalidate.",
+  "status": "completed",
+  "steps": [
+    "Add canonical URLs to all pages: Update src/app/layout.tsx metadata to include metadataBase (using NEXT_PUBLIC_SITE_URL). Then in each page's generateMetadata function, add alternates.canonical with the page's URL. Affected files: src/app/page.tsx, src/app/anime/[slug]/page.tsx, src/app/anime/[slug]/filler-list/page.tsx, src/app/anime/[slug]/episodes/page.tsx, src/app/anime/[slug]/watch-order/page.tsx, src/app/anime-like/[slug]/page.tsx, src/app/genre/[genre]/page.tsx, src/app/year/[year]/page.tsx.",
+    "Create src/app/api/og/route.tsx: An OG image generation endpoint using next/og ImageResponse. Accept query params: title, subtitle, type. Generate a branded image (1200x630) with the anime guide engine gradient background, title text, and optional subtitle. Use the project's purple/blue gradient aesthetic.",
+    "Update generateMetadata in all page files to include openGraph.images pointing to /api/og?title=... with appropriate parameters for each page type.",
+    "Add FAQ structured data (JSON-LD) to src/app/anime/[slug]/filler-list/page.tsx: Add FAQPage schema with common questions like 'What are filler episodes in [title]?', 'How many filler episodes does [title] have?', 'Should I skip [title] filler?'. Generate answers from the existing content-generator logic.",
+    "Add FAQ structured data to src/app/anime/[slug]/watch-order/page.tsx: Add FAQPage schema with questions like 'What order should I watch [title]?', 'How many entries are in the [title] franchise?', 'Can I watch [title] without watching prequels?'.",
+    "Improve internal linking: Update src/app/anime/[slug]/page.tsx to show 5-10 related pages at the bottom (already has 5 similar anime - add links to genre pages for the anime's genres, year page for the anime's year, and 2-3 more similar anime).",
+    "Improve internal linking on genre and year pages: Add cross-links between related genres and adjacent years.",
+    "Create src/lib/cache.ts: Implement an in-memory cache with stale-while-revalidate pattern. Use a Map with TTL and stale TTL. Export a cached() wrapper function that can wrap any async function. Use it in the API routes (src/app/api/anime/route.ts, src/app/api/search/route.ts) to cache database query results for 60 seconds with 5-minute stale window.",
+    "Add error.tsx files to route segments: Create src/app/error.tsx (root), src/app/anime/[slug]/error.tsx, src/app/genre/[genre]/error.tsx, src/app/year/[year]/error.tsx. Each should be a client component ('use client') that shows a friendly error message with retry button, styled to match the dark theme."
+  ],
+  "acceptance_criteria": [
+    "All page generateMetadata functions include alternates.canonical",
+    "src/app/api/og/route.tsx generates OG images via ImageResponse",
+    "Filler and watch-order pages include FAQPage JSON-LD structured data",
+    "Anime detail pages link to at least 5-10 related pages (genres, year, similar anime)",
+    "src/lib/cache.ts provides in-memory caching with stale-while-revalidate",
+    "API routes use the cache wrapper",
+    "error.tsx files exist for graceful error handling",
+    "Build succeeds with all changes"
+  ],
+  "verification": [
+    "Run 'npm run build' to confirm all new routes and updated pages compile",
+    "Run 'npm run lint' to check for TypeScript errors"
+  ],
+  "blocked_reason": null,
+  "findings": "All changes build and compile successfully. Pre-existing lint errors in SearchBar.tsx (react-hooks/set-state-in-effect) and unused AnimeCard import in anime-like page remain from prior features. The OG image route uses edge runtime and appears as a dynamic route in build output. FAQ schema uses the formatEpisodeRanges helper already present in the filler page."
+}
