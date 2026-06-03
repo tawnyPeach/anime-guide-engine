@@ -2,6 +2,20 @@ import Link from "next/link";
 import SearchBar from "./SearchBar";
 import MobileNav from "./MobileNav";
 
+function getCurrentSeasonSlug(): string {
+  const now = new Date();
+  const month = now.getMonth(); // 0-indexed
+  const year = now.getFullYear();
+
+  let season: string;
+  if (month < 3) season = "winter";
+  else if (month < 6) season = "spring";
+  else if (month < 9) season = "summer";
+  else season = "fall";
+
+  return `${season}-${year}`;
+}
+
 export default function Header() {
   return (
     <header className="glass sticky top-0 z-50 border-b border-anime-border">
@@ -19,6 +33,18 @@ export default function Header() {
           </div>
           <nav className="hidden md:flex items-center space-x-6 flex-shrink-0">
             <Link
+              href="/top/most-popular"
+              className="nav-link text-gray-300 hover:text-white transition-colors text-sm"
+            >
+              Top Anime
+            </Link>
+            <Link
+              href={`/season/${getCurrentSeasonSlug()}`}
+              className="nav-link text-gray-300 hover:text-white transition-colors text-sm"
+            >
+              This Season
+            </Link>
+            <Link
               href="/genre/action"
               className="nav-link text-gray-300 hover:text-white transition-colors text-sm"
             >
@@ -35,12 +61,6 @@ export default function Header() {
               className="nav-link text-gray-300 hover:text-white transition-colors text-sm"
             >
               Fantasy
-            </Link>
-            <Link
-              href="/genre/sci-fi"
-              className="nav-link text-gray-300 hover:text-white transition-colors text-sm"
-            >
-              Sci-Fi
             </Link>
             <Link
               href="/year/2024"

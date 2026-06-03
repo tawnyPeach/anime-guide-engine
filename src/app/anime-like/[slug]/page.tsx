@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
-import AnimeCard from "@/components/AnimeCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdBanner from "@/components/AdBanner";
+import { getRecommendations } from "@/lib/recommendations";
 import {
   generateAnimeLikeContent,
   generateMetaTitle,
@@ -57,29 +57,14 @@ export default async function AnimeLikePage({ params }: Props) {
   const genres: string[] = JSON.parse(anime.genres || "[]");
   const displayTitle = anime.titleEnglish || anime.title;
 
-  // Find similar anime based on shared genres
-  const similarAnime = await prisma.anime.findMany({
-    where: {
-      id: { not: anime.id },
-      OR: genres.map((genre) => ({ genres: { contains: genre } })),
-    },
-    orderBy: { popularity: "desc" },
-    take: 20,
-  });
-
-  // Score similar anime by genre overlap
-  const scored = similarAnime.map((similar) => {
-    const similarGenres: string[] = JSON.parse(similar.genres || "[]");
-    const overlap = genres.filter((g) => similarGenres.includes(g)).length;
-    return { ...similar, score: overlap };
-  });
-  scored.sort((a, b) => b.score - a.score);
+  // Use enhanced recommendation engine
+  const recommendations = await getRecommendations(anime.id, 20);
 
   const content = generateAnimeLikeContent(
     { ...anime, genres },
-    scored.slice(0, 10).map((s) => ({
-      title: s.titleEnglish || s.title,
-      slug: s.slug,
+    recommendations.slice(0, 10).map((r) => ({
+      title: r.anime.titleEnglish || r.anime.title,
+      slug: r.anime.slug,
     }))
   );
 
@@ -100,12 +85,12 @@ export default async function AnimeLikePage({ params }: Props) {
             "@context": "https://schema.org",
             "@type": "ItemList",
             name: `Anime Like ${displayTitle}`,
-            numberOfItems: scored.length,
-            itemListElement: scored.slice(0, 10).map((s, i) => ({
+            numberOfItems: recommendations.length,
+            itemListElement: recommendations.slice(0, 10).map((r, i) => ({
               "@type": "ListItem",
               position: i + 1,
-              name: s.titleEnglish || s.title,
-              url: `/anime/${s.slug}`,
+              name: r.anime.titleEnglish || r.anime.title,
+              url: `/anime/${r.anime.slug}`,
             })),
           }),
         }}
@@ -115,8 +100,8 @@ export default async function AnimeLikePage({ params }: Props) {
         Anime Like {displayTitle}
       </h1>
       <p className="text-gray-400 text-lg mb-8">
-        {scored.length} anime similar to {displayTitle} based on genre and
-        popularity
+        {recommendations.length} anime similar to {displayTitle} based on genre,
+        format, studio, and popularity
       </p>
 
       {/* Content */}
@@ -129,16 +114,16 @@ export default async function AnimeLikePage({ params }: Props) {
       <AdBanner className="mb-8" />
 
       {/* Recommendations Grid */}
-      {scored.length > 0 ? (
+      {recommendations.length > 0 ? (
         <div className="space-y-4 mb-8">
-          {scored.map((similar, index) => {
-            const simGenres: string[] = JSON.parse(similar.genres || "[]");
+          {recommendations.map((rec, index) => {
+            const simGenres: string[] = JSON.parse(rec.anime.genres || "[]");
             const sharedGenres = genres.filter((g) => simGenres.includes(g));
 
             return (
               <Link
-                key={similar.id}
-                href={`/anime/${similar.slug}`}
+                key={rec.anime.id}
+                href={`/anime/${rec.anime.slug}`}
                 className="block bg-gray-800 rounded-lg p-4 hover:bg-gray-700 transition-colors"
               >
                 <div className="flex items-start gap-4">
@@ -147,18 +132,32 @@ export default async function AnimeLikePage({ params }: Props) {
                   </span>
                   <div className="flex-1">
                     <h3 className="text-white font-semibold text-lg">
-                      {similar.titleEnglish || similar.title}
+                      {rec.anime.titleEnglish || rec.anime.title}
                     </h3>
                     <div className="flex items-center gap-3 text-sm text-gray-400 mt-1">
-                      {similar.totalEpisodes > 0 && (
-                        <span>{similar.totalEpisodes} eps</span>
+                      {rec.anime.totalEpisodes > 0 && (
+                        <span>{rec.anime.totalEpisodes} eps</span>
                       )}
-                      {similar.averageScore && (
+                      {rec.anime.averageScore && (
                         <span>
-                          ⭐ {(similar.averageScore / 10).toFixed(1)}
+                          ⭐ {(rec.anime.averageScore / 10).toFixed(1)}
                         </span>
                       )}
-                      {similar.seasonYear && <span>{similar.seasonYear}</span>}
+                      {rec.anime.seasonYear && <span>{rec.anime.seasonYear}</span>}
+                      <span className="text-purple-400">
+                        Score: {rec.score.toFixed(1)}
+                      </span>
+                    </div>
+                    {/* Recommendation reasons */}
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {rec.reasons.map((reason, rIdx) => (
+                        <span
+                          key={rIdx}
+                          className="text-xs px-2 py-0.5 rounded bg-purple-900/30 text-purple-300 border border-purple-800/30"
+                        >
+                          {reason}
+                        </span>
+                      ))}
                     </div>
                     <div className="flex flex-wrap gap-1 mt-2">
                       {simGenres.slice(0, 4).map((g) => (
@@ -174,9 +173,9 @@ export default async function AnimeLikePage({ params }: Props) {
                         </span>
                       ))}
                     </div>
-                    {similar.description && (
+                    {rec.anime.description && (
                       <p className="text-gray-400 text-sm mt-2 line-clamp-2">
-                        {similar.description}
+                        {rec.anime.description}
                       </p>
                     )}
                   </div>

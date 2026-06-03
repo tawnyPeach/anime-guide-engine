@@ -37,6 +37,11 @@ interface AniListMedia {
       };
     }[];
   };
+  externalLinks: {
+    url: string;
+    site: string;
+    type: string | null;
+  }[] | null;
 }
 
 interface AniListResponse {
@@ -85,6 +90,11 @@ const MEDIA_FRAGMENT = `
     nodes {
       name
     }
+  }
+  externalLinks {
+    url
+    site
+    type
   }
   relations {
     edges {
@@ -240,6 +250,7 @@ export function normalizeAniListMedia(media: AniListMedia) {
     format: media.format,
     source: media.source,
     studios: JSON.stringify(media.studios?.nodes?.map((s) => s.name) || []),
+    externalLinks: JSON.stringify(media.externalLinks || []),
     relations: media.relations?.edges?.map((edge) => ({
       relationType: edge.relationType,
       targetAnilistId: edge.node.id,

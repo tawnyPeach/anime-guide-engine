@@ -30,6 +30,7 @@ model Anime {
   format        String?   // TV, MOVIE, OVA, ONA, SPECIAL
   source        String?   // MANGA, LIGHT_NOVEL, ORIGINAL, etc.
   studios       String?   // JSON array
+  externalLinks String?   // JSON array of {url, site, type}
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 

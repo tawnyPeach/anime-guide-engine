@@ -237,6 +237,66 @@ export default async function AnimePage({ params }: Props) {
         </div>
       </section>
 
+      {/* Where to Watch */}
+      {(() => {
+        const externalLinks: { url: string; site: string; type: string | null }[] = (() => {
+          try {
+            return JSON.parse(anime.externalLinks || "[]");
+          } catch {
+            return [];
+          }
+        })();
+
+        const streamingSites: Record<string, { color: string; label: string }> = {
+          "Crunchyroll": { color: "from-orange-500 to-orange-600", label: "Crunchyroll" },
+          "Funimation": { color: "from-purple-500 to-purple-700", label: "Funimation" },
+          "Netflix": { color: "from-red-600 to-red-700", label: "Netflix" },
+          "Hulu": { color: "from-green-500 to-green-600", label: "Hulu" },
+          "HIDIVE": { color: "from-blue-500 to-blue-700", label: "HIDIVE" },
+          "Disney Plus": { color: "from-blue-600 to-indigo-700", label: "Disney+" },
+          "Amazon": { color: "from-cyan-600 to-blue-600", label: "Amazon" },
+          "YouTube": { color: "from-red-500 to-red-600", label: "YouTube" },
+          "VRV": { color: "from-yellow-500 to-orange-500", label: "VRV" },
+        };
+
+        const streamingLinks = externalLinks.filter(
+          (link) => link.type === "STREAMING" || Object.keys(streamingSites).some((site) => link.site?.includes(site))
+        );
+
+        if (streamingLinks.length === 0) return null;
+
+        return (
+          <section className="mb-8">
+            <h2 className="text-2xl font-bold text-white mb-4">
+              Where to Watch {displayTitle}
+            </h2>
+            <div className="flex flex-wrap gap-3">
+              {streamingLinks.map((link, idx) => {
+                const siteKey = Object.keys(streamingSites).find((s) => link.site?.includes(s));
+                const siteInfo = siteKey ? streamingSites[siteKey] : null;
+
+                return (
+                  <a
+                    key={idx}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-medium shadow-lg hover:scale-105 transition-transform duration-200 ${
+                      siteInfo
+                        ? `bg-gradient-to-r ${siteInfo.color}`
+                        : "bg-gradient-to-r from-gray-600 to-gray-700"
+                    }`}
+                  >
+                    {siteInfo?.label || link.site}
+                    <span className="text-xs opacity-80">↗</span>
+                  </a>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })()}
+
       {/* Related Anime */}
       {anime.relationsFrom.length > 0 && (
         <section className="mb-8">

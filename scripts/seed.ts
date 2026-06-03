@@ -103,6 +103,7 @@ async function seedAnimeFromAniList() {
               format: normalized.format,
               source: normalized.source,
               studios: normalized.studios,
+              externalLinks: normalized.externalLinks,
             },
             create: {
               title: normalized.title,
@@ -124,6 +125,7 @@ async function seedAnimeFromAniList() {
               format: normalized.format,
               source: normalized.source,
               studios: normalized.studios,
+              externalLinks: normalized.externalLinks,
             },
           });
 

@@ -13,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  let allAnime: { slug: string; updatedAt: Date; fillerMapping: { id: number } | null; watchOrder: { id: number } | null; totalEpisodes: number }[] = [];
+  let allAnime: { slug: string; updatedAt: Date; fillerMapping: { id: number } | null; watchOrder: { id: number } | null; totalEpisodes: number; studios: string | null }[] = [];
   try {
     allAnime = await prisma.anime.findMany({
       select: {
@@ -22,6 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         fillerMapping: { select: { id: true } },
         watchOrder: { select: { id: true } },
         totalEpisodes: true,
+        studios: true,
       },
       orderBy: { popularity: "desc" },
     });
@@ -102,6 +103,66 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   );
 
+  // Studio pages
+  const studioSet = new Set<string>();
+  for (const anime of allAnime) {
+    try {
+      const studios: string[] = JSON.parse(anime.studios || "[]");
+      studios.forEach((s) => studioSet.add(s));
+    } catch {
+      // skip
+    }
+  }
+  const studioPages: MetadataRoute.Sitemap = Array.from(studioSet)
+    .slice(0, 50)
+    .map((studio) => ({
+      url: `${SITE_URL}/studio/${studio.toLowerCase().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-")}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    }));
+
+  // Season pages
+  const seasons = ["winter", "spring", "summer", "fall"];
+  const seasonPages: MetadataRoute.Sitemap = [];
+  for (let y = currentYear; y >= currentYear - 2; y--) {
+    for (const s of seasons) {
+      seasonPages.push({
+        url: `${SITE_URL}/season/${s}-${y}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      });
+    }
+  }
+
+  // Top pages
+  const topPages: MetadataRoute.Sitemap = [
+    "highest-rated",
+    "most-popular",
+    "longest-running",
+  ].map((type) => ({
+    url: `${SITE_URL}/top/${type}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  // Compare pages (top 20 anime paired)
+  const comparePages: MetadataRoute.Sitemap = [];
+  const topForCompare = allAnime.slice(0, 20);
+  for (let i = 0; i < topForCompare.length - 1 && comparePages.length < 30; i++) {
+    const next = topForCompare[i + 1];
+    if (next) {
+      comparePages.push({
+        url: `${SITE_URL}/compare/${topForCompare[i].slug}-vs-${next.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "monthly" as const,
+        priority: 0.5,
+      });
+    }
+  }
+
   return [
     ...staticPages,
     ...animePages,
@@ -111,5 +172,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...animeLikePages,
     ...genrePages,
     ...yearPages,
+    ...studioPages,
+    ...seasonPages,
+    ...topPages,
+    ...comparePages,
   ];
 }
