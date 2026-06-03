@@ -89,12 +89,17 @@ export default async function YearPage({ params }: Props) {
         }}
       />
 
-      <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        Best Anime of {year}
-      </h1>
-      <p className="text-gray-400 text-lg mb-8">
-        Top {allAnime.length} anime series from {year}
-      </p>
+      <div className="relative mb-8">
+        <div className="absolute inset-0 hero-gradient rounded-xl opacity-50" />
+        <div className="relative py-8 px-6">
+          <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">
+            Best Anime of {year}
+          </h1>
+          <p className="text-gray-400 text-lg">
+            Top {allAnime.length} anime series from {year}
+          </p>
+        </div>
+      </div>
 
       {/* Content */}
       <article className="prose prose-invert max-w-none mb-8">
@@ -119,10 +124,13 @@ export default async function YearPage({ params }: Props) {
 
         return (
           <section key={season} className="mb-10">
-            <h2 className="text-2xl font-bold text-white mb-4">
-              {seasonEmoji[season]} {season.charAt(0) + season.slice(1).toLowerCase()}{" "}
-              {year}
-            </h2>
+            <div className="flex items-center mb-4">
+              <div className="w-1 h-8 bg-gradient-to-b from-purple-500 to-blue-500 rounded-full mr-3" />
+              <h2 className="text-2xl font-bold text-white">
+                {seasonEmoji[season]} {season.charAt(0) + season.slice(1).toLowerCase()}{" "}
+                {year}
+              </h2>
+            </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {seasonAnime.map((anime) => (
                 <AnimeCard
@@ -174,10 +182,10 @@ export default async function YearPage({ params }: Props) {
             <a
               key={y}
               href={`/year/${y}`}
-              className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+              className={`px-4 py-2 rounded-xl text-sm transition-all duration-200 ${
                 y === year
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg glow-purple"
+                  : "bg-anime-card text-gray-300 border border-anime-border hover:border-purple-700/40 hover:text-purple-300"
               }`}
             >
               {y}

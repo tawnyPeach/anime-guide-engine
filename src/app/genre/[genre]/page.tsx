@@ -77,13 +77,18 @@ export default async function GenrePage({ params }: Props) {
         }}
       />
 
-      <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        Best {genreName} Anime
-      </h1>
-      <p className="text-gray-400 text-lg mb-8">
-        Top {allAnime.length} {genreName.toLowerCase()} anime series ranked by
-        popularity
-      </p>
+      <div className="relative mb-8">
+        <div className="absolute inset-0 hero-gradient rounded-xl opacity-50" />
+        <div className="relative py-8 px-6">
+          <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">
+            Best {genreName} Anime
+          </h1>
+          <p className="text-gray-400 text-lg">
+            Top {allAnime.length} {genreName.toLowerCase()} anime series ranked by
+            popularity
+          </p>
+        </div>
+      </div>
 
       {/* Content */}
       <article className="prose prose-invert max-w-none mb-8">
@@ -99,7 +104,7 @@ export default async function GenrePage({ params }: Props) {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
           {allAnime.map((anime, index) => (
             <div key={anime.id} className="relative">
-              <span className="absolute top-2 left-2 z-10 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">
+              <span className="absolute top-2 left-2 z-10 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs font-bold px-2 py-1 rounded-md shadow-lg">
                 #{index + 1}
               </span>
               <AnimeCard
@@ -117,7 +122,7 @@ export default async function GenrePage({ params }: Props) {
           ))}
         </div>
       ) : (
-        <div className="bg-gray-800 rounded-lg p-8 text-center mb-8">
+        <div className="bg-anime-card rounded-xl p-8 text-center mb-8 border border-anime-border">
           <p className="text-gray-400">
             No anime found for this genre yet. Check back after running the seed
             script.
@@ -143,7 +148,7 @@ export default async function GenrePage({ params }: Props) {
               <a
                 key={g}
                 href={`/genre/${g.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
-                className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-700 text-sm transition-colors"
+                className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-purple-700/40 hover:text-purple-300 text-sm transition-all duration-200"
               >
                 {g}
               </a>

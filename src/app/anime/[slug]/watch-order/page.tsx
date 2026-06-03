@@ -124,7 +124,7 @@ export default async function WatchOrderPage({ params }: Props) {
         }}
       />
 
-      <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+      <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">
         {displayTitle} Watch Order
       </h1>
       <p className="text-gray-400 text-lg mb-8">
@@ -148,17 +148,17 @@ export default async function WatchOrderPage({ params }: Props) {
         <div className="space-y-3">
           {/* Current anime */}
           <div className="relative">
-            <div className="bg-blue-900/30 border border-blue-700 rounded-lg p-4">
+            <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/20 border border-blue-700/50 rounded-xl p-4 glow-blue">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded uppercase font-bold">
+                  <span className="text-xs bg-gradient-to-r from-blue-600 to-purple-600 text-white px-2 py-0.5 rounded-md uppercase font-bold">
                     Main Series
                   </span>
                   <h3 className="text-white font-bold text-lg mt-2">
                     {displayTitle}
                   </h3>
                   <p className="text-gray-400 text-sm">
-                    {anime.totalEpisodes} episodes • {anime.format}
+                    {anime.totalEpisodes} episodes &bull; {anime.format}
                   </p>
                 </div>
                 <span className="text-3xl">📺</span>
@@ -168,22 +168,24 @@ export default async function WatchOrderPage({ params }: Props) {
 
           {/* Related entries */}
           {allRelated.map((entry, index) => (
-            <div key={index} className="relative pl-4 border-l-2 border-gray-700">
+            <div key={index} className="relative pl-4 border-l-2 border-gradient-to-b from-purple-600 to-blue-600">
+              {/* Colored dot */}
+              <div className="absolute left-[-5px] top-5 w-2 h-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500" />
               <Link
                 href={`/anime/${entry.slug}`}
-                className="block bg-gray-800 rounded-lg p-4 hover:bg-gray-700 transition-colors"
+                className="block bg-anime-card rounded-xl p-4 border border-anime-border hover:border-purple-700/40 hover:glow-card-hover transition-all duration-300"
               >
                 <div className="flex items-center justify-between">
                   <div>
                     <span
-                      className={`text-xs px-2 py-0.5 rounded uppercase font-bold ${
+                      className={`text-xs px-2 py-0.5 rounded-md uppercase font-bold ${
                         entry.type === "PREQUEL"
-                          ? "bg-purple-600/30 text-purple-400"
+                          ? "bg-purple-600/30 text-purple-400 border border-purple-700/30"
                           : entry.type === "SEQUEL"
-                          ? "bg-green-600/30 text-green-400"
+                          ? "bg-green-600/30 text-green-400 border border-green-700/30"
                           : entry.type === "SIDE_STORY"
-                          ? "bg-yellow-600/30 text-yellow-400"
-                          : "bg-gray-600/30 text-gray-400"
+                          ? "bg-yellow-600/30 text-yellow-400 border border-yellow-700/30"
+                          : "bg-gray-600/30 text-gray-400 border border-gray-700/30"
                       }`}
                     >
                       {entry.type.replace(/_/g, " ")}
@@ -195,17 +197,17 @@ export default async function WatchOrderPage({ params }: Props) {
                       {entry.episodes > 0
                         ? `${entry.episodes} episodes`
                         : "Unknown episodes"}{" "}
-                      • {entry.format || "TV"}
+                      &bull; {entry.format || "TV"}
                     </p>
                   </div>
-                  <span className="text-gray-500 text-xl">→</span>
+                  <span className="text-purple-400 text-xl">→</span>
                 </div>
               </Link>
             </div>
           ))}
 
           {allRelated.length === 0 && (
-            <div className="bg-gray-800 rounded-lg p-6 text-center">
+            <div className="bg-anime-card rounded-xl p-6 text-center border border-anime-border">
               <p className="text-gray-400">
                 {displayTitle} is a standalone series with no direct prequels or
                 sequels in our database. You can start watching it directly!
@@ -223,19 +225,19 @@ export default async function WatchOrderPage({ params }: Props) {
         <div className="flex flex-wrap gap-3">
           <Link
             href={`/anime/${anime.slug}`}
-            className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-700 text-sm"
+            className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-purple-700/40 hover:text-purple-300 text-sm transition-all duration-200"
           >
             ← {displayTitle} Overview
           </Link>
           <Link
             href={`/anime/${anime.slug}/filler-list`}
-            className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-700 text-sm"
+            className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-blue-700/40 hover:text-blue-300 text-sm transition-all duration-200"
           >
             🎯 Filler Guide
           </Link>
           <Link
             href={`/anime/${anime.slug}/episodes`}
-            className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-700 text-sm"
+            className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-pink-700/40 hover:text-pink-300 text-sm transition-all duration-200"
           >
             📋 Episode Guide
           </Link>

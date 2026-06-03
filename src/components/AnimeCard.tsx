@@ -27,15 +27,15 @@ export default function AnimeCard({
   const displayTitle = titleEnglish || title;
 
   return (
-    <article className="bg-gray-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-blue-500 transition-all duration-200 group">
+    <article className="bg-anime-card rounded-xl overflow-hidden border border-anime-border hover:glow-card-hover transition-all duration-300 group hover:-translate-y-1">
       <Link href={`/anime/${slug}`}>
-        <div className="relative aspect-[3/4] bg-gray-700">
+        <div className="relative aspect-[3/4] bg-gray-800 overflow-hidden">
           {coverImage ? (
             <Image
               src={coverImage}
               alt={`${displayTitle} cover`}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-200"
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
             />
           ) : (
@@ -43,14 +43,16 @@ export default function AnimeCard({
               <span className="text-4xl">🎬</span>
             </div>
           )}
+          {/* Gradient overlay on hover */}
+          <div className="absolute inset-0 bg-gradient-to-t from-purple-900/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           {averageScore && (
-            <div className="absolute top-2 right-2 bg-black/80 text-yellow-400 text-xs font-bold px-2 py-1 rounded">
+            <div className="absolute top-2 right-2 bg-gradient-to-r from-amber-500 to-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-md shadow-lg">
               ⭐ {(averageScore / 10).toFixed(1)}
             </div>
           )}
         </div>
         <div className="p-3">
-          <h3 className="text-white font-semibold text-sm line-clamp-2 mb-1">
+          <h3 className="text-white font-semibold text-sm line-clamp-2 mb-1 group-hover:text-purple-300 transition-colors duration-200">
             {displayTitle}
           </h3>
           <div className="flex items-center gap-2 text-xs text-gray-400">
@@ -65,7 +67,7 @@ export default function AnimeCard({
               {genres.slice(0, 2).map((genre) => (
                 <span
                   key={genre}
-                  className="bg-gray-700 text-gray-300 text-xs px-2 py-0.5 rounded"
+                  className="bg-gradient-to-r from-purple-900/40 to-blue-900/40 text-purple-300 text-xs px-2 py-0.5 rounded-md border border-purple-800/30"
                 >
                   {genre}
                 </span>

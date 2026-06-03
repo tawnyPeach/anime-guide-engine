@@ -1,0 +1,37 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Complete UI/UX overhaul - Transform the site from plain dark gray to a vibrant anime-themed design with gradients, animations, neon accents, and modern visual effects. This includes the global styles, layout, header, footer, anime cards, hero section, and all page templates.",
+  "status": "in_progress",
+  "steps": [
+    "Step 1: Overhaul src/app/globals.css - Add anime-themed CSS custom properties (purple/blue/pink/cyan neon palette), gradient utilities, glow effects, animated backgrounds, fade-in keyframe animations, pulse/shimmer effects for loading states, and gradient mesh background classes. Use TailwindCSS 4 @theme inline to define custom colors.",
+    "Step 2: Update src/app/layout.tsx - Change the body background from plain bg-gray-950 to a subtle gradient or dark anime-themed background. Add a gradient mesh or animated background element behind the content. Import a more stylish font (e.g., keep Inter but add font-weight variations).",
+    "Step 3: Redesign src/components/Header.tsx - Add a gradient border-bottom (purple-to-blue), make the logo text have a gradient color, add a subtle backdrop-blur glass effect, improve nav links with hover underline animations, add a mobile hamburger menu toggle (client component). Make it feel premium/alive.",
+    "Step 4: Redesign src/components/Footer.tsx - Add gradient top border, improve layout with better spacing, add subtle background gradient, make links have smooth hover transitions with color shifts, add social-style icons or decorative elements.",
+    "Step 5: Redesign src/components/AnimeCard.tsx - Add gradient overlay on hover, improve the card with a subtle glow/shadow on hover (purple/blue neon), add smooth scale transition, improve genre badges with gradient backgrounds, add a subtle animated shimmer loading placeholder, make the score badge more vibrant.",
+    "Step 6: Redesign src/app/page.tsx (Homepage) - Create a stunning hero section with animated gradient mesh background, glowing text, and a call-to-action. Improve section headings with gradient text and decorative elements. Add visual distinction between sections (trending gets special treatment). Improve the genre browse cards with emoji + gradient backgrounds. Add a 'Back to Top' button component.",
+    "Step 7: Update src/app/anime/[slug]/page.tsx - Add gradient overlays, improve the metadata cards with colored borders/glows, make genre tags more vibrant, improve the guide links section with animated hover effects and gradient borders.",
+    "Step 8: Update src/app/anime/[slug]/watch-order/page.tsx - Improve the timeline visual with gradient lines, colored connection dots, better card styling for each entry in the watch order.",
+    "Step 9: Update src/app/genre/[genre]/page.tsx and src/app/year/[year]/page.tsx - Add gradient headers, improve section styling consistent with the new theme.",
+    "Step 10: Update src/app/not-found.tsx - Make the 404 page visually appealing with gradient text and animated elements.",
+    "Step 11: Create src/components/BackToTop.tsx - A floating button that appears on scroll with smooth scroll-to-top behavior (client component with useState/useEffect).",
+    "Step 12: Create src/components/LoadingSkeleton.tsx - Animated skeleton placeholder components (card skeleton, text skeleton) with shimmer animation for perceived performance."
+  ],
+  "acceptance_criteria": [
+    "The site uses a vibrant anime-themed color palette (purple, blue, pink, cyan gradients and neon accents) instead of plain gray",
+    "Hover effects have smooth transitions (scale, glow, color shifts) on cards and links",
+    "The hero section has an animated or gradient mesh background",
+    "Header has gradient styling, glass effect, and improved navigation",
+    "Footer has gradient accents and improved visual hierarchy",
+    "AnimeCard has neon glow on hover and gradient overlay effects",
+    "A BackToTop button component exists and works",
+    "Loading skeleton components exist with shimmer animations",
+    "The build completes successfully with no TypeScript errors"
+  ],
+  "verification": [
+    "Run npm run build and confirm it completes without errors",
+    "Check that all new/modified .tsx files have no TypeScript compilation issues"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

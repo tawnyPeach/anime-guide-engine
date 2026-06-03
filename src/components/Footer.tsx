@@ -5,14 +5,15 @@ const years = [2024, 2023, 2022, 2021, 2020];
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 border-t border-gray-800 mt-16">
+    <footer className="relative border-t border-anime-border mt-16 bg-gradient-to-b from-[#0f0f23] to-[#0a0a1a]">
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-purple-600 via-blue-500 to-pink-500" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-white font-bold text-lg mb-4">
+            <h3 className="gradient-text font-bold text-lg mb-4">
               🎌 Anime Guide Engine
             </h3>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-400 text-sm leading-relaxed">
               Your ultimate resource for anime filler guides, watch orders, and
               episode lists. Skip the filler, watch what matters.
             </p>
@@ -25,7 +26,7 @@ export default function Footer() {
                 <li key={genre}>
                   <Link
                     href={`/genre/${genre.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
-                    className="text-gray-400 hover:text-white text-sm transition-colors"
+                    className="text-gray-400 hover:text-purple-400 text-sm transition-colors duration-200"
                   >
                     {genre} Anime
                   </Link>
@@ -41,7 +42,7 @@ export default function Footer() {
                 <li key={year}>
                   <Link
                     href={`/year/${year}`}
-                    className="text-gray-400 hover:text-white text-sm transition-colors"
+                    className="text-gray-400 hover:text-blue-400 text-sm transition-colors duration-200"
                   >
                     Best of {year}
                   </Link>
@@ -56,7 +57,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/anime/naruto/filler-list"
-                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                  className="text-gray-400 hover:text-pink-400 text-sm transition-colors duration-200"
                 >
                   Naruto Filler Guide
                 </Link>
@@ -64,7 +65,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/anime/one-piece/filler-list"
-                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                  className="text-gray-400 hover:text-pink-400 text-sm transition-colors duration-200"
                 >
                   One Piece Filler Guide
                 </Link>
@@ -72,7 +73,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/anime/bleach/filler-list"
-                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                  className="text-gray-400 hover:text-pink-400 text-sm transition-colors duration-200"
                 >
                   Bleach Filler Guide
                 </Link>
@@ -80,7 +81,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/anime/dragon-ball-z/filler-list"
-                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                  className="text-gray-400 hover:text-pink-400 text-sm transition-colors duration-200"
                 >
                   Dragon Ball Z Filler Guide
                 </Link>
@@ -89,7 +90,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center">
+        <div className="border-t border-anime-border mt-8 pt-8 text-center">
           <p className="text-gray-500 text-sm">
             &copy; {new Date().getFullYear()} Anime Guide Engine. All anime
             data sourced from AniList and MyAnimeList.
