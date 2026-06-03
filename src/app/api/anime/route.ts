@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { cached } from "@/lib/cache";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -34,32 +35,42 @@ export async function GET(request: Request) {
       break;
   }
 
-  const [items, total] = await Promise.all([
-    prisma.anime.findMany({
-      where,
-      orderBy,
-      skip,
-      take: limit,
-      select: {
-        id: true,
-        title: true,
-        titleEnglish: true,
-        slug: true,
-        coverImage: true,
-        genres: true,
-        totalEpisodes: true,
-        averageScore: true,
-        status: true,
-        seasonYear: true,
-      },
-    }),
-    prisma.anime.count({ where }),
-  ]);
+  const cacheKey = `anime:${page}:${limit}:${genre || ''}:${yearParam || ''}:${sort}`;
 
-  return Response.json({
-    items,
-    total,
-    page,
-    hasMore: skip + items.length < total,
-  });
+  const result = await cached(
+    cacheKey,
+    async () => {
+      const [items, total] = await Promise.all([
+        prisma.anime.findMany({
+          where,
+          orderBy,
+          skip,
+          take: limit,
+          select: {
+            id: true,
+            title: true,
+            titleEnglish: true,
+            slug: true,
+            coverImage: true,
+            genres: true,
+            totalEpisodes: true,
+            averageScore: true,
+            status: true,
+            seasonYear: true,
+          },
+        }),
+        prisma.anime.count({ where }),
+      ]);
+
+      return {
+        items,
+        total,
+        page,
+        hasMore: skip + items.length < total,
+      };
+    },
+    { ttl: 60, staleTtl: 300 }
+  );
+
+  return Response.json(result);
 }

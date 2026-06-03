@@ -30,6 +30,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: generateMetaTitle("genre", undefined, genreName),
     description: generateMetaDescription("genre", undefined, genreName),
+    alternates: { canonical: `/genre/${genre}` },
+    openGraph: {
+      images: [{ url: `/api/og?title=${encodeURIComponent('Best ' + genreName + ' Anime')}&subtitle=Top+series+ranked+by+popularity&type=genre` }],
+    },
   };
 }
 

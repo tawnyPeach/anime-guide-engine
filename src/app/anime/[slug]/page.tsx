@@ -24,10 +24,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: generateMetaTitle("anime", animeData),
     description: generateMetaDescription("anime", animeData),
+    alternates: { canonical: `/anime/${slug}` },
     openGraph: {
       title: anime.titleEnglish || anime.title,
       description: anime.description?.substring(0, 200) || undefined,
-      images: anime.coverImage ? [{ url: anime.coverImage }] : undefined,
+      images: anime.coverImage
+        ? [{ url: anime.coverImage }]
+        : [{ url: `/api/og?title=${encodeURIComponent(anime.titleEnglish || anime.title)}&type=anime` }],
     },
   };
 }
@@ -71,7 +74,7 @@ export default async function AnimePage({ params }: Props) {
       genres: { contains: genres[0] || "" },
     },
     orderBy: { popularity: "desc" },
-    take: 5,
+    take: 8,
   });
 
   return (
@@ -271,7 +274,7 @@ export default async function AnimePage({ params }: Props) {
               View all →
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {similarAnime.map((similar) => (
               <Link
                 key={similar.id}
@@ -297,6 +300,38 @@ export default async function AnimePage({ params }: Props) {
           </div>
         </section>
       )}
+
+      {/* Internal Links */}
+      <section className="mb-8">
+        <h2 className="text-2xl font-bold text-white mb-4">
+          Explore More
+        </h2>
+        <div className="flex flex-wrap gap-3">
+          {genres.map((genre) => (
+            <Link
+              key={genre}
+              href={`/genre/${genre.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
+              className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-purple-700/40 hover:text-purple-300 text-sm transition-all duration-200"
+            >
+              {genre} Anime
+            </Link>
+          ))}
+          {anime.seasonYear && (
+            <Link
+              href={`/year/${anime.seasonYear}`}
+              className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-blue-700/40 hover:text-blue-300 text-sm transition-all duration-200"
+            >
+              {anime.seasonYear} Anime
+            </Link>
+          )}
+          <Link
+            href={`/anime-like/${anime.slug}`}
+            className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-pink-700/40 hover:text-pink-300 text-sm transition-all duration-200"
+          >
+            More Anime Like {displayTitle}
+          </Link>
+        </div>
+      </section>
 
       <AdBanner className="mb-8" />
     </div>

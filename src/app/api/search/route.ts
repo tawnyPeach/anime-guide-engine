@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { cached } from "@/lib/cache";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -11,27 +12,31 @@ export async function GET(request: Request) {
   // Cap query length at 200 characters
   q = q.slice(0, 200);
 
-  const results = await prisma.anime.findMany({
-    where: {
-      OR: [
-        { title: { contains: q } },
-        { titleEnglish: { contains: q } },
-        { titleJapanese: { contains: q } },
-      ],
-    },
-    orderBy: { popularity: "desc" },
-    take: 10,
-    select: {
-      id: true,
-      title: true,
-      titleEnglish: true,
-      slug: true,
-      coverImage: true,
-      genres: true,
-      format: true,
-      averageScore: true,
-    },
-  });
+  const results = await cached(
+    `search:${q}`,
+    () => prisma.anime.findMany({
+      where: {
+        OR: [
+          { title: { contains: q } },
+          { titleEnglish: { contains: q } },
+          { titleJapanese: { contains: q } },
+        ],
+      },
+      orderBy: { popularity: "desc" },
+      take: 10,
+      select: {
+        id: true,
+        title: true,
+        titleEnglish: true,
+        slug: true,
+        coverImage: true,
+        genres: true,
+        format: true,
+        averageScore: true,
+      },
+    }),
+    { ttl: 60, staleTtl: 300 }
+  );
 
   return Response.json({ results });
 }

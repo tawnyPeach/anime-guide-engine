@@ -31,6 +31,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: generateMetaTitle("watch-order", animeData),
     description: generateMetaDescription("watch-order", animeData),
+    alternates: { canonical: `/anime/${slug}/watch-order` },
+    openGraph: {
+      images: [{ url: `/api/og?title=${encodeURIComponent((anime.titleEnglish || anime.title) + ' Watch Order')}&subtitle=Complete+franchise+viewing+guide&type=watch-order` }],
+    },
   };
 }
 
@@ -142,6 +146,47 @@ export default async function WatchOrderPage({ params }: Props) {
             headline: `${displayTitle} Watch Order Guide`,
             description: `Complete watch order for the ${displayTitle} franchise.`,
             author: { "@type": "Organization", name: "Anime Guide Engine" },
+          }),
+        }}
+      />
+
+      {/* FAQ Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: `What order should I watch ${displayTitle}?`,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: watchOrder.mainOrder.length > 0
+                    ? `The recommended watch order for ${displayTitle} is: ${watchOrder.mainOrder.map((e, i) => `${i + 1}. ${e.title}`).join(', ')}.`
+                    : `${displayTitle} is a standalone series and can be watched on its own without any specific order.`,
+                },
+              },
+              {
+                "@type": "Question",
+                name: `How many entries are in the ${displayTitle} franchise?`,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: `The ${displayTitle} franchise has ${watchOrder.totalEntries} entries in total, including ${watchOrder.mainOrder.length} main entries${watchOrder.supplementary.length > 0 ? ` and ${watchOrder.supplementary.length} supplementary entries (OVAs, movies, side stories)` : ''}.`,
+                },
+              },
+              {
+                "@type": "Question",
+                name: `Can I watch ${displayTitle} without watching the prequels?`,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: watchOrder.mainOrder.length > 1
+                    ? `While ${displayTitle} can be enjoyed on its own, watching the franchise in order provides the best experience. The recommended starting point is ${watchOrder.mainOrder[0]?.title || displayTitle}, which establishes the characters and world.`
+                    : `Yes, ${displayTitle} is a standalone entry and does not require watching any other series first.`,
+                },
+              },
+            ],
           }),
         }}
       />

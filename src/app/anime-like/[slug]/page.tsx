@@ -28,6 +28,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: generateMetaTitle("anime-like", animeData),
     description: generateMetaDescription("anime-like", animeData),
+    alternates: { canonical: `/anime-like/${slug}` },
+    openGraph: {
+      images: [{ url: `/api/og?title=${encodeURIComponent('Anime Like ' + (anime.titleEnglish || anime.title))}&subtitle=Similar+anime+recommendations&type=anime-like` }],
+    },
   };
 }
 

@@ -8,6 +8,7 @@ import BackToTop from "@/components/BackToTop";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://animeguideengine.com'),
   title: {
     default: "Anime Guide Engine - Filler Lists, Watch Orders & Episode Guides",
     template: "%s | Anime Guide Engine",

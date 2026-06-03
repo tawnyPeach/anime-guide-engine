@@ -21,6 +21,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: generateMetaTitle("year", undefined, year),
     description: generateMetaDescription("year", undefined, year),
+    alternates: { canonical: `/year/${year}` },
+    openGraph: {
+      images: [{ url: `/api/og?title=${encodeURIComponent('Best Anime of ' + year)}&subtitle=Top+anime+series+from+${year}&type=year` }],
+    },
   };
 }
 

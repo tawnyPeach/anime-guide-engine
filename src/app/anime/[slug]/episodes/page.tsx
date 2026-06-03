@@ -27,6 +27,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: generateMetaTitle("episodes", animeData),
     description: generateMetaDescription("episodes", animeData),
+    alternates: { canonical: `/anime/${slug}/episodes` },
+    openGraph: {
+      images: [{ url: `/api/og?title=${encodeURIComponent((anime.titleEnglish || anime.title) + ' Episode Guide')}&subtitle=${encodeURIComponent('All ' + (anime.totalEpisodes || '') + ' episodes')}&type=episodes` }],
+    },
   };
 }
 

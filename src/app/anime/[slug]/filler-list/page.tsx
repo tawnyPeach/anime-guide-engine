@@ -30,9 +30,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: generateMetaTitle("filler", animeData),
     description: generateMetaDescription("filler", animeData),
+    alternates: { canonical: `/anime/${slug}/filler-list` },
     openGraph: {
       title: `${anime.titleEnglish || anime.title} Filler List`,
       description: `Complete filler episode guide for ${anime.titleEnglish || anime.title}. ${anime.fillerMapping?.totalFiller || 0} filler episodes identified.`,
+      images: [{ url: `/api/og?title=${encodeURIComponent((anime.titleEnglish || anime.title) + ' Filler List')}&subtitle=${encodeURIComponent((anime.fillerMapping?.totalFiller || 0) + ' filler episodes identified')}&type=filler` }],
     },
   };
 }
@@ -97,6 +99,55 @@ export default async function FillerListPage({ params }: Props) {
             headline: `${displayTitle} Filler Episode Guide`,
             description: `Complete filler guide for ${displayTitle} with ${stats.totalFiller} filler episodes identified.`,
             author: { "@type": "Organization", name: "Anime Guide Engine" },
+          }),
+        }}
+      />
+
+      {/* FAQ Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: `What are the filler episodes in ${displayTitle}?`,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: fillerEpisodes.length > 0
+                    ? `The filler episodes in ${displayTitle} are: ${formatEpisodeRanges(fillerEpisodes)}. These episodes do not follow the original manga storyline.`
+                    : `${displayTitle} does not have any confirmed filler episodes.`,
+                },
+              },
+              {
+                "@type": "Question",
+                name: `How many filler episodes does ${displayTitle} have?`,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: `${displayTitle} has ${stats.totalFiller} filler episodes out of ${anime.totalEpisodes} total episodes, along with ${stats.totalMixed} mixed canon/filler episodes.`,
+                },
+              },
+              {
+                "@type": "Question",
+                name: `Should I skip ${displayTitle} filler episodes?`,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: stats.fillerPercent > 20
+                    ? `With ${Math.round(stats.fillerPercent)}% filler content, skipping filler episodes in ${displayTitle} is recommended if you want to follow only the main storyline. This will save you ${stats.totalFiller} episodes.`
+                    : `${displayTitle} has only ${Math.round(stats.fillerPercent)}% filler content, so the filler episodes are minimal. You can skip them without missing the main story, but they are few enough that watching them won't significantly delay your progress.`,
+                },
+              },
+              {
+                "@type": "Question",
+                name: `What percentage of ${displayTitle} is filler?`,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: `${Math.round(stats.fillerPercent)}% of ${displayTitle} is filler. Out of ${anime.totalEpisodes} total episodes, ${stats.totalCanon} are canon, ${stats.totalFiller} are filler, and ${stats.totalMixed} are mixed canon/filler.`,
+                },
+              },
+            ],
           }),
         }}
       />

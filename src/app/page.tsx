@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import AnimeCard from "@/components/AnimeCard";
@@ -5,6 +6,13 @@ import AdBanner from "@/components/AdBanner";
 import LoadMore from "@/components/LoadMore";
 
 export const revalidate = 3600; // ISR: revalidate every hour
+
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+  openGraph: {
+    images: [{ url: '/api/og?title=Anime+Guide+Engine&subtitle=Filler+Lists,+Watch+Orders+%26+Episode+Guides' }],
+  },
+};
 
 export default async function HomePage() {
   let popularAnime: Awaited<ReturnType<typeof prisma.anime.findMany>> = [];
