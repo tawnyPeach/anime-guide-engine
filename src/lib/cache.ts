@@ -41,6 +41,17 @@ export async function cached<T>(
 
   // Cache miss or expired: await fresh data
   const data = await fn();
+
+  // Evict oldest entries if cache exceeds max size
+  if (cache.size >= 1000) {
+    const entries = [...cache.entries()].sort(
+      (a, b) => a[1].timestamp - b[1].timestamp
+    );
+    for (let i = 0; i < 200; i++) {
+      cache.delete(entries[i][0]);
+    }
+  }
+
   cache.set(key, { data, timestamp: Date.now() });
   return data;
 }

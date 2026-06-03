@@ -4,9 +4,13 @@ export const runtime = 'edge';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const title = searchParams.get('title') || 'Anime Guide Engine';
-  const subtitle = searchParams.get('subtitle') || '';
+  const rawTitle = searchParams.get('title') || 'Anime Guide Engine';
+  const rawSubtitle = searchParams.get('subtitle') || '';
   const type = searchParams.get('type') || '';
+
+  // Truncate inputs to prevent layout issues with extremely long strings
+  const title = rawTitle.length > 100 ? rawTitle.substring(0, 100) + '...' : rawTitle;
+  const subtitle = rawSubtitle.length > 200 ? rawSubtitle.substring(0, 200) + '...' : rawSubtitle;
 
   return new ImageResponse(
     (

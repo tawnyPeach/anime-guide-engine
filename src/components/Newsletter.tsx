@@ -29,9 +29,9 @@ export default function Newsletter() {
   if (submitted) {
     return (
       <div className="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-700/30 rounded-xl p-6 text-center">
-        <p className="text-purple-300 font-medium">Thanks for subscribing!</p>
+        <p className="text-purple-300 font-medium">Thanks! Newsletter integration coming soon.</p>
         <p className="text-gray-400 text-sm mt-1">
-          You will receive anime guides and updates in your inbox.
+          (Newsletter feature is being set up - we&apos;ll notify you when it&apos;s live)
         </p>
       </div>
     );

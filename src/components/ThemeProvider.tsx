@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useCallback, useSyncExternalStore } from 'react';
+import { createContext, useContext, useCallback, useEffect, useSyncExternalStore } from 'react';
 
 type Theme = 'dark' | 'light';
 
@@ -56,12 +56,11 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
     emitChange();
   }, []);
 
-  // Apply theme class on initial render
-  if (typeof window !== 'undefined') {
-    const current = getThemeSnapshot();
-    document.documentElement.classList.toggle('light', current === 'light');
-    document.documentElement.classList.toggle('dark', current === 'dark');
-  }
+  // Apply theme class after commit, not during render
+  useEffect(() => {
+    document.documentElement.classList.toggle('light', theme === 'light');
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>

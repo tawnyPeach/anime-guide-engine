@@ -14,10 +14,11 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slugs } = await params;
-  const parts = slugs.split("-vs-");
-  if (parts.length !== 2) return { title: "Compare Anime" };
+  const vsIndex = slugs.lastIndexOf("-vs-");
+  if (vsIndex === -1) return { title: "Compare Anime" };
 
-  const [slug1, slug2] = parts;
+  const slug1 = slugs.substring(0, vsIndex);
+  const slug2 = slugs.substring(vsIndex + 4);
   let anime1, anime2;
   try {
     anime1 = await prisma.anime.findUnique({ where: { slug: slug1 } });
@@ -81,10 +82,11 @@ export async function generateStaticParams() {
 
 export default async function ComparePage({ params }: Props) {
   const { slugs } = await params;
-  const parts = slugs.split("-vs-");
+  const vsIndex = slugs.lastIndexOf("-vs-");
 
-  if (parts.length !== 2) notFound();
-  const [slug1, slug2] = parts;
+  if (vsIndex === -1) notFound();
+  const slug1 = slugs.substring(0, vsIndex);
+  const slug2 = slugs.substring(vsIndex + 4);
 
   let anime1, anime2;
   try {
