@@ -6,12 +6,9 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function getDbUrl(): string {
-  if (process.env.DATABASE_URL) {
-    return process.env.DATABASE_URL;
-  }
-  // On Vercel, the DB file is bundled alongside the serverless function
-  // Resolve relative to the project root
-  const dbPath = path.join(process.cwd(), "prisma", "dev.db");
+  // Always resolve to absolute path for the SQLite database
+  // The dev.db is in the prisma/ directory at the project root
+  const dbPath = path.resolve(process.cwd(), "prisma", "dev.db");
   return `file:${dbPath}`;
 }
 

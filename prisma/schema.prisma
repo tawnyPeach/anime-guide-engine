@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
+  // For local dev: DATABASE_URL="file:./dev.db" (relative to this schema file)
 }
 
 model Anime {
