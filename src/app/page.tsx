@@ -2,6 +2,7 @@ import Link from "next/link";
 import prisma from "@/lib/prisma";
 import AnimeCard from "@/components/AnimeCard";
 import AdBanner from "@/components/AdBanner";
+import LoadMore from "@/components/LoadMore";
 
 export const revalidate = 3600; // ISR: revalidate every hour
 
@@ -25,6 +26,7 @@ export default async function HomePage() {
   });
 
   const totalAnime = await prisma.anime.count();
+  const totalPopular = await prisma.anime.count();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -123,6 +125,9 @@ export default async function HomePage() {
               seasonYear={anime.seasonYear}
             />
           ))}
+        </div>
+        <div className="mt-8">
+          <LoadMore initialCount={20} total={totalPopular} sort="popularity" />
         </div>
       </section>
 

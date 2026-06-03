@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import AnimeCard from "@/components/AnimeCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdBanner from "@/components/AdBanner";
+import LoadMore from "@/components/LoadMore";
 import {
   generateYearPageContent,
   generateMetaTitle,
@@ -46,8 +47,10 @@ export default async function YearPage({ params }: Props) {
   const allAnime = await prisma.anime.findMany({
     where: { seasonYear: year },
     orderBy: [{ averageScore: "desc" }, { popularity: "desc" }],
-    take: 50,
+    take: 20,
   });
+
+  const total = await prisma.anime.count({ where: { seasonYear: year } });
 
   // Group by season
   const seasons: Record<string, typeof allAnime> = {
@@ -173,6 +176,11 @@ export default async function YearPage({ params }: Props) {
         )}
 
       <AdBanner className="mb-8" />
+
+      {/* Load More */}
+      <div className="mb-8">
+        <LoadMore initialCount={allAnime.length} total={total} year={year} />
+      </div>
 
       {/* Year Navigation */}
       <section className="mb-8">

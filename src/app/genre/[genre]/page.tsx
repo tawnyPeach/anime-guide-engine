@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import AnimeCard from "@/components/AnimeCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdBanner from "@/components/AdBanner";
+import LoadMore from "@/components/LoadMore";
 import {
   generateGenrePageContent,
   generateMetaTitle,
@@ -51,7 +52,11 @@ export default async function GenrePage({ params }: Props) {
       genres: { contains: genreName },
     },
     orderBy: { popularity: "desc" },
-    take: 50,
+    take: 20,
+  });
+
+  const total = await prisma.anime.count({
+    where: { genres: { contains: genreName } },
   });
 
   const content = generateGenrePageContent(genreName, allAnime.length);
@@ -84,7 +89,7 @@ export default async function GenrePage({ params }: Props) {
             Best {genreName} Anime
           </h1>
           <p className="text-gray-400 text-lg">
-            Top {allAnime.length} {genreName.toLowerCase()} anime series ranked by
+            Top {total} {genreName.toLowerCase()} anime series ranked by
             popularity
           </p>
         </div>
@@ -127,6 +132,12 @@ export default async function GenrePage({ params }: Props) {
             No anime found for this genre yet. Check back after running the seed
             script.
           </p>
+        </div>
+      )}
+
+      {allAnime.length > 0 && (
+        <div className="mb-8">
+          <LoadMore initialCount={allAnime.length} total={total} genre={genreName} />
         </div>
       )}
 
