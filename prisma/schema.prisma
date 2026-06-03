@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Anime {
+  id            Int       @id @default(autoincrement())
+  title         String
+  titleEnglish  String?
+  titleJapanese String?
+  slug          String    @unique
+  description   String?
+  genres        String    // JSON array stored as string
+  totalEpisodes Int       @default(0)
+  status        String?   // FINISHED, RELEASING, NOT_YET_RELEASED, CANCELLED
+  season        String?   // WINTER, SPRING, SUMMER, FALL
+  seasonYear    Int?
+  coverImage    String?
+  bannerImage   String?
+  malId         Int?      @unique
+  anilistId     Int?      @unique
+  averageScore  Int?
+  popularity    Int?
+  format        String?   // TV, MOVIE, OVA, ONA, SPECIAL
+  source        String?   // MANGA, LIGHT_NOVEL, ORIGINAL, etc.
+  studios       String?   // JSON array
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  episodes      Episode[]
+  watchOrder    WatchOrder?
+  fillerMapping FillerMapping?
+  seoPages      SEOPage[]
+  relationsFrom AnimeRelation[] @relation("RelationFrom")
+  relationsTo   AnimeRelation[] @relation("RelationTo")
+
+  @@index([slug])
+  @@index([seasonYear])
+  @@index([status])
+  @@index([popularity])
+}
+
+model Episode {
+  id                 Int     @id @default(autoincrement())
+  animeId            Int
+  episodeNumber      Int
+  title              String?
+  isFiller           Boolean @default(false)
+  isMixedCanonFiller Boolean @default(false)
+  arcName            String?
+
+  anime              Anime   @relation(fields: [animeId], references: [id], onDelete: Cascade)
+
+  @@unique([animeId, episodeNumber])
+  @@index([animeId])
+}
+
+model WatchOrder {
+  id        Int    @id @default(autoincrement())
+  animeId   Int    @unique
+  orderList String // JSON: array of { animeId, title, slug, type, order }
+
+  anime     Anime  @relation(fields: [animeId], references: [id], onDelete: Cascade)
+
+  @@index([animeId])
+}
+
+model FillerMapping {
+  id             Int    @id @default(autoincrement())
+  animeId        Int    @unique
+  fillerEpisodes String // JSON array of episode numbers
+  mixedEpisodes  String? // JSON array of mixed canon/filler episodes
+  canonEpisodes  String? // JSON array of canon episodes
+  totalFiller    Int    @default(0)
+  totalMixed     Int    @default(0)
+  totalCanon     Int    @default(0)
+  fillerPercent  Float  @default(0)
+
+  anime          Anime  @relation(fields: [animeId], references: [id], onDelete: Cascade)
+
+  @@index([animeId])
+}
+
+model AnimeRelation {
+  id           Int    @id @default(autoincrement())
+  fromAnimeId  Int
+  toAnimeId    Int
+  relationType String // PREQUEL, SEQUEL, SIDE_STORY, PARENT, ALTERNATIVE, SPIN_OFF
+
+  fromAnime    Anime  @relation("RelationFrom", fields: [fromAnimeId], references: [id], onDelete: Cascade)
+  toAnime      Anime  @relation("RelationTo", fields: [toAnimeId], references: [id], onDelete: Cascade)
+
+  @@unique([fromAnimeId, toAnimeId, relationType])
+  @@index([fromAnimeId])
+  @@index([toAnimeId])
+}
+
+model SEOPage {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  type        String   // filler, watch-order, episodes, genre, year, anime-like
+  animeId     Int?
+  title       String
+  metaTitle   String
+  metaDesc    String
+  contentHtml String?
+  keywords    String?  // JSON array
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  anime       Anime?   @relation(fields: [animeId], references: [id], onDelete: SetNull)
+
+  @@index([slug])
+  @@index([type])
+  @@index([animeId])
+}
