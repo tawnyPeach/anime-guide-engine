@@ -31,13 +31,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const anime = await prisma.anime.findMany({
-    where: { totalEpisodes: { gt: 0 } },
-    select: { slug: true },
-    orderBy: { popularity: "desc" },
-    take: 200,
-  });
-  return anime.map((a) => ({ slug: a.slug }));
+  try {
+    const anime = await prisma.anime.findMany({
+      where: { totalEpisodes: { gt: 0 } },
+      select: { slug: true },
+      orderBy: { popularity: "desc" },
+      take: 200,
+    });
+    return anime.map((a) => ({ slug: a.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export default async function EpisodesPage({ params }: Props) {

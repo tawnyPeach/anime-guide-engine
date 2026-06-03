@@ -1,7 +1,4 @@
 {
   "framework": "nextjs",
-  "regions": ["iad1"],
-  "env": {
-    "DATABASE_URL": "file:./prisma/dev.db"
-  }
+  "regions": ["iad1"]
 }

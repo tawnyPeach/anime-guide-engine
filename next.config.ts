@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 import path from "path";
 
+const databaseUrl = process.env.DATABASE_URL || "";
+const isPostgres = databaseUrl.startsWith("postgres");
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -18,10 +21,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Include the SQLite database in the serverless function bundle
-  outputFileTracingIncludes: {
-    "/*": [path.join(__dirname, "prisma", "dev.db")],
-  },
+  // Include the SQLite database in the serverless function bundle (only for SQLite)
+  ...(isPostgres
+    ? {}
+    : {
+        outputFileTracingIncludes: {
+          "/*": [path.join(__dirname, "prisma", "dev.db")],
+        },
+      }),
 };
 
 export default nextConfig;

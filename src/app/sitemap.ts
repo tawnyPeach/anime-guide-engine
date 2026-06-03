@@ -4,17 +4,6 @@ import prisma from "@/lib/prisma";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://animeguideengine.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const allAnime = await prisma.anime.findMany({
-    select: {
-      slug: true,
-      updatedAt: true,
-      fillerMapping: { select: { id: true } },
-      watchOrder: { select: { id: true } },
-      totalEpisodes: true,
-    },
-    orderBy: { popularity: "desc" },
-  });
-
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
@@ -23,6 +12,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1.0,
     },
   ];
+
+  let allAnime: { slug: string; updatedAt: Date; fillerMapping: { id: number } | null; watchOrder: { id: number } | null; totalEpisodes: number }[] = [];
+  try {
+    allAnime = await prisma.anime.findMany({
+      select: {
+        slug: true,
+        updatedAt: true,
+        fillerMapping: { select: { id: true } },
+        watchOrder: { select: { id: true } },
+        totalEpisodes: true,
+      },
+      orderBy: { popularity: "desc" },
+    });
+  } catch {
+    return staticPages;
+  }
 
   // Anime pages
   const animePages: MetadataRoute.Sitemap = allAnime.map((anime) => ({

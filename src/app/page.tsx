@@ -7,25 +7,34 @@ import LoadMore from "@/components/LoadMore";
 export const revalidate = 3600; // ISR: revalidate every hour
 
 export default async function HomePage() {
-  const popularAnime = await prisma.anime.findMany({
-    orderBy: { popularity: "desc" },
-    take: 20,
-  });
+  let popularAnime: Awaited<ReturnType<typeof prisma.anime.findMany>> = [];
+  let fillerAnime: (Awaited<ReturnType<typeof prisma.anime.findMany>>[number] & { fillerMapping: { fillerPercent: number } | null })[] = [];
+  let recentAnime: Awaited<ReturnType<typeof prisma.anime.findMany>> = [];
+  let totalAnime = 0;
 
-  const fillerAnime = await prisma.anime.findMany({
-    where: { fillerMapping: { isNot: null } },
-    include: { fillerMapping: true },
-    orderBy: { popularity: "desc" },
-    take: 10,
-  });
+  try {
+    popularAnime = await prisma.anime.findMany({
+      orderBy: { popularity: "desc" },
+      take: 20,
+    });
 
-  const recentAnime = await prisma.anime.findMany({
-    where: { seasonYear: { gte: 2023 } },
-    orderBy: [{ seasonYear: "desc" }, { popularity: "desc" }],
-    take: 10,
-  });
+    fillerAnime = await prisma.anime.findMany({
+      where: { fillerMapping: { isNot: null } },
+      include: { fillerMapping: true },
+      orderBy: { popularity: "desc" },
+      take: 10,
+    });
 
-  const totalAnime = await prisma.anime.count();
+    recentAnime = await prisma.anime.findMany({
+      where: { seasonYear: { gte: 2023 } },
+      orderBy: [{ seasonYear: "desc" }, { popularity: "desc" }],
+      take: 10,
+    });
+
+    totalAnime = await prisma.anime.count();
+  } catch {
+    // Database unavailable - render with empty data
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

@@ -38,11 +38,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const anime = await prisma.anime.findMany({
-    where: { fillerMapping: { isNot: null } },
-    select: { slug: true },
-  });
-  return anime.map((a) => ({ slug: a.slug }));
+  try {
+    const anime = await prisma.anime.findMany({
+      where: { fillerMapping: { isNot: null } },
+      select: { slug: true },
+    });
+    return anime.map((a) => ({ slug: a.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export default async function FillerListPage({ params }: Props) {

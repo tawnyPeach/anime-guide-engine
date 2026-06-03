@@ -18,7 +18,7 @@ A production-ready programmatic SEO website that generates anime guide pages to 
 |-------|-----------|
 | Frontend | Next.js 16 (App Router) |
 | Styling | TailwindCSS 4 |
-| Database | SQLite (Prisma ORM) |
+| Database | SQLite (dev) / PostgreSQL (prod, via Prisma ORM) |
 | API Sources | AniList GraphQL, Jikan (MAL), Filler Dataset |
 | Deployment | Vercel-compatible |
 
@@ -49,8 +49,8 @@ npm install
 # Generate Prisma client
 npx prisma generate
 
-# Run database migration
-npx prisma migrate dev
+# Push schema to database (requires running PostgreSQL)
+npx prisma db push
 
 # Seed database with top 200 anime from AniList
 npm run seed
@@ -64,11 +64,13 @@ npm run dev
 Copy `.env.example` to `.env` and configure:
 
 ```env
-DATABASE_URL="file:./prisma/dev.db"
+DATABASE_URL="postgresql://localhost:5432/anime_guide_dev"
 NEXT_PUBLIC_SITE_URL="https://your-domain.com"
 NEXT_PUBLIC_SITE_NAME="Anime Guide Engine"
 NEXT_PUBLIC_ADSENSE_CLIENT_ID=""  # Optional
 ```
+
+> **Note:** The app uses PostgreSQL. For local development, you can either run a local PostgreSQL instance or use a free Neon database. The build will succeed without a running database, but pages will only render on-demand when the database is available.
 
 ## Scripts
 
@@ -128,15 +130,32 @@ src/
 1. Push to GitHub
 2. Connect repository to Vercel
 3. Set environment variables
-4. Deploy — Vercel handles SSG/ISR automatically
+4. Deploy - Vercel handles SSG/ISR automatically
 
-For PostgreSQL in production, update `prisma/schema.prisma`:
-```prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-```
+### Production Deployment (PostgreSQL)
+
+For production, use a PostgreSQL database (recommended: [Neon](https://neon.tech) free tier):
+
+1. **Create a Neon database** at [neon.tech](https://neon.tech) and copy the connection string.
+
+2. **Set `DATABASE_URL` in Vercel Dashboard:**
+   - Go to your project Settings > Environment Variables
+   - Add `DATABASE_URL` with your PostgreSQL connection string:
+     ```
+     postgresql://user:password@ep-example.us-east-2.aws.neon.tech/dbname?sslmode=require
+     ```
+
+3. **Push the schema to your database:**
+   ```bash
+   DATABASE_URL="postgresql://..." npx prisma db push
+   ```
+
+4. **Run the seed script against production:**
+   ```bash
+   DATABASE_URL="postgresql://..." npm run seed
+   ```
+
+> **Note:** For PostgreSQL deployments, use `npx prisma db push` instead of `prisma migrate dev`. The migrations folder is provider-specific. SQLite migrations are not compatible with PostgreSQL.
 
 ## Monetization
 
