@@ -4,6 +4,7 @@ import Link from "next/link";
 import prisma from "@/lib/prisma";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdBanner from "@/components/AdBanner";
+import EpisodeTracker from "@/components/EpisodeTracker";
 import {
   generateEpisodeGuideContent,
   generateMetaTitle,
@@ -109,6 +110,13 @@ export default async function EpisodesPage({ params }: Props) {
       <p className="text-gray-400 text-lg mb-8">
         All {anime.totalEpisodes} episodes with filler markers
       </p>
+
+      {/* Episode Tracker */}
+      <EpisodeTracker
+        animeSlug={anime.slug}
+        totalEpisodes={anime.totalEpisodes || anime.episodes.length}
+        episodes={anime.episodes.map((ep) => ({ episodeNumber: ep.episodeNumber, title: ep.title }))}
+      />
 
       {/* Content */}
       <article className="prose prose-invert max-w-none mb-8">

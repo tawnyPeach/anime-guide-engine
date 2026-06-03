@@ -1,6 +1,7 @@
 import Link from "next/link";
 import SearchBar from "./SearchBar";
 import MobileNav from "./MobileNav";
+import ThemeToggle from "./ThemeToggle";
 
 function getCurrentSeasonSlug(): string {
   const now = new Date();
@@ -31,7 +32,7 @@ export default function Header() {
           <div className="hidden md:flex flex-1 justify-center px-6">
             <SearchBar />
           </div>
-          <nav className="hidden md:flex items-center space-x-6 flex-shrink-0">
+          <nav className="hidden md:flex items-center space-x-4 flex-shrink-0">
             <Link
               href="/top/most-popular"
               className="nav-link text-gray-300 hover:text-white transition-colors text-sm"
@@ -51,23 +52,21 @@ export default function Header() {
               Action
             </Link>
             <Link
-              href="/genre/romance"
+              href="/blog"
               className="nav-link text-gray-300 hover:text-white transition-colors text-sm"
             >
-              Romance
+              Blog
             </Link>
             <Link
-              href="/genre/fantasy"
-              className="nav-link text-gray-300 hover:text-white transition-colors text-sm"
+              href="/bookmarks"
+              className="text-gray-300 hover:text-pink-400 transition-colors"
+              aria-label="Bookmarks"
             >
-              Fantasy
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
             </Link>
-            <Link
-              href="/year/2024"
-              className="nav-link text-gray-300 hover:text-white transition-colors text-sm"
-            >
-              2024 Anime
-            </Link>
+            <ThemeToggle />
           </nav>
           <MobileNav />
         </div>

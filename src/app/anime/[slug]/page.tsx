@@ -5,7 +5,12 @@ import Image from "next/image";
 import prisma from "@/lib/prisma";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdBanner from "@/components/AdBanner";
+import BookmarkButton from "@/components/BookmarkButton";
+import ShareButtons from "@/components/ShareButtons";
+import Comments from "@/components/Comments";
 import { generateMetaTitle, generateMetaDescription } from "@/lib/content-generator";
+
+const BLUR_PLACEHOLDER = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAOCAYAAAAWo42rAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAbElEQVQoz2NkYPj/n4EBCxg1atR/BgYGRnwKGRgYGP7//8+Irhgbmx4dNWrUf0ZsLiTCRkYmBgYGhv+MDAzYXPgfi04kVY3EYxI+P+BQiO4mYhXi9AMxCsnlB7I4Aas7cQXBf1xuxJcwAHq0RckiXeZJAAAAAElFTkSuQmCC";
 
 export const revalidate = 86400; // ISR: revalidate daily
 
@@ -98,6 +103,8 @@ export default async function AnimePage({ params }: Props) {
                 fill
                 className="object-cover"
                 priority
+                placeholder="blur"
+                blurDataURL={BLUR_PLACEHOLDER}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-500">
@@ -109,12 +116,18 @@ export default async function AnimePage({ params }: Props) {
 
         {/* Info */}
         <div className="flex-1">
-          <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">
-            {displayTitle}
-          </h1>
+          <div className="flex items-start justify-between gap-4 mb-2">
+            <h1 className="text-3xl md:text-4xl font-bold gradient-text">
+              {displayTitle}
+            </h1>
+            <BookmarkButton anime={{ id: anime.id, slug: anime.slug, title: displayTitle, coverImage: anime.coverImage }} />
+          </div>
           {anime.titleEnglish && anime.title !== anime.titleEnglish && (
-            <p className="text-gray-400 text-lg mb-4">{anime.title}</p>
+            <p className="text-gray-400 text-lg mb-2">{anime.title}</p>
           )}
+          <div className="mb-4">
+            <ShareButtons url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://animeguideengine.com'}/anime/${anime.slug}`} title={`${displayTitle} - Anime Guide`} />
+          </div>
 
           {/* Metadata */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
@@ -394,6 +407,8 @@ export default async function AnimePage({ params }: Props) {
       </section>
 
       <AdBanner className="mb-8" />
+
+      <Comments />
     </div>
   );
 }

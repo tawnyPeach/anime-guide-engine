@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
+import ThemeProvider from "@/components/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -63,12 +64,14 @@ export default function RootLayout({
         )}
       </head>
       <body className={`${inter.className} bg-[#0a0a1a] text-gray-100 min-h-screen flex flex-col`}>
-        {/* Background gradient mesh */}
-        <div className="fixed inset-0 gradient-mesh-bg -z-10" aria-hidden="true" />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <BackToTop />
+        <ThemeProvider>
+          {/* Background gradient mesh */}
+          <div className="fixed inset-0 gradient-mesh-bg -z-10" aria-hidden="true" />
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <BackToTop />
+        </ThemeProvider>
       </body>
     </html>
   );

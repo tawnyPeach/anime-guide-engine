@@ -4,6 +4,7 @@ import Link from "next/link";
 import prisma from "@/lib/prisma";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdBanner from "@/components/AdBanner";
+import ShareButtons from "@/components/ShareButtons";
 import {
   generateFillerPageContent,
   generateMetaTitle,
@@ -155,9 +156,12 @@ export default async function FillerListPage({ params }: Props) {
       <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
         {displayTitle} Filler List
       </h1>
-      <p className="text-gray-400 text-lg mb-8">
+      <p className="text-gray-400 text-lg mb-4">
         Complete filler episode guide — know which episodes to skip
       </p>
+      <div className="mb-8">
+        <ShareButtons url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://animeguideengine.com'}/anime/${slug}/filler-list`} title={`${displayTitle} Filler List`} />
+      </div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

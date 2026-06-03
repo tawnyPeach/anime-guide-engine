@@ -1,6 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
 
+// A tiny 10x14 purple/dark gradient placeholder image (base64 encoded)
+const BLUR_PLACEHOLDER = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAOCAYAAAAWo42rAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAbElEQVQoz2NkYPj/n4EBCxg1atR/BgYGRnwKGRgYGP7//8+Irhgbmx4dNWrUf0ZsLiTCRkYmBgYGhv+MDAzYXPgfi04kVY3EYxI+P+BQiO4mYhXi9AMxCsnlB7I4Aas7cQXBf1xuxJcwAHq0RckiXeZJAAAAAElFTkSuQmCC";
+
 interface AnimeCardProps {
   title: string;
   titleEnglish?: string | null;
@@ -37,6 +40,8 @@ export default function AnimeCard({
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
+              placeholder="blur"
+              blurDataURL={BLUR_PLACEHOLDER}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-500">
