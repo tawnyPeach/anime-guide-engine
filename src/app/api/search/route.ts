@@ -2,11 +2,14 @@ import prisma from "@/lib/prisma";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const q = searchParams.get("q")?.trim() ?? "";
+  let q = searchParams.get("q")?.trim() ?? "";
 
   if (q.length < 2) {
     return Response.json({ results: [] });
   }
+
+  // Cap query length at 200 characters
+  q = q.slice(0, 200);
 
   const results = await prisma.anime.findMany({
     where: {

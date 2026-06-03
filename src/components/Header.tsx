@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SearchBar from "./SearchBar";
+import MobileNav from "./MobileNav";
 
 export default function Header() {
   return (
@@ -48,6 +49,7 @@ export default function Header() {
               2024 Anime
             </Link>
           </nav>
+          <MobileNav />
         </div>
         {/* Mobile search bar */}
         <div className="md:hidden pb-3">

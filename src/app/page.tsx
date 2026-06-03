@@ -26,7 +26,6 @@ export default async function HomePage() {
   });
 
   const totalAnime = await prisma.anime.count();
-  const totalPopular = await prisma.anime.count();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -127,7 +126,7 @@ export default async function HomePage() {
           ))}
         </div>
         <div className="mt-8">
-          <LoadMore initialCount={20} total={totalPopular} sort="popularity" />
+          <LoadMore initialCount={20} total={totalAnime} sort="popularity" />
         </div>
       </section>
 

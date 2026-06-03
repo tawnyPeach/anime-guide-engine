@@ -23,6 +23,7 @@ export default function SearchBar() {
   const [hasSearched, setHasSearched] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Debounced search
   useEffect(() => {
@@ -35,20 +36,38 @@ export default function SearchBar() {
 
     setIsLoading(true);
     const timeout = setTimeout(async () => {
+      // Abort any previous in-flight request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(query.trim())}`);
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query.trim())}`, {
+          signal: controller.signal,
+        });
         const data = await res.json();
         setResults(data.results);
         setHasSearched(true);
         setIsOpen(true);
-      } catch {
+      } catch (e) {
+        if (e instanceof DOMException && e.name === "AbortError") {
+          return;
+        }
         setResults([]);
       } finally {
         setIsLoading(false);
       }
     }, 300);
 
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(timeout);
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+    };
   }, [query]);
 
   // Close on outside click
