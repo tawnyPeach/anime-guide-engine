@@ -365,6 +365,11 @@ function WatchOrderCard({
   const formatColor = getFormatColor(entry.format);
   const formatBadge = getFormatBadgeStyle(entry.format);
 
+  // Movie label logic: SEQUEL/PREQUEL movies are "Canon", others are "Optional"
+  const movieLabel = entry.format === "MOVIE"
+    ? (entry.relationType === "SEQUEL" || entry.relationType === "PREQUEL" ? "Canon" : "Optional")
+    : null;
+
   const cardContent = (
     <div
       className={`relative flex items-start gap-4 ${
@@ -412,6 +417,15 @@ function WatchOrderCard({
               {isSupplementary && (
                 <span className="text-xs px-2 py-0.5 rounded-md bg-gray-700/50 text-gray-400 border border-gray-600/30">
                   Optional
+                </span>
+              )}
+              {movieLabel && (
+                <span className={`text-xs px-2 py-0.5 rounded-md border font-medium ${
+                  movieLabel === "Canon"
+                    ? "bg-green-600/20 text-green-400 border-green-700/30"
+                    : "bg-yellow-600/20 text-yellow-400 border-yellow-700/30"
+                }`}>
+                  {movieLabel}
                 </span>
               )}
             </div>

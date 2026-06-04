@@ -234,6 +234,23 @@ export async function buildFullWatchOrder(
       };
     });
 
+  // Ensure the current anime appears in the main order
+  if (mainEntries.length > 0 && !mainEntries.some((e) => e.isCurrentAnime)) {
+    const node = animeMap.get(animeId);
+    if (node) {
+      mainEntries.unshift({
+        animeId: node.id,
+        title: node.titleEnglish || node.title,
+        slug: node.slug,
+        format: node.format,
+        totalEpisodes: node.totalEpisodes,
+        seasonYear: node.seasonYear,
+        relationType: "CURRENT",
+        isCurrentAnime: true,
+      });
+    }
+  }
+
   // Supplementary: entries that are ONLY in supplementary (not in main chain)
   const mainIdSet = new Set(mainOrder);
   const suppEntries: WatchOrderEntry[] = [];

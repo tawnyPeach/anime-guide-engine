@@ -316,24 +316,23 @@ function getGenreDescription(genre: string): string {
 
 // SEO Meta generators
 export function generateMetaTitle(type: string, anime?: AnimeData, extra?: string): string {
-  const siteName = "Anime Guide Engine";
   switch (type) {
     case "filler":
-      return `${anime?.titleEnglish || anime?.title} Filler List | Episodes to Skip | ${siteName}`;
+      return `${anime?.titleEnglish || anime?.title} Filler List - Episodes to Skip`;
     case "watch-order":
-      return `${anime?.titleEnglish || anime?.title} Watch Order Guide (${new Date().getFullYear()}) | ${siteName}`;
+      return `${anime?.titleEnglish || anime?.title} Watch Order Guide (${new Date().getFullYear()})`;
     case "episodes":
-      return `${anime?.titleEnglish || anime?.title} Episode Guide - All ${anime?.totalEpisodes} Episodes | ${siteName}`;
+      return `${anime?.titleEnglish || anime?.title} Episode Guide - All ${anime?.totalEpisodes} Episodes`;
     case "anime":
-      return `${anime?.titleEnglish || anime?.title} - Synopsis, Episodes & Guides | ${siteName}`;
+      return `${anime?.titleEnglish || anime?.title} - Synopsis, Episodes & Guides`;
     case "genre":
-      return `Best ${extra} Anime - Top Series Ranked | ${siteName}`;
+      return `Best ${extra} Anime - Top Series Ranked`;
     case "year":
-      return `Best Anime of ${extra} - Top Series That Year | ${siteName}`;
+      return `Best Anime of ${extra}`;
     case "anime-like":
-      return `Anime Like ${anime?.titleEnglish || anime?.title} - Similar Recommendations | ${siteName}`;
+      return `Anime Like ${anime?.titleEnglish || anime?.title} - Similar Recommendations`;
     default:
-      return siteName;
+      return "AniYume";
   }
 }
 

@@ -7,7 +7,6 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import AdBanner from "@/components/AdBanner";
 import BookmarkButton from "@/components/BookmarkButton";
 import ShareButtons from "@/components/ShareButtons";
-import Comments from "@/components/Comments";
 import { generateMetaTitle, generateMetaDescription } from "@/lib/content-generator";
 
 const BLUR_PLACEHOLDER = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAOCAYAAAAWo42rAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAbElEQVQoz2NkYPj/n4EBCxg1atR/BgYGRnwKGRgYGP7//8+Irhgbmx4dNWrUf0ZsLiTCRkYmBgYGhv+MDAzYXPgfi04kVY3EYxI+P+BQiO4mYhXi9AMxCsnlB7I4Aas7cQXBf1xuxJcwAHq0RckiXeZJAAAAAElFTkSuQmCC";
@@ -126,7 +125,7 @@ export default async function AnimePage({ params }: Props) {
             <p className="text-muted-foreground text-lg mb-2">{anime.title}</p>
           )}
           <div className="mb-4">
-            <ShareButtons url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://aniyume.net'}/anime/${anime.slug}`} title={`${displayTitle} - AniYume`} />
+            <ShareButtons url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.aniyume.net'}/anime/${anime.slug}`} title={`${displayTitle} - AniYume`} />
           </div>
 
           {/* Metadata */}
@@ -147,15 +146,20 @@ export default async function AnimePage({ params }: Props) {
             </div>
             <div className="bg-card rounded-xl p-3 border border-border hover:border-primary/40 transition-colors">
               <div className="text-muted-foreground text-xs uppercase">Status</div>
-              <div className="text-foreground font-bold text-lg capitalize">
-                {anime.status?.toLowerCase().replace(/_/g, " ") || "Unknown"}
+              <div className="text-foreground font-bold text-lg">
+                {anime.status
+                  ? anime.status.toLowerCase().replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+                  : "Unknown"}
               </div>
             </div>
             {anime.seasonYear && (
               <div className="bg-card rounded-xl p-3 border border-border hover:border-primary/40 transition-colors">
                 <div className="text-muted-foreground text-xs uppercase">Year</div>
                 <div className="text-foreground font-bold text-lg">
-                  {anime.season?.toLowerCase()} {anime.seasonYear}
+                  {anime.season
+                    ? anime.season.charAt(0).toUpperCase() + anime.season.slice(1).toLowerCase()
+                    : ""}{" "}
+                  {anime.seasonYear}
                 </div>
               </div>
             )}
@@ -168,7 +172,12 @@ export default async function AnimePage({ params }: Props) {
             {studios.length > 0 && (
               <div className="bg-card rounded-xl p-3 border border-border hover:border-primary/40 transition-colors">
                 <div className="text-muted-foreground text-xs uppercase">Studio</div>
-                <div className="text-foreground font-bold text-lg">{studios[0]}</div>
+                <Link
+                  href={`/studio/${studios[0].toLowerCase().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-")}`}
+                  className="text-foreground font-bold text-lg hover:text-primary transition-colors"
+                >
+                  {studios[0]}
+                </Link>
               </div>
             )}
           </div>
@@ -276,7 +285,12 @@ export default async function AnimePage({ params }: Props) {
           (link) => link.type === "STREAMING" || Object.keys(streamingSites).some((site) => link.site?.includes(site))
         );
 
-        if (streamingLinks.length === 0) return null;
+        // Deduplicate by site name
+        const uniqueStreamingLinks = streamingLinks.filter(
+          (link, index, arr) => arr.findIndex((l) => l.site === link.site) === index
+        );
+
+        if (uniqueStreamingLinks.length === 0) return null;
 
         return (
           <section className="mb-8">
@@ -284,7 +298,7 @@ export default async function AnimePage({ params }: Props) {
               Where to Watch {displayTitle}
             </h2>
             <div className="flex flex-wrap gap-3">
-              {streamingLinks.map((link, idx) => {
+              {uniqueStreamingLinks.map((link, idx) => {
                 const siteKey = Object.keys(streamingSites).find((s) => link.site?.includes(s));
                 const siteInfo = siteKey ? streamingSites[siteKey] : null;
 
@@ -407,8 +421,6 @@ export default async function AnimePage({ params }: Props) {
       </section>
 
       <AdBanner className="mb-8" />
-
-      <Comments />
     </div>
   );
 }

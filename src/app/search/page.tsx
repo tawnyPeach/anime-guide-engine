@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import SearchPageClient from "@/components/SearchPageClient";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://aniyume.net";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.aniyume.net";
 
 export const metadata: Metadata = {
-  title: "Search Anime - Find Your Next Watch | AniYume",
+  title: "Search Anime",
   description:
     "Search and discover anime with advanced filters. Filter by genre, year, score, format, and airing status to find your perfect anime.",
   alternates: {

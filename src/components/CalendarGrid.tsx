@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { AiringEntry } from "@/lib/calendar";
 
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -67,7 +68,23 @@ export default function CalendarGrid({ entries }: CalendarGridProps) {
 
   const schedule = useMemo(() => groupByLocalDay(entries), [entries]);
 
-  const dayEntries: AiringEntry[] = schedule[selectedDay] || [];
+  const FORMAT_PRIORITY: Record<string, number> = {
+    TV: 0,
+    MOVIE: 1,
+    OVA: 2,
+    ONA: 3,
+    TV_SHORT: 4,
+  };
+
+  const dayEntries: AiringEntry[] = useMemo(() => {
+    const raw = schedule[selectedDay] || [];
+    return [...raw].sort((a, b) => {
+      const priorityA = FORMAT_PRIORITY[a.media.format || ''] ?? 99;
+      const priorityB = FORMAT_PRIORITY[b.media.format || ''] ?? 99;
+      if (priorityA !== priorityB) return priorityA - priorityB;
+      return b.episode - a.episode;
+    });
+  }, [schedule, selectedDay]);
 
   return (
     <div>
@@ -105,8 +122,9 @@ export default function CalendarGrid({ entries }: CalendarGridProps) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {dayEntries.map((entry, idx) => (
-            <div
+            <Link
               key={`${entry.media.id}-${entry.episode}-${idx}`}
+              href={`/search?q=${encodeURIComponent(entry.media.title.english || entry.media.title.romaji)}`}
               className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group"
             >
               <div className="flex gap-3 p-3">
@@ -153,7 +171,7 @@ export default function CalendarGrid({ entries }: CalendarGridProps) {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

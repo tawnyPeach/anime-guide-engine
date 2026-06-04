@@ -2,9 +2,18 @@ import Link from "next/link";
 import Newsletter from "./Newsletter";
 
 const genres = ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Romance", "Sci-Fi", "Thriller"];
-const years = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
+
+function getFooterYears(): number[] {
+  const currentYear = new Date().getFullYear();
+  const years: number[] = [];
+  for (let y = currentYear; y >= currentYear - 6; y--) {
+    years.push(y);
+  }
+  return years;
+}
 
 export default function Footer() {
+  const years = getFooterYears();
   return (
     <footer className="relative border-t border-border mt-16 bg-card">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

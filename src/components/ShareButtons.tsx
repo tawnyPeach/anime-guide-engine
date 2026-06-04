@@ -1,14 +1,24 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+
 interface ShareButtonsProps {
   url: string;
   title: string;
 }
 
 export default function ShareButtons({ url, title }: ShareButtonsProps) {
-  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
-  const redditUrl = `https://reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`;
+  const [shareUrl, setShareUrl] = useState(url);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setShareUrl(window.location.href);
+    }
+  }, []);
+
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(shareUrl)}`;
+  const redditUrl = `https://reddit.com/submit?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(title)}`;
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`;
 
   return (
     <div className="flex items-center gap-2">

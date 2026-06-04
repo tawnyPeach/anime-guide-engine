@@ -33,19 +33,28 @@ export default async function HomePage() {
 
     const fillerRaw = await prisma.anime.findMany({
       where: { fillerMapping: { isNot: null } },
-      include: { fillerMapping: { select: { fillerPercent: true } } },
+      include: { fillerMapping: { select: { fillerPercent: true, fillerEpisodes: true, mixedEpisodes: true } } },
       orderBy: { popularity: "desc" },
     });
 
-    fillerAnime = fillerRaw.map((anime) => ({
-      id: anime.id,
-      title: anime.title,
-      titleEnglish: anime.titleEnglish,
-      slug: anime.slug,
-      coverImage: anime.coverImage,
-      totalEpisodes: anime.totalEpisodes,
-      fillerPercent: anime.fillerMapping?.fillerPercent || 0,
-    }));
+    fillerAnime = fillerRaw.map((anime) => {
+      let episodeCount = anime.totalEpisodes;
+      if (episodeCount === 0 && anime.fillerMapping) {
+        const filler: number[] = JSON.parse(anime.fillerMapping.fillerEpisodes || '[]');
+        const mixed: number[] = JSON.parse(anime.fillerMapping.mixedEpisodes || '[]');
+        const allEps = [...filler, ...mixed];
+        episodeCount = allEps.length > 0 ? Math.max(...allEps) : 0;
+      }
+      return {
+        id: anime.id,
+        title: anime.title,
+        titleEnglish: anime.titleEnglish,
+        slug: anime.slug,
+        coverImage: anime.coverImage,
+        totalEpisodes: episodeCount,
+        fillerPercent: anime.fillerMapping?.fillerPercent || 0,
+      };
+    });
 
     recentAnime = await prisma.anime.findMany({
       where: { seasonYear: { gte: 2023 } },
