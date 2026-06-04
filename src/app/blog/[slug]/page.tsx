@@ -42,16 +42,16 @@ function markdownToHtml(markdown: string): string {
   let html = markdown;
 
   // Headings
-  html = html.replace(/^### (.+)$/gm, '<h3 class="text-xl font-bold text-white mt-6 mb-3">$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2 class="text-2xl font-bold text-white mt-8 mb-4">$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1 class="text-3xl font-bold text-white mt-8 mb-4">$1</h1>');
+  html = html.replace(/^### (.+)$/gm, '<h3 class="text-xl font-bold mt-6 mb-3">$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2 class="text-2xl font-bold mt-8 mb-4">$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1 class="text-3xl font-bold mt-8 mb-4">$1</h1>');
 
   // Bold and italic
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>');
   html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
 
   // Links
-  html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-purple-400 hover:text-purple-300 underline">$1</a>');
+  html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-primary hover:text-primary/80 underline">$1</a>');
 
   // Tables (simple)
   html = html.replace(/^\|(.+)\|$/gm, (match) => {
@@ -59,16 +59,16 @@ function markdownToHtml(markdown: string): string {
     if (cells.every((c) => c.trim().match(/^[-:]+$/))) {
       return ''; // Skip separator row
     }
-    const row = cells.map((c) => `<td class="px-3 py-2 border border-anime-border">${c.trim()}</td>`).join('');
+    const row = cells.map((c) => `<td class="px-3 py-2 border border-border">${c.trim()}</td>`).join('');
     return `<tr>${row}</tr>`;
   });
 
   // Unordered lists
-  html = html.replace(/^- (.+)$/gm, '<li class="text-gray-300 ml-4">$1</li>');
+  html = html.replace(/^- (.+)$/gm, '<li class="ml-4">$1</li>');
   html = html.replace(/(<li[^>]*>.*<\/li>\n?)+/g, (match) => `<ul class="list-disc pl-4 mb-4 space-y-1">${match}</ul>`);
 
   // Ordered lists
-  html = html.replace(/^\d+\. (.+)$/gm, '<li class="text-gray-300 ml-4">$1</li>');
+  html = html.replace(/^\d+\. (.+)$/gm, '<li class="ml-4">$1</li>');
 
   // Paragraphs (lines that are not already HTML)
   const lines = html.split('\n');
@@ -80,7 +80,7 @@ function markdownToHtml(markdown: string): string {
     } else if (trimmed.startsWith('<')) {
       result.push(line);
     } else {
-      result.push(`<p class="text-gray-300 leading-relaxed mb-4">${trimmed}</p>`);
+      result.push(`<p class="leading-relaxed mb-4">${trimmed}</p>`);
     }
   }
 
@@ -129,7 +129,7 @@ export default async function BlogPostPage({ params }: Props) {
   const htmlContent = markdownToHtml(body);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <Breadcrumbs
         items={[
           { label: 'Home', href: '/' },
@@ -143,7 +143,7 @@ export default async function BlogPostPage({ params }: Props) {
           <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-4">
             {frontmatter.title || slug.replace(/-/g, ' ')}
           </h1>
-          <div className="flex items-center gap-3 text-sm text-gray-400">
+          <div className="flex items-center gap-3 text-sm text-muted-foreground">
             {frontmatter.date && (
               <time dateTime={frontmatter.date}>
                 {new Date(frontmatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
@@ -154,15 +154,15 @@ export default async function BlogPostPage({ params }: Props) {
         </header>
 
         <div
-          className="prose prose-invert max-w-none"
+          className="prose prose-themed max-w-none"
           dangerouslySetInnerHTML={{ __html: htmlContent }}
         />
       </article>
 
-      <div className="mt-12 pt-8 border-t border-anime-border">
+      <div className="mt-12 pt-8 border-t border-border">
         <Link
           href="/blog"
-          className="text-purple-400 hover:text-purple-300 transition-colors"
+          className="text-primary hover:text-primary/80 transition-colors"
         >
           ← Back to all posts
         </Link>

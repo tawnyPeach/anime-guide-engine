@@ -65,18 +65,18 @@ export default function FillerCarousel({ items }: FillerCarouselProps) {
           <Link
             key={anime.id}
             href={`/anime/${anime.slug}/filler-list`}
-            className="flex-shrink-0 snap-start w-[260px] bg-card rounded-xl overflow-hidden border border-border hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group"
+            className="flex-shrink-0 snap-start w-[300px] bg-card rounded-xl overflow-hidden border border-border hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group"
           >
-            <div className="flex h-[100px]">
+            <div className="flex h-[130px]">
               {/* Cover Image */}
-              <div className="relative w-[70px] h-full flex-shrink-0 bg-muted">
+              <div className="relative w-[90px] h-full flex-shrink-0 bg-muted">
                 {anime.coverImage ? (
                   <Image
                     src={anime.coverImage}
                     alt={`${anime.titleEnglish || anime.title} cover`}
                     fill
                     className="object-cover"
-                    sizes="70px"
+                    sizes="90px"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-muted-foreground">
@@ -87,7 +87,7 @@ export default function FillerCarousel({ items }: FillerCarouselProps) {
 
               {/* Content */}
               <div className="flex-1 p-3 flex flex-col justify-between min-w-0">
-                <h3 className="text-foreground font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors duration-200">
+                <h3 className="text-foreground font-semibold text-base line-clamp-2 group-hover:text-primary transition-colors duration-200">
                   {anime.titleEnglish || anime.title}
                 </h3>
                 <div className="flex items-center justify-between text-xs">

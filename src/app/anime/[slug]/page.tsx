@@ -83,7 +83,7 @@ export default async function AnimePage({ params }: Props) {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <Breadcrumbs
         items={[
           { label: "Anime", href: "/" },
@@ -95,7 +95,7 @@ export default async function AnimePage({ params }: Props) {
       <div className="flex flex-col md:flex-row gap-8 mb-8">
         {/* Cover Image */}
         <div className="w-full md:w-64 flex-shrink-0">
-          <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-anime-card border border-anime-border glow-purple">
+          <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-card border border-border glow-primary">
             {anime.coverImage ? (
               <Image
                 src={anime.coverImage}
@@ -107,7 +107,7 @@ export default async function AnimePage({ params }: Props) {
                 blurDataURL={BLUR_PLACEHOLDER}
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-500">
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                 <span className="text-6xl">🎬</span>
               </div>
             )}
@@ -123,7 +123,7 @@ export default async function AnimePage({ params }: Props) {
             <BookmarkButton anime={{ id: anime.id, slug: anime.slug, title: displayTitle, coverImage: anime.coverImage }} />
           </div>
           {anime.titleEnglish && anime.title !== anime.titleEnglish && (
-            <p className="text-gray-400 text-lg mb-2">{anime.title}</p>
+            <p className="text-muted-foreground text-lg mb-2">{anime.title}</p>
           )}
           <div className="mb-4">
             <ShareButtons url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://animeguideengine.com'}/anime/${anime.slug}`} title={`${displayTitle} - Anime Guide`} />
@@ -131,44 +131,44 @@ export default async function AnimePage({ params }: Props) {
 
           {/* Metadata */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-anime-card rounded-xl p-3 border border-anime-border hover:border-purple-700/40 transition-colors">
-              <div className="text-gray-400 text-xs uppercase">Episodes</div>
-              <div className="text-white font-bold text-lg">
+            <div className="bg-card rounded-xl p-3 border border-border hover:border-primary/40 transition-colors">
+              <div className="text-muted-foreground text-xs uppercase">Episodes</div>
+              <div className="text-foreground font-bold text-lg">
                 {anime.totalEpisodes || "?"}
               </div>
             </div>
-            <div className="bg-anime-card rounded-xl p-3 border border-anime-border hover:border-blue-700/40 transition-colors">
-              <div className="text-gray-400 text-xs uppercase">Score</div>
-              <div className="text-white font-bold text-lg">
+            <div className="bg-card rounded-xl p-3 border border-border hover:border-primary/40 transition-colors">
+              <div className="text-muted-foreground text-xs uppercase">Score</div>
+              <div className="text-foreground font-bold text-lg">
                 {anime.averageScore
                   ? `${(anime.averageScore / 10).toFixed(1)}/10`
                   : "N/A"}
               </div>
             </div>
-            <div className="bg-anime-card rounded-xl p-3 border border-anime-border hover:border-cyan-700/40 transition-colors">
-              <div className="text-gray-400 text-xs uppercase">Status</div>
-              <div className="text-white font-bold text-lg capitalize">
+            <div className="bg-card rounded-xl p-3 border border-border hover:border-primary/40 transition-colors">
+              <div className="text-muted-foreground text-xs uppercase">Status</div>
+              <div className="text-foreground font-bold text-lg capitalize">
                 {anime.status?.toLowerCase().replace(/_/g, " ") || "Unknown"}
               </div>
             </div>
             {anime.seasonYear && (
-              <div className="bg-anime-card rounded-xl p-3 border border-anime-border hover:border-pink-700/40 transition-colors">
-                <div className="text-gray-400 text-xs uppercase">Year</div>
-                <div className="text-white font-bold text-lg">
+              <div className="bg-card rounded-xl p-3 border border-border hover:border-primary/40 transition-colors">
+                <div className="text-muted-foreground text-xs uppercase">Year</div>
+                <div className="text-foreground font-bold text-lg">
                   {anime.season?.toLowerCase()} {anime.seasonYear}
                 </div>
               </div>
             )}
             {anime.format && (
-              <div className="bg-anime-card rounded-xl p-3 border border-anime-border hover:border-purple-700/40 transition-colors">
-                <div className="text-gray-400 text-xs uppercase">Format</div>
-                <div className="text-white font-bold text-lg">{anime.format}</div>
+              <div className="bg-card rounded-xl p-3 border border-border hover:border-primary/40 transition-colors">
+                <div className="text-muted-foreground text-xs uppercase">Format</div>
+                <div className="text-foreground font-bold text-lg">{anime.format}</div>
               </div>
             )}
             {studios.length > 0 && (
-              <div className="bg-anime-card rounded-xl p-3 border border-anime-border hover:border-blue-700/40 transition-colors">
-                <div className="text-gray-400 text-xs uppercase">Studio</div>
-                <div className="text-white font-bold text-lg">{studios[0]}</div>
+              <div className="bg-card rounded-xl p-3 border border-border hover:border-primary/40 transition-colors">
+                <div className="text-muted-foreground text-xs uppercase">Studio</div>
+                <div className="text-foreground font-bold text-lg">{studios[0]}</div>
               </div>
             )}
           </div>
@@ -180,7 +180,7 @@ export default async function AnimePage({ params }: Props) {
                 <Link
                   key={genre}
                   href={`/genre/${genre.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
-                  className="bg-gradient-to-r from-purple-900/40 to-blue-900/40 text-purple-300 px-3 py-1 rounded-full text-sm border border-purple-700/30 hover:border-purple-500/50 hover:text-purple-200 transition-all duration-200"
+                  className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm border border-primary/20 hover:border-primary/50 hover:bg-primary/20 transition-all duration-200"
                 >
                   {genre}
                 </Link>
@@ -190,8 +190,8 @@ export default async function AnimePage({ params }: Props) {
 
           {/* Description */}
           {anime.description && (
-            <div className="prose prose-invert max-w-none">
-              <p className="text-gray-300 leading-relaxed">
+            <div className="prose prose-themed max-w-none">
+              <p className="text-muted-foreground leading-relaxed">
                 {anime.description}
               </p>
             </div>
@@ -203,19 +203,19 @@ export default async function AnimePage({ params }: Props) {
 
       {/* Guide Links */}
       <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">
+        <h2 className="text-2xl font-bold text-foreground mb-4">
           Available Guides for {displayTitle}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {anime.fillerMapping && (
             <Link
               href={`/anime/${anime.slug}/filler-list`}
-              className="bg-gradient-to-br from-red-900/30 to-anime-card border border-red-800/40 rounded-xl p-6 hover:border-red-500/60 hover:glow-card-hover transition-all duration-300 group"
+              className="bg-gradient-to-br from-red-900/30 to-card border border-red-800/40 rounded-xl p-6 hover:border-red-500/60 hover:glow-card-hover transition-all duration-300 group"
             >
-              <h3 className="text-white font-bold text-lg mb-2 group-hover:text-red-300 transition-colors">
+              <h3 className="text-foreground font-bold text-lg mb-2 group-hover:text-red-400 transition-colors">
                 🎯 Filler Guide
               </h3>
-              <p className="text-gray-400 text-sm">
+              <p className="text-muted-foreground text-sm">
                 {anime.fillerMapping.totalFiller} filler episodes identified (
                 {Math.round(anime.fillerMapping.fillerPercent)}% of total)
               </p>
@@ -224,12 +224,12 @@ export default async function AnimePage({ params }: Props) {
           {anime.totalEpisodes > 0 && (
             <Link
               href={`/anime/${anime.slug}/episodes`}
-              className="bg-gradient-to-br from-blue-900/30 to-anime-card border border-blue-800/40 rounded-xl p-6 hover:border-blue-500/60 hover:glow-card-hover transition-all duration-300 group"
+              className="bg-gradient-to-br from-blue-900/30 to-card border border-blue-800/40 rounded-xl p-6 hover:border-blue-500/60 hover:glow-card-hover transition-all duration-300 group"
             >
-              <h3 className="text-white font-bold text-lg mb-2 group-hover:text-blue-300 transition-colors">
+              <h3 className="text-foreground font-bold text-lg mb-2 group-hover:text-blue-400 transition-colors">
                 📋 Episode Guide
               </h3>
-              <p className="text-gray-400 text-sm">
+              <p className="text-muted-foreground text-sm">
                 Complete list of all {anime.totalEpisodes} episodes with details
               </p>
             </Link>
@@ -237,12 +237,12 @@ export default async function AnimePage({ params }: Props) {
           {anime.relationsFrom.length > 0 && (
             <Link
               href={`/anime/${anime.slug}/watch-order`}
-              className="bg-gradient-to-br from-purple-900/30 to-anime-card border border-purple-800/40 rounded-xl p-6 hover:border-purple-500/60 hover:glow-card-hover transition-all duration-300 group"
+              className="bg-gradient-to-br from-purple-900/30 to-card border border-purple-800/40 rounded-xl p-6 hover:border-purple-500/60 hover:glow-card-hover transition-all duration-300 group"
             >
-              <h3 className="text-white font-bold text-lg mb-2 group-hover:text-purple-300 transition-colors">
+              <h3 className="text-foreground font-bold text-lg mb-2 group-hover:text-purple-400 transition-colors">
                 📑 Watch Order
               </h3>
-              <p className="text-gray-400 text-sm">
+              <p className="text-muted-foreground text-sm">
                 {anime.relationsFrom.length} related entries in the franchise
               </p>
             </Link>
@@ -280,7 +280,7 @@ export default async function AnimePage({ params }: Props) {
 
         return (
           <section className="mb-8">
-            <h2 className="text-2xl font-bold text-white mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               Where to Watch {displayTitle}
             </h2>
             <div className="flex flex-wrap gap-3">
@@ -313,18 +313,18 @@ export default async function AnimePage({ params }: Props) {
       {/* Related Anime */}
       {anime.relationsFrom.length > 0 && (
         <section className="mb-8">
-          <h2 className="text-2xl font-bold text-white mb-4">Related Anime</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-4">Related Anime</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {anime.relationsFrom.map((relation) => (
               <Link
                 key={relation.id}
                 href={`/anime/${relation.toAnime.slug}`}
-                className="bg-anime-card rounded-xl p-4 border border-anime-border hover:border-purple-700/40 hover:bg-anime-card/80 transition-all duration-200 flex items-center gap-4"
+                className="bg-card rounded-xl p-4 border border-border hover:border-primary/40 hover:bg-card/80 transition-all duration-200 flex items-center gap-4"
               >
-                <span className="text-xs bg-gradient-to-r from-purple-900/50 to-blue-900/50 text-purple-300 px-2 py-1 rounded-md border border-purple-800/30 uppercase">
+                <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-md border border-primary/20 uppercase">
                   {relation.relationType.replace(/_/g, " ")}
                 </span>
-                <span className="text-white font-medium">
+                <span className="text-foreground font-medium">
                   {relation.toAnime.titleEnglish || relation.toAnime.title}
                 </span>
               </Link>
@@ -337,12 +337,12 @@ export default async function AnimePage({ params }: Props) {
       {similarAnime.length > 0 && (
         <section className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-bold text-foreground">
               Anime Like {displayTitle}
             </h2>
             <Link
               href={`/anime-like/${anime.slug}`}
-              className="text-purple-400 hover:text-purple-300 text-sm transition-colors"
+              className="text-primary hover:text-primary/80 text-sm transition-colors"
             >
               View all →
             </Link>
@@ -352,9 +352,9 @@ export default async function AnimePage({ params }: Props) {
               <Link
                 key={similar.id}
                 href={`/anime/${similar.slug}`}
-                className="bg-anime-card rounded-xl p-3 border border-anime-border hover:border-purple-700/40 hover:glow-card-hover transition-all duration-300 text-center"
+                className="bg-card rounded-xl p-3 border border-border hover:border-primary/40 hover:glow-card-hover transition-all duration-300 text-center"
               >
-                <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-gray-800 mb-2">
+                <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-muted mb-2">
                   {similar.coverImage && (
                     <Image
                       src={similar.coverImage}
@@ -365,7 +365,7 @@ export default async function AnimePage({ params }: Props) {
                     />
                   )}
                 </div>
-                <p className="text-white text-xs font-medium line-clamp-2">
+                <p className="text-foreground text-xs font-medium line-clamp-2">
                   {similar.titleEnglish || similar.title}
                 </p>
               </Link>
@@ -376,7 +376,7 @@ export default async function AnimePage({ params }: Props) {
 
       {/* Internal Links */}
       <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">
+        <h2 className="text-2xl font-bold text-foreground mb-4">
           Explore More
         </h2>
         <div className="flex flex-wrap gap-3">
@@ -384,7 +384,7 @@ export default async function AnimePage({ params }: Props) {
             <Link
               key={genre}
               href={`/genre/${genre.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
-              className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-purple-700/40 hover:text-purple-300 text-sm transition-all duration-200"
+              className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
             >
               {genre} Anime
             </Link>
@@ -392,14 +392,14 @@ export default async function AnimePage({ params }: Props) {
           {anime.seasonYear && (
             <Link
               href={`/year/${anime.seasonYear}`}
-              className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-blue-700/40 hover:text-blue-300 text-sm transition-all duration-200"
+              className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
             >
               {anime.seasonYear} Anime
             </Link>
           )}
           <Link
             href={`/anime-like/${anime.slug}`}
-            className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-pink-700/40 hover:text-pink-300 text-sm transition-all duration-200"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
           >
             More Anime Like {displayTitle}
           </Link>

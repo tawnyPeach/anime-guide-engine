@@ -73,7 +73,7 @@ export default function BookmarkButton({ anime }: BookmarkButtonProps) {
       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all duration-200 text-sm ${
         isBookmarked
           ? 'bg-pink-500/20 border-pink-500/50 text-pink-400 hover:bg-pink-500/30'
-          : 'bg-anime-card border-anime-border text-gray-400 hover:border-pink-500/40 hover:text-pink-400'
+          : 'bg-card border-border text-muted-foreground hover:border-pink-500/40 hover:text-pink-400'
       }`}
       aria-label={isBookmarked ? 'Remove from bookmarks' : 'Add to bookmarks'}
     >

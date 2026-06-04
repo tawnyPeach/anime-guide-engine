@@ -34,7 +34,7 @@ export default function MobileNav() {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 glass border-b border-anime-border">
+        <div className="absolute top-full left-0 right-0 glass border-b border-border">
           <nav className="max-w-7xl mx-auto px-4 py-3 flex flex-col space-y-1">
             {navLinks.map((link) => (
               <Link

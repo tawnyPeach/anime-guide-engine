@@ -84,7 +84,7 @@ export default function LoadMore({
 
       {/* Count indicator */}
       <div className="text-center mb-4">
-        <p className="text-gray-400 text-sm">
+        <p className="text-muted-foreground text-sm">
           Showing {initialCount + items.length} of {total} anime
         </p>
       </div>
@@ -95,7 +95,7 @@ export default function LoadMore({
           <button
             onClick={loadMore}
             disabled={loading}
-            className="px-8 py-3 rounded-xl font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-8 py-3 rounded-xl font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <span className="flex items-center gap-2">
@@ -128,7 +128,7 @@ export default function LoadMore({
         </div>
       ) : (
         <div className="text-center">
-          <p className="text-gray-500 text-sm">All anime loaded</p>
+          <p className="text-muted-foreground text-sm">All anime loaded</p>
         </div>
       )}
     </div>

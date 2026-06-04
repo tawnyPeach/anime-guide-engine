@@ -82,15 +82,15 @@ export default function CalendarGrid({ entries }: CalendarGridProps) {
               onClick={() => setSelectedDay(index)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex-shrink-0 ${
                 isSelected
-                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25"
+                  ? "bg-gradient-to-r from-primary to-brand-teal text-primary-foreground shadow-lg"
                   : isToday
-                  ? "bg-purple-900/30 text-purple-300 border border-purple-500/30 hover:border-purple-400/50"
-                  : "bg-anime-card border border-anime-border text-gray-400 hover:text-white hover:border-gray-500"
+                  ? "bg-primary/10 text-primary border border-primary/30 hover:border-primary/50"
+                  : "bg-card border border-border text-muted-foreground hover:text-foreground hover:border-border"
               }`}
             >
               {label}
               {isToday && !isSelected && (
-                <span className="ml-1 w-1.5 h-1.5 bg-purple-400 rounded-full inline-block" />
+                <span className="ml-1 w-1.5 h-1.5 bg-primary rounded-full inline-block" />
               )}
             </button>
           );
@@ -99,7 +99,7 @@ export default function CalendarGrid({ entries }: CalendarGridProps) {
 
       {/* Anime Cards */}
       {dayEntries.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
+        <div className="text-center py-12 text-muted-foreground">
           <p className="text-lg">No anime airing on this day</p>
         </div>
       ) : (
@@ -107,47 +107,47 @@ export default function CalendarGrid({ entries }: CalendarGridProps) {
           {dayEntries.map((entry, idx) => (
             <div
               key={`${entry.media.id}-${entry.episode}-${idx}`}
-              className="bg-anime-card border border-anime-border rounded-xl overflow-hidden hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 group"
+              className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group"
             >
               <div className="flex gap-3 p-3">
                 {/* Cover Image */}
-                <div className="relative w-16 h-22 flex-shrink-0 rounded-lg overflow-hidden">
+                <div className="relative w-20 h-28 flex-shrink-0 rounded-lg overflow-hidden">
                   {entry.media.coverImage?.large ? (
                     <Image
                       src={entry.media.coverImage.large}
                       alt={entry.media.title.english || entry.media.title.romaji}
-                      width={64}
-                      height={88}
+                      width={80}
+                      height={112}
                       className="object-cover w-full h-full rounded-lg"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gray-800 rounded-lg flex items-center justify-center">
-                      <span className="text-gray-600 text-xs">No img</span>
+                    <div className="w-full h-full bg-muted rounded-lg flex items-center justify-center">
+                      <span className="text-muted-foreground text-xs">No img</span>
                     </div>
                   )}
                 </div>
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-medium text-white truncate group-hover:text-purple-300 transition-colors">
+                  <h3 className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
                     {entry.media.title.english || entry.media.title.romaji}
                   </h3>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     Episode {entry.episode}
                     {entry.media.episodes && (
-                      <span className="text-gray-600"> / {entry.media.episodes}</span>
+                      <span className="text-muted-foreground/60"> / {entry.media.episodes}</span>
                     )}
                   </p>
                   {entry.media.format && (
-                    <span className="inline-block mt-1 text-xs px-1.5 py-0.5 rounded bg-purple-900/30 text-purple-300 border border-purple-700/30">
+                    <span className="inline-block mt-1 text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
                       {entry.media.format}
                     </span>
                   )}
                   <div className="mt-2 space-y-0.5">
-                    <p className="text-xs text-blue-400">
+                    <p className="text-xs text-brand-teal">
                       {formatLocalTime(entry.airingAt)}
                     </p>
-                    <p className="text-xs text-emerald-400 font-medium">
+                    <p className="text-xs text-emerald-500 dark:text-emerald-400 font-medium">
                       {formatCountdown(entry.airingAt)}
                     </p>
                   </div>

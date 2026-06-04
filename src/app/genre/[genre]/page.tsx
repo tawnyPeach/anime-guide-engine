@@ -72,7 +72,7 @@ export default async function GenrePage({ params }: Props) {
   const content = generateGenrePageContent(genreName, allAnime.length);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <Breadcrumbs
         items={[
           { label: "Genres", href: "/" },
@@ -98,7 +98,7 @@ export default async function GenrePage({ params }: Props) {
           <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">
             Best {genreName} Anime
           </h1>
-          <p className="text-gray-400 text-lg">
+          <p className="text-muted-foreground text-lg">
             Top {total} {genreName.toLowerCase()} anime series ranked by
             popularity
           </p>
@@ -106,7 +106,7 @@ export default async function GenrePage({ params }: Props) {
       </div>
 
       {/* Content */}
-      <article className="prose prose-invert max-w-none mb-8">
+      <article className="prose prose-themed max-w-none mb-8">
         <div
           dangerouslySetInnerHTML={{ __html: content }}
         />
@@ -137,8 +137,8 @@ export default async function GenrePage({ params }: Props) {
           ))}
         </div>
       ) : (
-        <div className="bg-anime-card rounded-xl p-8 text-center mb-8 border border-anime-border">
-          <p className="text-gray-400">
+        <div className="bg-card rounded-xl p-8 text-center mb-8 border border-border">
+          <p className="text-muted-foreground">
             No anime found for this genre yet. Check back after running the seed
             script.
           </p>
@@ -155,7 +155,7 @@ export default async function GenrePage({ params }: Props) {
 
       {/* Related Genres */}
       <section className="mb-8">
-        <h2 className="text-xl font-bold text-white mb-4">
+        <h2 className="text-xl font-bold text-foreground mb-4">
           Explore More Genres
         </h2>
         <div className="flex flex-wrap gap-2">
@@ -169,7 +169,7 @@ export default async function GenrePage({ params }: Props) {
               <a
                 key={g}
                 href={`/genre/${g.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
-                className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-purple-700/40 hover:text-purple-300 text-sm transition-all duration-200"
+                className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
               >
                 {g}
               </a>

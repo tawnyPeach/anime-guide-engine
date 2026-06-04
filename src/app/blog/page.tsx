@@ -66,38 +66,38 @@ export default function BlogPage() {
   const posts = getBlogPosts();
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Blog' }]} />
 
       <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-4">
         Anime Guide Blog
       </h1>
-      <p className="text-gray-400 text-lg mb-8">
+      <p className="text-muted-foreground text-lg mb-8">
         Tips, guides, and news for anime fans
       </p>
 
       {posts.length === 0 ? (
-        <div className="bg-anime-card border border-anime-border rounded-xl p-8 text-center">
-          <p className="text-gray-400">No blog posts yet. Check back soon!</p>
+        <div className="bg-card border border-border rounded-xl p-8 text-center">
+          <p className="text-muted-foreground">No blog posts yet. Check back soon!</p>
         </div>
       ) : (
         <div className="space-y-6">
           {posts.map((post) => (
             <article
               key={post.slug}
-              className="bg-anime-card border border-anime-border rounded-xl p-6 hover:border-purple-700/40 hover:glow-card-hover transition-all duration-300"
+              className="bg-card border border-border rounded-xl p-6 hover:border-primary/40 hover:glow-card-hover transition-all duration-300"
             >
               <Link href={`/blog/${post.slug}`}>
-                <h2 className="text-xl font-bold text-white mb-2 hover:text-purple-300 transition-colors">
+                <h2 className="text-xl font-bold text-foreground mb-2 hover:text-primary transition-colors">
                   {post.title}
                 </h2>
-                <div className="flex items-center gap-3 text-sm text-gray-400 mb-3">
+                <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
                   <time dateTime={post.date}>
                     {post.date ? new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : ''}
                   </time>
                   <span>by {post.author}</span>
                 </div>
-                <p className="text-gray-300 text-sm leading-relaxed">
+                <p className="text-muted-foreground text-sm leading-relaxed">
                   {post.excerpt}
                 </p>
               </Link>

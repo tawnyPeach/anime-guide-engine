@@ -23,18 +23,18 @@ export default async function CalendarPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <Breadcrumbs items={[{ label: "Calendar" }]} />
 
       {/* Page Header */}
       <section className="mb-8">
         <div className="flex items-center mb-4">
-          <div className="w-1 h-8 bg-gradient-to-b from-purple-500 to-blue-500 rounded-full mr-3" />
+          <div className="w-1 h-8 bg-gradient-to-b from-primary to-brand-teal rounded-full mr-3" />
           <h1 className="text-3xl md:text-4xl font-bold gradient-text">
             Anime Calendar
           </h1>
         </div>
-        <p className="text-gray-400 max-w-2xl">
+        <p className="text-muted-foreground max-w-2xl">
           Weekly airing schedule for currently broadcasting anime. Times are shown
           in your local timezone. {entries.length > 0 && `${entries.length} episodes this week.`}
         </p>

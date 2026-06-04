@@ -12,12 +12,12 @@ export default function ShareButtons({ url, title }: ShareButtonsProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-gray-400 text-xs">Share:</span>
+      <span className="text-muted-foreground text-xs">Share:</span>
       <a
         href={twitterUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="p-2 rounded-lg bg-anime-card border border-anime-border hover:border-blue-400/50 hover:text-blue-400 text-gray-400 transition-all duration-200"
+        className="p-2 rounded-lg bg-card border border-border hover:border-blue-400/50 hover:text-blue-400 text-muted-foreground transition-all duration-200"
         aria-label="Share on X (Twitter)"
       >
         <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -28,7 +28,7 @@ export default function ShareButtons({ url, title }: ShareButtonsProps) {
         href={redditUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="p-2 rounded-lg bg-anime-card border border-anime-border hover:border-orange-400/50 hover:text-orange-400 text-gray-400 transition-all duration-200"
+        className="p-2 rounded-lg bg-card border border-border hover:border-orange-400/50 hover:text-orange-400 text-muted-foreground transition-all duration-200"
         aria-label="Share on Reddit"
       >
         <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -39,7 +39,7 @@ export default function ShareButtons({ url, title }: ShareButtonsProps) {
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="p-2 rounded-lg bg-anime-card border border-anime-border hover:border-green-400/50 hover:text-green-400 text-gray-400 transition-all duration-200"
+        className="p-2 rounded-lg bg-card border border-border hover:border-green-400/50 hover:text-green-400 text-muted-foreground transition-all duration-200"
         aria-label="Share on WhatsApp"
       >
         <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">

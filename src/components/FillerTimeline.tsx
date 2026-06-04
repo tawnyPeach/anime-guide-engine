@@ -148,13 +148,13 @@ export default function FillerTimeline({
   }
 
   return (
-    <div className="bg-gray-800 rounded-lg p-4 mb-8 glow-purple">
+    <div className="bg-muted rounded-lg p-4 mb-8 glow-primary">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-bold text-white">Episode Timeline</h3>
+        <h3 className="text-lg font-bold text-foreground">Episode Timeline</h3>
         <button
           onClick={handleShare}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-600/30 hover:border-purple-500/50 transition-all duration-200"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-primary/10 text-primary border border-primary/30 hover:bg-primary/20 hover:border-primary/50 transition-all duration-200"
         >
           {copied ? (
             <>
@@ -199,11 +199,11 @@ export default function FillerTimeline({
         <span className="text-green-400 font-medium">
           {totalCanon} canon
         </span>
-        <span className="text-gray-500">|</span>
+        <span className="text-muted-foreground/60">|</span>
         <span className="text-red-400 font-medium">
           {totalFiller} filler
         </span>
-        <span className="text-gray-500">|</span>
+        <span className="text-muted-foreground/60">|</span>
         <span className="text-yellow-400 font-medium">
           {totalMixed} mixed
         </span>
@@ -213,7 +213,7 @@ export default function FillerTimeline({
       <div className="relative">
         {tooltip && (
           <div
-            className="absolute z-10 px-2 py-1 text-xs font-medium text-white bg-gray-900 border border-gray-600 rounded shadow-lg whitespace-nowrap pointer-events-none"
+            className="absolute z-10 px-2 py-1 text-xs font-medium text-white bg-background border border-border rounded shadow-lg whitespace-nowrap pointer-events-none"
             style={{
               left: `${tooltip.x}px`,
               top: `${tooltip.y}px`,
@@ -257,7 +257,7 @@ export default function FillerTimeline({
                     style={{ width: `${groupWidth}px` }}
                   >
                     {showLabel && (
-                      <span className="text-[10px] text-gray-500 truncate block leading-tight">
+                      <span className="text-[10px] text-muted-foreground/60 truncate block leading-tight">
                         {group.arcName}
                       </span>
                     )}

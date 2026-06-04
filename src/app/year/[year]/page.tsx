@@ -48,8 +48,8 @@ export default async function YearPage({ params }: Props) {
 
   if (isNaN(year) || year < 1960 || year > 2030) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8 text-center">
-        <h1 className="text-2xl text-white">Invalid year</h1>
+      <div className="max-w-[1600px] mx-auto px-4 py-8 text-center">
+        <h1 className="text-2xl text-foreground">Invalid year</h1>
       </div>
     );
   }
@@ -82,7 +82,7 @@ export default async function YearPage({ params }: Props) {
   const content = generateYearPageContent(year, allAnime.length);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <Breadcrumbs
         items={[
           { label: "Years", href: "/" },
@@ -108,14 +108,14 @@ export default async function YearPage({ params }: Props) {
           <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">
             Best Anime of {year}
           </h1>
-          <p className="text-gray-400 text-lg">
+          <p className="text-muted-foreground text-lg">
             Top {allAnime.length} anime series from {year}
           </p>
         </div>
       </div>
 
       {/* Content */}
-      <article className="prose prose-invert max-w-none mb-8">
+      <article className="prose prose-themed max-w-none mb-8">
         <div
           dangerouslySetInnerHTML={{ __html: content }}
         />
@@ -138,8 +138,8 @@ export default async function YearPage({ params }: Props) {
         return (
           <section key={season} className="mb-10">
             <div className="flex items-center mb-4">
-              <div className="w-1 h-8 bg-gradient-to-b from-purple-500 to-blue-500 rounded-full mr-3" />
-              <h2 className="text-2xl font-bold text-white">
+              <div className="w-1 h-8 bg-gradient-to-b from-primary to-brand-teal rounded-full mr-3" />
+              <h2 className="text-2xl font-bold text-foreground">
                 {seasonEmoji[season]} {season.charAt(0) + season.slice(1).toLowerCase()}{" "}
                 {year}
               </h2>
@@ -194,7 +194,7 @@ export default async function YearPage({ params }: Props) {
 
       {/* Year Navigation */}
       <section className="mb-8">
-        <h2 className="text-xl font-bold text-white mb-4">Browse by Year</h2>
+        <h2 className="text-xl font-bold text-foreground mb-4">Browse by Year</h2>
         <div className="flex flex-wrap gap-2">
           {Array.from({ length: 10 }, (_, i) => year - 5 + i).map((y) => (
             <a
@@ -202,8 +202,8 @@ export default async function YearPage({ params }: Props) {
               href={`/year/${y}`}
               className={`px-4 py-2 rounded-xl text-sm transition-all duration-200 ${
                 y === year
-                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg glow-purple"
-                  : "bg-anime-card text-gray-300 border border-anime-border hover:border-purple-700/40 hover:text-purple-300"
+                  ? "bg-gradient-to-r from-primary to-brand-teal text-primary-foreground shadow-lg glow-primary"
+                  : "bg-card text-muted-foreground border border-border hover:border-primary/40 hover:text-primary"
               }`}
             >
               {y}

@@ -153,7 +153,7 @@ export default async function ComparePage({ params }: Props) {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <Breadcrumbs
         items={[
           { label: "Compare", href: "/" },
@@ -180,7 +180,7 @@ export default async function ComparePage({ params }: Props) {
       {/* Cover Images */}
       <div className="grid grid-cols-2 gap-8 mb-8">
         <Link href={`/anime/${anime1.slug}`} className="group">
-          <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-anime-card border border-anime-border group-hover:border-purple-700/40 transition-all">
+          <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-card border border-border group-hover:border-purple-700/40 transition-all">
             {anime1.coverImage ? (
               <Image
                 src={anime1.coverImage}
@@ -189,17 +189,17 @@ export default async function ComparePage({ params }: Props) {
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-500">
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                 <span className="text-6xl">🎬</span>
               </div>
             )}
           </div>
-          <h2 className="text-white font-bold text-lg mt-3 text-center group-hover:text-purple-300 transition-colors">
+          <h2 className="text-foreground font-bold text-lg mt-3 text-center group-hover:text-purple-300 transition-colors">
             {title1}
           </h2>
         </Link>
         <Link href={`/anime/${anime2.slug}`} className="group">
-          <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-anime-card border border-anime-border group-hover:border-blue-700/40 transition-all">
+          <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-card border border-border group-hover:border-blue-700/40 transition-all">
             {anime2.coverImage ? (
               <Image
                 src={anime2.coverImage}
@@ -208,12 +208,12 @@ export default async function ComparePage({ params }: Props) {
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-500">
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                 <span className="text-6xl">🎬</span>
               </div>
             )}
           </div>
-          <h2 className="text-white font-bold text-lg mt-3 text-center group-hover:text-blue-300 transition-colors">
+          <h2 className="text-foreground font-bold text-lg mt-3 text-center group-hover:text-blue-300 transition-colors">
             {title2}
           </h2>
         </Link>
@@ -223,25 +223,25 @@ export default async function ComparePage({ params }: Props) {
 
       {/* Comparison Table */}
       <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">Side-by-Side Comparison</h2>
-        <div className="bg-anime-card rounded-xl border border-anime-border overflow-hidden">
+        <h2 className="text-2xl font-bold text-foreground mb-4">Side-by-Side Comparison</h2>
+        <div className="bg-card rounded-xl border border-border overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-anime-border">
-                <th className="px-4 py-3 text-left text-gray-400 text-sm font-medium">Stat</th>
-                <th className="px-4 py-3 text-center text-purple-300 text-sm font-medium">{title1}</th>
-                <th className="px-4 py-3 text-center text-blue-300 text-sm font-medium">{title2}</th>
+              <tr className="border-b border-border">
+                <th className="px-4 py-3 text-left text-muted-foreground text-sm font-medium">Stat</th>
+                <th className="px-4 py-3 text-center text-primary text-sm font-medium">{title1}</th>
+                <th className="px-4 py-3 text-center text-brand-teal text-sm font-medium">{title2}</th>
               </tr>
             </thead>
             <tbody>
               {comparisonRows.map((row) => (
-                <tr key={row.label} className="border-b border-anime-border/50 last:border-0">
-                  <td className="px-4 py-3 text-gray-400 text-sm">{row.label}</td>
-                  <td className={`px-4 py-3 text-center text-sm font-medium ${row.winner === 1 ? "text-green-400" : "text-white"}`}>
+                <tr key={row.label} className="border-b border-border last:border-0">
+                  <td className="px-4 py-3 text-muted-foreground text-sm">{row.label}</td>
+                  <td className={`px-4 py-3 text-center text-sm font-medium ${row.winner === 1 ? "text-green-400" : "text-foreground"}`}>
                     {row.val1}
                     {row.winner === 1 && " ✓"}
                   </td>
-                  <td className={`px-4 py-3 text-center text-sm font-medium ${row.winner === 2 ? "text-green-400" : "text-white"}`}>
+                  <td className={`px-4 py-3 text-center text-sm font-medium ${row.winner === 2 ? "text-green-400" : "text-foreground"}`}>
                     {row.val2}
                     {row.winner === 2 && " ✓"}
                   </td>
@@ -254,8 +254,8 @@ export default async function ComparePage({ params }: Props) {
 
       {/* Genre Overlap */}
       <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">Genre Comparison</h2>
-        <div className="bg-anime-card rounded-xl border border-anime-border p-6">
+        <h2 className="text-2xl font-bold text-foreground mb-4">Genre Comparison</h2>
+        <div className="bg-card rounded-xl border border-border p-6">
           <div className="grid grid-cols-3 gap-4">
             <div>
               <h3 className="text-purple-300 text-sm font-medium mb-2">Only in {title1}</h3>
@@ -278,7 +278,7 @@ export default async function ComparePage({ params }: Props) {
                   </span>
                 ))}
                 {sharedGenres.length === 0 && (
-                  <span className="text-gray-500 text-xs">No shared genres</span>
+                  <span className="text-muted-foreground text-xs">No shared genres</span>
                 )}
               </div>
             </div>
@@ -305,19 +305,19 @@ export default async function ComparePage({ params }: Props) {
         <div className="flex flex-wrap gap-3">
           <Link
             href={`/anime/${anime1.slug}`}
-            className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-purple-700/40 hover:text-purple-300 text-sm transition-all duration-200"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
           >
             View {title1}
           </Link>
           <Link
             href={`/anime/${anime2.slug}`}
-            className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-blue-700/40 hover:text-blue-300 text-sm transition-all duration-200"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
           >
             View {title2}
           </Link>
           <Link
             href={`/anime-like/${anime1.slug}`}
-            className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-pink-700/40 hover:text-pink-300 text-sm transition-all duration-200"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
           >
             More Like {title1}
           </Link>

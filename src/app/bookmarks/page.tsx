@@ -59,24 +59,24 @@ export default function BookmarksPage() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-4">
         My Bookmarks
       </h1>
-      <p className="text-gray-400 text-lg mb-8">
+      <p className="text-muted-foreground text-lg mb-8">
         Your saved anime ({bookmarks.length} saved)
       </p>
 
       {bookmarks.length === 0 ? (
-        <div className="bg-anime-card border border-anime-border rounded-xl p-8 text-center">
+        <div className="bg-card border border-border rounded-xl p-8 text-center">
           <span className="text-4xl mb-4 block">💜</span>
-          <p className="text-gray-400 mb-4">No bookmarked anime yet.</p>
-          <p className="text-gray-500 text-sm mb-6">
+          <p className="text-muted-foreground mb-4">No bookmarked anime yet.</p>
+          <p className="text-muted-foreground/60 text-sm mb-6">
             Click the heart icon on any anime page to save it here.
           </p>
           <Link
             href="/"
-            className="inline-flex px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-purple-500 hover:to-blue-500 transition-all duration-200"
+            className="inline-flex px-4 py-2 bg-gradient-to-r from-primary to-brand-teal text-primary-foreground text-sm font-medium rounded-lg hover:opacity-90 transition-all duration-200"
           >
             Browse Anime
           </Link>
@@ -86,10 +86,10 @@ export default function BookmarksPage() {
           {bookmarks.map((anime) => (
             <div
               key={anime.slug}
-              className="bg-anime-card rounded-xl overflow-hidden border border-anime-border hover:glow-card-hover transition-all duration-300 group hover:-translate-y-1 relative"
+              className="bg-card rounded-xl overflow-hidden border border-border hover:glow-card-hover transition-all duration-300 group hover:-translate-y-1 relative"
             >
               <Link href={`/anime/${anime.slug}`}>
-                <div className="relative aspect-[3/4] bg-gray-800 overflow-hidden">
+                <div className="relative aspect-[3/4] bg-muted overflow-hidden">
                   {anime.coverImage ? (
                     <Image
                       src={anime.coverImage}
@@ -99,13 +99,13 @@ export default function BookmarksPage() {
                       sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-500">
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                       <span className="text-4xl">🎬</span>
                     </div>
                   )}
                 </div>
                 <div className="p-3">
-                  <h3 className="text-white font-semibold text-sm line-clamp-2 group-hover:text-purple-300 transition-colors duration-200">
+                  <h3 className="text-foreground font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors duration-200">
                     {anime.title}
                   </h3>
                 </div>

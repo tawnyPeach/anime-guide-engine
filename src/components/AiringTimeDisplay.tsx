@@ -17,8 +17,8 @@ export default function AiringTimeDisplay({ airingAt }: AiringTimeDisplayProps) 
   }, [airingAt]);
 
   if (!timeString) {
-    return <span className="text-xs text-gray-400">&nbsp;</span>;
+    return <span className="text-xs text-muted-foreground">&nbsp;</span>;
   }
 
-  return <span className="text-xs text-gray-400">{timeString}</span>;
+  return <span className="text-xs text-muted-foreground">{timeString}</span>;
 }

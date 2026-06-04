@@ -69,7 +69,7 @@ export default async function AnimeLikePage({ params }: Props) {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <Breadcrumbs
         items={[
           { label: "Anime", href: "/" },
@@ -96,16 +96,16 @@ export default async function AnimeLikePage({ params }: Props) {
         }}
       />
 
-      <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+      <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
         Anime Like {displayTitle}
       </h1>
-      <p className="text-gray-400 text-lg mb-8">
+      <p className="text-muted-foreground text-lg mb-8">
         {recommendations.length} anime similar to {displayTitle} based on genre,
         format, studio, and popularity
       </p>
 
       {/* Content */}
-      <article className="prose prose-invert max-w-none mb-8">
+      <article className="prose prose-themed max-w-none mb-8">
         <div
           dangerouslySetInnerHTML={{ __html: content }}
         />
@@ -124,17 +124,17 @@ export default async function AnimeLikePage({ params }: Props) {
               <Link
                 key={rec.anime.id}
                 href={`/anime/${rec.anime.slug}`}
-                className="block bg-gray-800 rounded-lg p-4 hover:bg-gray-700 transition-colors"
+                className="block bg-card border border-border rounded-lg p-4 hover:bg-muted transition-colors"
               >
                 <div className="flex items-start gap-4">
-                  <span className="text-2xl font-bold text-gray-600 w-8">
+                  <span className="text-2xl font-bold text-muted-foreground/40 w-8">
                     {index + 1}
                   </span>
                   <div className="flex-1">
-                    <h3 className="text-white font-semibold text-lg">
+                    <h3 className="text-foreground font-semibold text-lg">
                       {rec.anime.titleEnglish || rec.anime.title}
                     </h3>
-                    <div className="flex items-center gap-3 text-sm text-gray-400 mt-1">
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
                       {rec.anime.totalEpisodes > 0 && (
                         <span>{rec.anime.totalEpisodes} eps</span>
                       )}
@@ -144,7 +144,7 @@ export default async function AnimeLikePage({ params }: Props) {
                         </span>
                       )}
                       {rec.anime.seasonYear && <span>{rec.anime.seasonYear}</span>}
-                      <span className="text-purple-400">
+                      <span className="text-primary">
                         Score: {rec.score.toFixed(1)}
                       </span>
                     </div>
@@ -153,7 +153,7 @@ export default async function AnimeLikePage({ params }: Props) {
                       {rec.reasons.map((reason, rIdx) => (
                         <span
                           key={rIdx}
-                          className="text-xs px-2 py-0.5 rounded bg-purple-900/30 text-purple-300 border border-purple-800/30"
+                          className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20"
                         >
                           {reason}
                         </span>
@@ -165,8 +165,8 @@ export default async function AnimeLikePage({ params }: Props) {
                           key={g}
                           className={`text-xs px-2 py-0.5 rounded ${
                             sharedGenres.includes(g)
-                              ? "bg-blue-600/20 text-blue-400"
-                              : "bg-gray-700 text-gray-400"
+                              ? "bg-blue-600/20 text-blue-500 dark:text-blue-400"
+                              : "bg-muted text-muted-foreground"
                           }`}
                         >
                           {g}
@@ -174,13 +174,13 @@ export default async function AnimeLikePage({ params }: Props) {
                       ))}
                     </div>
                     {rec.anime.description && (
-                      <p className="text-gray-400 text-sm mt-2 line-clamp-2">
+                      <p className="text-muted-foreground text-sm mt-2 line-clamp-2">
                         {rec.anime.description}
                       </p>
                     )}
                   </div>
                   <div className="text-right">
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-muted-foreground">
                       {sharedGenres.length}/{genres.length} genres match
                     </span>
                   </div>
@@ -190,8 +190,8 @@ export default async function AnimeLikePage({ params }: Props) {
           })}
         </div>
       ) : (
-        <div className="bg-gray-800 rounded-lg p-8 text-center mb-8">
-          <p className="text-gray-400">
+        <div className="bg-card border border-border rounded-lg p-8 text-center mb-8">
+          <p className="text-muted-foreground">
             No similar anime found yet. Try running the seed script to populate
             the database.
           </p>
@@ -205,19 +205,19 @@ export default async function AnimeLikePage({ params }: Props) {
         <div className="flex flex-wrap gap-3">
           <Link
             href={`/anime/${anime.slug}`}
-            className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-700 text-sm"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-lg hover:bg-muted text-sm border border-border"
           >
             ← Back to {displayTitle}
           </Link>
           <Link
             href={`/anime/${anime.slug}/filler-list`}
-            className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-700 text-sm"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-lg hover:bg-muted text-sm border border-border"
           >
             🎯 Filler Guide
           </Link>
           <Link
             href={`/anime/${anime.slug}/episodes`}
-            className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-700 text-sm"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-lg hover:bg-muted text-sm border border-border"
           >
             📋 Episode Guide
           </Link>

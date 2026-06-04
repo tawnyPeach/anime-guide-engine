@@ -28,9 +28,9 @@ export default function Newsletter() {
 
   if (submitted) {
     return (
-      <div className="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-700/30 rounded-xl p-6 text-center">
-        <p className="text-purple-300 font-medium">Thanks! Newsletter integration coming soon.</p>
-        <p className="text-gray-400 text-sm mt-1">
+      <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 text-center">
+        <p className="text-primary font-medium">Thanks! Newsletter integration coming soon.</p>
+        <p className="text-muted-foreground text-sm mt-1">
           (Newsletter feature is being set up - we&apos;ll notify you when it&apos;s live)
         </p>
       </div>
@@ -38,9 +38,9 @@ export default function Newsletter() {
   }
 
   return (
-    <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 border border-anime-border rounded-xl p-6">
-      <h3 className="text-white font-semibold mb-1">Get Anime Updates</h3>
-      <p className="text-gray-400 text-sm mb-4">
+    <div className="bg-primary/5 border border-border rounded-xl p-6">
+      <h3 className="text-foreground font-semibold mb-1">Get Anime Updates</h3>
+      <p className="text-muted-foreground text-sm mb-4">
         Weekly filler guides and watch order updates delivered to your inbox.
       </p>
       <form onSubmit={handleSubmit} className="flex gap-2">
@@ -50,11 +50,11 @@ export default function Newsletter() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
           required
-          className="flex-1 px-4 py-2 rounded-lg bg-anime-card border border-anime-border text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500 transition-colors"
+          className="flex-1 px-4 py-2 rounded-lg bg-card border border-border text-foreground placeholder-muted-foreground/60 text-sm focus:outline-none focus:border-primary transition-colors"
         />
         <button
           type="submit"
-          className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-purple-500 hover:to-blue-500 transition-all duration-200"
+          className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-all duration-200"
         >
           Subscribe
         </button>

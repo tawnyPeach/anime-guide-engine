@@ -13,7 +13,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
     <nav aria-label="Breadcrumb" className="mb-4">
       <ol
-        className="flex items-center space-x-2 text-sm text-gray-400"
+        className="flex items-center space-x-2 text-sm text-muted-foreground"
         itemScope
         itemType="https://schema.org/BreadcrumbList"
       >
@@ -22,7 +22,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
           itemScope
           itemType="https://schema.org/ListItem"
         >
-          <Link href="/" className="hover:text-white transition-colors" itemProp="item">
+          <Link href="/" className="hover:text-foreground transition-colors" itemProp="item">
             <span itemProp="name">Home</span>
           </Link>
           <meta itemProp="position" content="1" />
@@ -35,17 +35,17 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             itemScope
             itemType="https://schema.org/ListItem"
           >
-            <span className="text-gray-600">/</span>
+            <span className="text-muted-foreground/50">/</span>
             {item.href ? (
               <Link
                 href={item.href}
-                className="hover:text-white transition-colors"
+                className="hover:text-foreground transition-colors"
                 itemProp="item"
               >
                 <span itemProp="name">{item.label}</span>
               </Link>
             ) : (
-              <span className="text-gray-200" itemProp="name">
+              <span className="text-foreground" itemProp="name">
                 {item.label}
               </span>
             )}

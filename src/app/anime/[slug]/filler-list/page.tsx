@@ -82,7 +82,7 @@ export default async function FillerListPage({ params }: Props) {
   const content = generateFillerPageContent({ ...anime, genres }, stats);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <Breadcrumbs
         items={[
           { label: "Anime", href: "/" },
@@ -154,10 +154,10 @@ export default async function FillerListPage({ params }: Props) {
         }}
       />
 
-      <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+      <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
         {displayTitle} Filler List
       </h1>
-      <p className="text-gray-400 text-lg mb-4">
+      <p className="text-muted-foreground text-lg mb-4">
         Complete filler episode guide — know which episodes to skip
       </p>
       <div className="mb-8">
@@ -166,41 +166,41 @@ export default async function FillerListPage({ params }: Props) {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-gray-800 rounded-lg p-4 text-center">
-          <div className="text-3xl font-bold text-white">
+        <div className="bg-muted rounded-lg p-4 text-center">
+          <div className="text-3xl font-bold text-foreground">
             {anime.totalEpisodes}
           </div>
-          <div className="text-gray-400 text-sm">Total Episodes</div>
+          <div className="text-muted-foreground text-sm">Total Episodes</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-4 text-center">
+        <div className="bg-muted rounded-lg p-4 text-center">
           <div className="text-3xl font-bold text-green-400">
             {stats.totalCanon}
           </div>
-          <div className="text-gray-400 text-sm">Canon</div>
+          <div className="text-muted-foreground text-sm">Canon</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-4 text-center">
+        <div className="bg-muted rounded-lg p-4 text-center">
           <div className="text-3xl font-bold text-red-400">
             {stats.totalFiller}
           </div>
-          <div className="text-gray-400 text-sm">Filler</div>
+          <div className="text-muted-foreground text-sm">Filler</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-4 text-center">
+        <div className="bg-muted rounded-lg p-4 text-center">
           <div className="text-3xl font-bold text-yellow-400">
             {stats.totalMixed}
           </div>
-          <div className="text-gray-400 text-sm">Mixed</div>
+          <div className="text-muted-foreground text-sm">Mixed</div>
         </div>
       </div>
 
       {/* Filler percentage bar */}
-      <div className="bg-gray-800 rounded-lg p-4 mb-8">
+      <div className="bg-muted rounded-lg p-4 mb-8">
         <div className="flex justify-between text-sm mb-2">
-          <span className="text-gray-400">Filler Percentage</span>
-          <span className="text-white font-bold">
+          <span className="text-muted-foreground">Filler Percentage</span>
+          <span className="text-foreground font-bold">
             {Math.round(stats.fillerPercent)}%
           </span>
         </div>
-        <div className="bg-gray-700 rounded-full h-4 overflow-hidden flex">
+        <div className="bg-background rounded-full h-4 overflow-hidden flex border border-border">
           <div
             className="bg-green-500 h-full"
             style={{
@@ -253,17 +253,17 @@ export default async function FillerListPage({ params }: Props) {
       <AdBanner className="mb-8" />
 
       {/* Content */}
-      <article className="prose prose-invert max-w-none mb-8">
+      <article className="prose prose-themed max-w-none mb-8">
         <div dangerouslySetInnerHTML={{ __html: content }} />
       </article>
 
       {/* Episode Table */}
       <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">
+        <h2 className="text-2xl font-bold text-foreground mb-4">
           Complete Episode List
         </h2>
-        <div className="bg-gray-800 rounded-lg overflow-hidden">
-          <div className="grid grid-cols-12 gap-2 p-3 bg-gray-750 border-b border-gray-700 text-xs font-semibold text-gray-400 uppercase">
+        <div className="bg-muted rounded-lg overflow-hidden">
+          <div className="grid grid-cols-12 gap-2 p-3 border-b border-border text-xs font-semibold text-muted-foreground uppercase">
             <div className="col-span-2">Episode</div>
             <div className="col-span-7">Title</div>
             <div className="col-span-3">Type</div>
@@ -281,7 +281,7 @@ export default async function FillerListPage({ params }: Props) {
               return (
                 <div
                   key={ep.id}
-                  className={`grid grid-cols-12 gap-2 p-3 border-b border-gray-700/50 text-sm ${
+                  className={`grid grid-cols-12 gap-2 p-3 border-b border-border text-sm ${
                     isFiller
                       ? "bg-red-900/10"
                       : isMixed
@@ -289,10 +289,10 @@ export default async function FillerListPage({ params }: Props) {
                       : ""
                   }`}
                 >
-                  <div className="col-span-2 text-gray-300 font-mono">
+                  <div className="col-span-2 text-muted-foreground font-mono">
                     #{ep.episodeNumber}
                   </div>
-                  <div className="col-span-7 text-gray-200">
+                  <div className="col-span-7 text-foreground">
                     {ep.title || `Episode ${ep.episodeNumber}`}
                   </div>
                   <div className="col-span-3">
@@ -323,11 +323,11 @@ export default async function FillerListPage({ params }: Props) {
 
       {/* Quick Reference */}
       <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">
+        <h2 className="text-2xl font-bold text-foreground mb-4">
           Filler Episodes Quick Reference
         </h2>
-        <div className="bg-gray-800 rounded-lg p-4">
-          <p className="text-gray-400 text-sm mb-3">
+        <div className="bg-muted rounded-lg p-4">
+          <p className="text-muted-foreground text-sm mb-3">
             Episodes you can safely skip:
           </p>
           <p className="text-red-400 font-mono text-sm break-all">
@@ -337,8 +337,8 @@ export default async function FillerListPage({ params }: Props) {
           </p>
         </div>
         {mixedEpisodes.length > 0 && (
-          <div className="bg-gray-800 rounded-lg p-4 mt-4">
-            <p className="text-gray-400 text-sm mb-3">
+          <div className="bg-muted rounded-lg p-4 mt-4">
+            <p className="text-muted-foreground text-sm mb-3">
               Mixed canon/filler episodes (watch recommended):
             </p>
             <p className="text-yellow-400 font-mono text-sm break-all">
@@ -350,29 +350,29 @@ export default async function FillerListPage({ params }: Props) {
 
       {/* Internal Links */}
       <section className="mb-8">
-        <h2 className="text-xl font-bold text-white mb-4">More Guides</h2>
+        <h2 className="text-xl font-bold text-foreground mb-4">More Guides</h2>
         <div className="flex flex-wrap gap-3">
           <Link
             href={`/anime/${anime.slug}`}
-            className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-700 text-sm"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-lg hover:bg-muted text-sm border border-border"
           >
             ← {displayTitle} Overview
           </Link>
           <Link
             href={`/anime/${anime.slug}/episodes`}
-            className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-700 text-sm"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-lg hover:bg-muted text-sm border border-border"
           >
             📋 Episode Guide
           </Link>
           <Link
             href={`/anime/${anime.slug}/watch-order`}
-            className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-700 text-sm"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-lg hover:bg-muted text-sm border border-border"
           >
             📑 Watch Order
           </Link>
           <Link
             href={`/anime-like/${anime.slug}`}
-            className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-700 text-sm"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-lg hover:bg-muted text-sm border border-border"
           >
             🔍 Similar Anime
           </Link>

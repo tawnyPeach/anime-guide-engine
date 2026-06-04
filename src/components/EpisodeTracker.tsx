@@ -71,19 +71,19 @@ export default function EpisodeTracker({ animeSlug, totalEpisodes, episodes }: E
   const progress = totalEpisodes > 0 ? (watched.length / totalEpisodes) * 100 : 0;
 
   return (
-    <div className="bg-anime-card border border-anime-border rounded-xl p-4 mb-6">
+    <div className="bg-card border border-border rounded-xl p-4 mb-6">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-white font-semibold text-sm">Episode Tracker</h3>
+        <h3 className="text-foreground font-semibold text-sm">Episode Tracker</h3>
         <div className="flex gap-2">
           <button
             onClick={markAllWatched}
-            className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+            className="text-xs text-primary hover:text-primary/80 transition-colors"
           >
             Mark All
           </button>
           <button
             onClick={clearAll}
-            className="text-xs text-gray-400 hover:text-gray-300 transition-colors"
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
             Clear
           </button>
@@ -92,13 +92,13 @@ export default function EpisodeTracker({ animeSlug, totalEpisodes, episodes }: E
 
       {/* Progress bar */}
       <div className="mb-3">
-        <div className="flex justify-between text-xs text-gray-400 mb-1">
+        <div className="flex justify-between text-xs text-muted-foreground mb-1">
           <span>{watched.length}/{totalEpisodes} episodes watched</span>
           <span>{Math.round(progress)}%</span>
         </div>
-        <div className="bg-gray-700 rounded-full h-2 overflow-hidden">
+        <div className="bg-muted rounded-full h-2 overflow-hidden">
           <div
-            className="bg-gradient-to-r from-purple-500 to-blue-500 h-full rounded-full transition-all duration-300"
+            className="bg-gradient-to-r from-primary to-brand-teal h-full rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -109,16 +109,16 @@ export default function EpisodeTracker({ animeSlug, totalEpisodes, episodes }: E
         {episodes.map((ep) => (
           <label
             key={ep.episodeNumber}
-            className="flex items-center gap-2 p-1.5 rounded hover:bg-gray-800/50 cursor-pointer group"
+            className="flex items-center gap-2 p-1.5 rounded hover:bg-muted cursor-pointer group"
           >
             <input
               type="checkbox"
               checked={watched.includes(ep.episodeNumber)}
               onChange={() => toggleEpisode(ep.episodeNumber)}
-              className="w-4 h-4 rounded border-gray-600 bg-gray-800 text-purple-500 focus:ring-purple-500 focus:ring-offset-0"
+              className="w-4 h-4 rounded border-border bg-card text-primary focus:ring-primary focus:ring-offset-0"
             />
-            <span className="text-gray-400 font-mono text-xs w-8">{ep.episodeNumber}</span>
-            <span className="text-gray-300 text-xs group-hover:text-white transition-colors truncate">
+            <span className="text-muted-foreground font-mono text-xs w-8">{ep.episodeNumber}</span>
+            <span className="text-muted-foreground text-xs group-hover:text-foreground transition-colors truncate">
               {ep.title || `Episode ${ep.episodeNumber}`}
             </span>
           </label>

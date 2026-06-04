@@ -95,7 +95,7 @@ export default async function TopListPage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <Breadcrumbs
         items={[
           { label: "Top Anime", href: "/top/most-popular" },
@@ -128,7 +128,7 @@ export default async function TopListPage({ params }: Props) {
           <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">
             {listType.emoji} {listType.title}
           </h1>
-          <p className="text-gray-400 text-lg">{listType.description}</p>
+          <p className="text-muted-foreground text-lg">{listType.description}</p>
         </div>
       </div>
 
@@ -140,8 +140,8 @@ export default async function TopListPage({ params }: Props) {
             href={`/top/${key}`}
             className={`px-4 py-2 rounded-xl text-sm transition-all duration-200 ${
               key === type
-                ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg glow-purple"
-                : "bg-anime-card text-gray-300 border border-anime-border hover:border-purple-700/40 hover:text-purple-300"
+                ? "bg-gradient-to-r from-primary to-brand-teal text-primary-foreground shadow-lg glow-primary"
+                : "bg-card text-muted-foreground border border-border hover:border-primary/40 hover:text-primary"
             }`}
           >
             {info.emoji} {info.title}
@@ -173,8 +173,8 @@ export default async function TopListPage({ params }: Props) {
           ))}
         </div>
       ) : (
-        <div className="bg-anime-card rounded-xl p-8 text-center mb-8 border border-anime-border">
-          <p className="text-gray-400">
+        <div className="bg-card rounded-xl p-8 text-center mb-8 border border-border">
+          <p className="text-muted-foreground">
             No anime data available yet. Run the seed script to populate the database.
           </p>
         </div>

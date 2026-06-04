@@ -101,7 +101,7 @@ export default async function StudioPage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <Breadcrumbs
         items={[
           { label: "Studios", href: "/" },
@@ -127,7 +127,7 @@ export default async function StudioPage({ params }: Props) {
           <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">
             {studioName} Anime
           </h1>
-          <p className="text-gray-400 text-lg">
+          <p className="text-muted-foreground text-lg">
             {allAnime.length} anime produced by {studioName}
           </p>
         </div>
@@ -157,8 +157,8 @@ export default async function StudioPage({ params }: Props) {
           ))}
         </div>
       ) : (
-        <div className="bg-anime-card rounded-xl p-8 text-center mb-8 border border-anime-border">
-          <p className="text-gray-400">
+        <div className="bg-card rounded-xl p-8 text-center mb-8 border border-border">
+          <p className="text-muted-foreground">
             No anime found for this studio. The studio name may be spelled differently in our database.
           </p>
         </div>

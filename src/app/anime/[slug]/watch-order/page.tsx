@@ -128,7 +128,7 @@ export default async function WatchOrderPage({ params }: Props) {
   const hasEntries = watchOrder.totalEntries > 0;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <Breadcrumbs
         items={[
           { label: "Anime", href: "/" },
@@ -194,14 +194,14 @@ export default async function WatchOrderPage({ params }: Props) {
       <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">
         {displayTitle} Watch Order
       </h1>
-      <p className="text-gray-400 text-lg mb-8">
+      <p className="text-muted-foreground text-lg mb-8">
         The recommended order to watch the {displayTitle} series
       </p>
 
       <AdBanner className="mb-8" />
 
       {/* SEO Content */}
-      <article className="prose prose-invert max-w-none mb-8">
+      <article className="prose prose-themed max-w-none mb-8">
         <div
           dangerouslySetInnerHTML={{ __html: content }}
         />
@@ -212,7 +212,7 @@ export default async function WatchOrderPage({ params }: Props) {
         <section className="mb-8">
           <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-700/30 rounded-xl p-8 text-center">
             <div className="text-4xl mb-4">🎬</div>
-            <h2 className="text-xl font-bold text-white mb-2">
+            <h2 className="text-xl font-bold text-foreground mb-2">
               Standalone Series
             </h2>
             <p className="text-gray-300 max-w-lg mx-auto">
@@ -228,7 +228,7 @@ export default async function WatchOrderPage({ params }: Props) {
               </Link>
               <Link
                 href={`/anime-like/${anime.slug}`}
-                className="bg-anime-card text-gray-300 px-4 py-2 rounded-lg border border-anime-border hover:border-purple-700/40 text-sm transition-all"
+                className="bg-card text-muted-foreground px-4 py-2 rounded-lg border border-border hover:border-primary/40 text-sm transition-all"
               >
                 Find Similar Anime
               </Link>
@@ -240,10 +240,10 @@ export default async function WatchOrderPage({ params }: Props) {
       {/* Quick Summary */}
       {hasEntries && watchOrder.mainOrder.length > 0 && (
         <section className="mb-8">
-          <h2 className="text-2xl font-bold text-white mb-4">
+          <h2 className="text-2xl font-bold text-foreground mb-4">
             Quick Watch Order
           </h2>
-          <div className="bg-anime-card rounded-xl border border-anime-border p-5">
+          <div className="bg-card rounded-xl border border-border p-5">
             <div className="flex flex-wrap items-center gap-2">
               {watchOrder.mainOrder.map((entry, index) => (
                 <span key={entry.animeId} className="flex items-center gap-2">
@@ -279,7 +279,7 @@ export default async function WatchOrderPage({ params }: Props) {
       {/* Detailed Watch Order Timeline */}
       {hasEntries && watchOrder.mainOrder.length > 0 && (
         <section className="mb-8">
-          <h2 className="text-2xl font-bold text-white mb-4">
+          <h2 className="text-2xl font-bold text-foreground mb-4">
             Detailed Watch Order
           </h2>
           <div className="relative">
@@ -303,7 +303,7 @@ export default async function WatchOrderPage({ params }: Props) {
       {/* Supplementary Content */}
       {watchOrder.supplementary.length > 0 && (
         <section className="mb-8">
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <h2 className="text-2xl font-bold text-foreground mb-2">
             Optional: OVAs, Movies &amp; Side Stories
           </h2>
           <p className="text-gray-400 text-sm mb-4">
@@ -331,19 +331,19 @@ export default async function WatchOrderPage({ params }: Props) {
         <div className="flex flex-wrap gap-3">
           <Link
             href={`/anime/${anime.slug}`}
-            className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-purple-700/40 hover:text-purple-300 text-sm transition-all duration-200"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
           >
             &larr; {displayTitle} Overview
           </Link>
           <Link
             href={`/anime/${anime.slug}/filler-list`}
-            className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-blue-700/40 hover:text-blue-300 text-sm transition-all duration-200"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
           >
             🎯 Filler Guide
           </Link>
           <Link
             href={`/anime/${anime.slug}/episodes`}
-            className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-pink-700/40 hover:text-pink-300 text-sm transition-all duration-200"
+            className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
           >
             📋 Episode Guide
           </Link>
@@ -392,8 +392,8 @@ function WatchOrderCard({
           entry.isCurrentAnime
             ? "bg-gradient-to-r from-purple-900/30 to-blue-900/20 border border-l-4 border-purple-500/50 shadow-lg shadow-purple-500/10"
             : isSupplementary
-            ? "bg-anime-card border border-l-4 border-dashed border-anime-border hover:border-gray-600"
-            : "bg-anime-card border border-l-4 border-anime-border hover:border-purple-700/40"
+            ? "bg-card border border-l-4 border-dashed border-border hover:border-muted-foreground"
+            : "bg-card border border-l-4 border-border hover:border-primary/40"
         }`}
       >
         <div className="flex items-center justify-between">
@@ -417,7 +417,7 @@ function WatchOrderCard({
             </div>
             <h3
               className={`font-semibold truncate ${
-                entry.isCurrentAnime ? "text-purple-200" : "text-white"
+                entry.isCurrentAnime ? "text-purple-200" : "text-foreground"
               }`}
             >
               {!isSupplementary && (
@@ -425,7 +425,7 @@ function WatchOrderCard({
               )}
               {entry.title}
             </h3>
-            <p className="text-gray-400 text-sm mt-0.5">
+            <p className="text-muted-foreground text-sm mt-0.5">
               {entry.totalEpisodes > 0
                 ? `${entry.totalEpisodes} episode${entry.totalEpisodes !== 1 ? "s" : ""}`
                 : "Unknown episodes"}

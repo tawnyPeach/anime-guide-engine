@@ -126,9 +126,9 @@ export default async function SeasonPage({ params }: Props) {
 
   if (!parsed) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8 text-center">
-        <h1 className="text-2xl text-white">Invalid season format</h1>
-        <p className="text-gray-400 mt-2">Use format like winter-2024, spring-2024, etc.</p>
+      <div className="max-w-[1600px] mx-auto px-4 py-8 text-center">
+        <h1 className="text-2xl text-foreground">Invalid season format</h1>
+        <p className="text-muted-foreground mt-2">Use format like winter-2024, spring-2024, etc.</p>
       </div>
     );
   }
@@ -158,7 +158,7 @@ export default async function SeasonPage({ params }: Props) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
       <Breadcrumbs
         items={[
           { label: "Seasons", href: "/" },
@@ -184,7 +184,7 @@ export default async function SeasonPage({ params }: Props) {
           <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">
             {seasonEmoji[season] || ""} {display} Anime
           </h1>
-          <p className="text-gray-400 text-lg">
+          <p className="text-muted-foreground text-lg">
             {allAnime.length} anime from the {display} season
           </p>
         </div>
@@ -194,7 +194,7 @@ export default async function SeasonPage({ params }: Props) {
       <div className="flex items-center justify-between mb-8">
         <Link
           href={`/season/${adjacent.prev}`}
-          className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-purple-700/40 hover:text-purple-300 text-sm transition-all duration-200"
+          className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
         >
           ← {formatSeasonDisplay(
             adjacent.prev.substring(0, adjacent.prev.lastIndexOf("-")).toUpperCase(),
@@ -203,7 +203,7 @@ export default async function SeasonPage({ params }: Props) {
         </Link>
         <Link
           href={`/season/${adjacent.next}`}
-          className="bg-anime-card text-gray-300 px-4 py-2 rounded-xl border border-anime-border hover:border-purple-700/40 hover:text-purple-300 text-sm transition-all duration-200"
+          className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
         >
           {formatSeasonDisplay(
             adjacent.next.substring(0, adjacent.next.lastIndexOf("-")).toUpperCase(),
@@ -236,8 +236,8 @@ export default async function SeasonPage({ params }: Props) {
           ))}
         </div>
       ) : (
-        <div className="bg-anime-card rounded-xl p-8 text-center mb-8 border border-anime-border">
-          <p className="text-gray-400">
+        <div className="bg-card rounded-xl p-8 text-center mb-8 border border-border">
+          <p className="text-muted-foreground">
             No anime found for {display}. Check back after running the seed script or try a different season.
           </p>
         </div>
@@ -247,7 +247,7 @@ export default async function SeasonPage({ params }: Props) {
 
       {/* Browse Other Seasons */}
       <section className="mb-8">
-        <h2 className="text-xl font-bold text-white mb-4">Browse Seasons</h2>
+        <h2 className="text-xl font-bold text-foreground mb-4">Browse Seasons</h2>
         <div className="flex flex-wrap gap-2">
           {SEASONS.map((s) => (
             <Link
@@ -255,8 +255,8 @@ export default async function SeasonPage({ params }: Props) {
               href={`/season/${s.toLowerCase()}-${year}`}
               className={`px-4 py-2 rounded-xl text-sm transition-all duration-200 ${
                 s === season
-                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg glow-purple"
-                  : "bg-anime-card text-gray-300 border border-anime-border hover:border-purple-700/40 hover:text-purple-300"
+                  ? "bg-gradient-to-r from-primary to-brand-teal text-primary-foreground shadow-lg glow-primary"
+                  : "bg-card text-muted-foreground border border-border hover:border-primary/40 hover:text-primary"
               }`}
             >
               {seasonEmoji[s]} {s.charAt(0) + s.slice(1).toLowerCase()} {year}

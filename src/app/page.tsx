@@ -71,7 +71,7 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
       {/* Hero Section */}
       <section className="relative text-center mb-16 py-12 rounded-xl overflow-hidden">
         {/* Background decoration */}
@@ -112,15 +112,15 @@ export default async function HomePage() {
             {todayAiring.map((entry, idx) => (
               <div
                 key={`${entry.media.id}-${entry.episode}-${idx}`}
-                className="flex-shrink-0 w-56 bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
+                className="flex-shrink-0 w-64 bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
               >
-                <div className="relative h-32 w-full">
+                <div className="relative h-40 w-full">
                   {entry.media.coverImage?.large ? (
                     <Image
                       src={entry.media.coverImage.large}
                       alt={entry.media.title.english || entry.media.title.romaji}
-                      width={224}
-                      height={128}
+                      width={256}
+                      height={160}
                       className="object-cover w-full h-full"
                     />
                   ) : (
@@ -135,7 +135,7 @@ export default async function HomePage() {
                   </div>
                 </div>
                 <div className="p-3">
-                  <h3 className="text-sm font-medium text-foreground truncate">
+                  <h3 className="text-base font-medium text-foreground truncate">
                     {entry.media.title.english || entry.media.title.romaji}
                   </h3>
                   <p className="text-xs text-muted-foreground mt-1">

@@ -71,13 +71,13 @@ export default function Comments({
   // Show placeholder message if not configured
   if (repoId === 'PLACEHOLDER_REPO_ID') {
     return (
-      <section className="mt-12 border-t border-anime-border pt-8">
-        <h2 className="text-xl font-bold text-white mb-4">Comments</h2>
-        <div className="bg-anime-card border border-anime-border rounded-xl p-6 text-center">
-          <p className="text-gray-400 text-sm">
+      <section className="mt-12 border-t border-border pt-8">
+        <h2 className="text-xl font-bold text-foreground mb-4">Comments</h2>
+        <div className="bg-card border border-border rounded-xl p-6 text-center">
+          <p className="text-muted-foreground text-sm">
             Comments powered by Giscus will appear here once configured.
           </p>
-          <p className="text-gray-500 text-xs mt-2">
+          <p className="text-muted-foreground/60 text-xs mt-2">
             Set up at giscus.app with your GitHub repository.
           </p>
         </div>
@@ -86,8 +86,8 @@ export default function Comments({
   }
 
   return (
-    <section className="mt-12 border-t border-anime-border pt-8">
-      <h2 className="text-xl font-bold text-white mb-4">Comments</h2>
+    <section className="mt-12 border-t border-border pt-8">
+      <h2 className="text-xl font-bold text-foreground mb-4">Comments</h2>
       <div ref={ref} />
     </section>
   );
