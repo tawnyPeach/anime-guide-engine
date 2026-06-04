@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import AnimeCard from "@/components/AnimeCard";
 import AdBanner from "@/components/AdBanner";
 import LoadMore from "@/components/LoadMore";
+import FillerCarousel from "@/components/FillerCarousel";
 
 export const revalidate = 3600; // ISR: revalidate every hour
 
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   let popularAnime: Awaited<ReturnType<typeof prisma.anime.findMany>> = [];
-  let fillerAnime: (Awaited<ReturnType<typeof prisma.anime.findMany>>[number] & { fillerMapping: { fillerPercent: number } | null })[] = [];
+  let fillerAnime: { id: number; title: string; titleEnglish: string | null; slug: string; coverImage: string | null; totalEpisodes: number; fillerPercent: number }[] = [];
   let recentAnime: Awaited<ReturnType<typeof prisma.anime.findMany>> = [];
   let totalAnime = 0;
 
@@ -26,12 +27,21 @@ export default async function HomePage() {
       take: 20,
     });
 
-    fillerAnime = await prisma.anime.findMany({
+    const fillerRaw = await prisma.anime.findMany({
       where: { fillerMapping: { isNot: null } },
-      include: { fillerMapping: true },
+      include: { fillerMapping: { select: { fillerPercent: true } } },
       orderBy: { popularity: "desc" },
-      take: 10,
     });
+
+    fillerAnime = fillerRaw.map((anime) => ({
+      id: anime.id,
+      title: anime.title,
+      titleEnglish: anime.titleEnglish,
+      slug: anime.slug,
+      coverImage: anime.coverImage,
+      totalEpisodes: anime.totalEpisodes,
+      fillerPercent: anime.fillerMapping?.fillerPercent || 0,
+    }));
 
     recentAnime = await prisma.anime.findMany({
       where: { seasonYear: { gte: 2023 } },
@@ -78,45 +88,11 @@ export default async function HomePage() {
             <h2 className="text-2xl font-bold gradient-text">
               Popular Filler Guides
             </h2>
+            <span className="ml-3 text-sm text-gray-400">
+              {fillerAnime.length} guides
+            </span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {fillerAnime.map((anime) => {
-              const fillerPercent = anime.fillerMapping?.fillerPercent || 0;
-              return (
-                <Link
-                  key={anime.id}
-                  href={`/anime/${anime.slug}/filler-list`}
-                  className="bg-anime-card rounded-xl p-4 border border-anime-border hover:border-purple-700/50 hover:glow-card-hover transition-all duration-300"
-                >
-                  <h3 className="text-white font-semibold mb-2">
-                    {anime.titleEnglish || anime.title}
-                  </h3>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-400">
-                      {anime.totalEpisodes} episodes
-                    </span>
-                    <span
-                      className={`font-bold ${
-                        fillerPercent > 30
-                          ? "text-red-400"
-                          : fillerPercent > 15
-                          ? "text-yellow-400"
-                          : "text-green-400"
-                      }`}
-                    >
-                      {Math.round(fillerPercent)}% filler
-                    </span>
-                  </div>
-                  <div className="mt-2 bg-gray-800 rounded-full h-2 overflow-hidden">
-                    <div
-                      className="bg-gradient-to-r from-red-500 to-pink-500 h-full rounded-full"
-                      style={{ width: `${fillerPercent}%` }}
-                    />
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+          <FillerCarousel items={fillerAnime} />
         </section>
       )}
 
