@@ -121,7 +121,7 @@ export default async function AfterPage({ params }: Props) {
               "@type": "ListItem",
               position: i + 1,
               name: item.titleEnglish || item.title,
-              url: `https://www.aniyume.net/anime/${item.slug}`,
+              url: `https://aniyume.net/anime/${item.slug}`,
             })),
           }),
         }}

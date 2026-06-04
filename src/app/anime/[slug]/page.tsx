@@ -125,7 +125,7 @@ export default async function AnimePage({ params }: Props) {
             <p className="text-muted-foreground text-lg mb-2">{anime.title}</p>
           )}
           <div className="mb-4">
-            <ShareButtons url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.aniyume.net'}/anime/${anime.slug}`} title={`${displayTitle} - AniYume`} />
+            <ShareButtons url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://aniyume.net'}/anime/${anime.slug}`} title={`${displayTitle} - AniYume`} />
           </div>
 
           {/* Metadata */}

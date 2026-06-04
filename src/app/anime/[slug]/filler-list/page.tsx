@@ -161,7 +161,7 @@ export default async function FillerListPage({ params }: Props) {
         Complete filler episode guide — know which episodes to skip
       </p>
       <div className="mb-8">
-        <ShareButtons url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.aniyume.net'}/anime/${slug}/filler-list`} title={`${displayTitle} Filler List`} />
+        <ShareButtons url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://aniyume.net'}/anime/${slug}/filler-list`} title={`${displayTitle} Filler List`} />
       </div>
 
       {/* Quick Stats */}
@@ -247,7 +247,7 @@ export default async function FillerListPage({ params }: Props) {
         totalCanon={stats.totalCanon}
         totalFiller={stats.totalFiller}
         totalMixed={stats.totalMixed}
-        shareUrl={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.aniyume.net'}/anime/${slug}/filler-list`}
+        shareUrl={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://aniyume.net'}/anime/${slug}/filler-list`}
       />
 
       <AdBanner className="mb-8" />

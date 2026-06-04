@@ -10,7 +10,7 @@ import ThemeProvider from "@/components/ThemeProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://www.aniyume.net'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://aniyume.net'),
   title: {
     default: "AniYume - Anime Filler Lists, Watch Orders & Episode Guides",
     template: "%s | AniYume",
