@@ -57,6 +57,17 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <head>
         <meta name="google-site-verification" content="K3fpGV_ip9kTOU9QK9hBVdRi3-Cr5tSAWSE3eg9iQmc" />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-M04J8CGEMR" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-M04J8CGEMR');
+            `,
+          }}
+        />
         {adsenseId && (
           <script
             async
