@@ -1,0 +1,25 @@
+{
+  "id": "FEAT-001",
+  "type": "fix",
+  "description": "Fix content rendering on all pages by rewriting content-generator.ts to output proper HTML with Tailwind classes instead of markdown. This eliminates the raw ## and ** symbols that currently display on pages.",
+  "status": "completed",
+  "steps": [
+    "Rewrite src/lib/content-generator.ts so that all generator functions (generateFillerPageContent, generateWatchOrderContent, generateEpisodeGuideContent, generateAnimePageContent, generateGenrePageContent, generateYearPageContent, generateAnimeLikeContent) return proper HTML strings with Tailwind CSS classes baked in. Replace markdown headings (##, ###) with styled <h2>, <h3> tags. Replace **bold** with <strong> or styled spans. Replace markdown lists with <ul>/<li> or styled divs. Use semantic HTML throughout with classes like text-gray-300, text-white, font-semibold, etc. to match the dark theme already used throughout the app.",
+    "Update the 6 page components that consume the content generator to remove the .replace(/\\n/g, '<br/>') transformation since the HTML output will be properly structured. The affected pages are: src/app/anime/[slug]/episodes/page.tsx, src/app/anime/[slug]/filler-list/page.tsx, src/app/anime/[slug]/watch-order/page.tsx, src/app/anime-like/[slug]/page.tsx, src/app/genre/[genre]/page.tsx, src/app/year/[year]/page.tsx. They each have a line like: <div dangerouslySetInnerHTML={{ __html: content.replace(/\\n/g, '<br/>') }} />. Change it to: <div dangerouslySetInnerHTML={{ __html: content }} />",
+    "Ensure the HTML output uses proper spacing with margin/padding classes, readable font sizes, and proper color contrast for the dark theme (bg-gray-900 base). Use classes like 'text-gray-300 leading-relaxed mb-4' for paragraphs, 'text-xl font-bold text-white mt-6 mb-3' for headings, 'text-purple-400 font-semibold' for emphasis, etc."
+  ],
+  "acceptance_criteria": [
+    "content-generator.ts returns valid HTML strings (no markdown notation like ##, **, or - list items)",
+    "All 6 page components use dangerouslySetInnerHTML={{ __html: content }} without the .replace(/\\n/g, '<br/>') hack",
+    "The HTML output includes Tailwind classes for styling (headings, paragraphs, lists, bold text)",
+    "TypeScript compiles without errors (npx tsc --noEmit)"
+  ],
+  "verification": [
+    "Run npx tsc --noEmit to confirm TypeScript compiles",
+    "Run npm run lint to confirm no lint errors",
+    "Grep for '## ' or '### ' in content-generator.ts to confirm no markdown headings remain",
+    "Grep for '.replace(/\\\\n/g' in the 6 page files to confirm the hack is removed"
+  ],
+  "blocked_reason": null,
+  "findings": "Pre-existing lint error in src/components/SearchBar.tsx (react-hooks/set-state-in-effect) unrelated to this change. TypeScript compiles clean. All markdown removed from content-generator.ts output, all 6 pages updated to remove the br-replacement hack."
+}

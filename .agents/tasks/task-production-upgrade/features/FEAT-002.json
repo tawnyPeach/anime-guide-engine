@@ -1,0 +1,31 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Expand seed script to 1000+ anime, integrate full filler dataset from GitHub API, fetch episode titles from Jikan, and create a Vercel Cron sync route for weekly re-seeding.",
+  "status": "completed",
+  "steps": [
+    "Update scripts/seed.ts: Change totalPages from 4 to 20 (20 pages x 50 = 1000 anime). Add better progress logging and error recovery (retry failed pages up to 3 times).",
+    "Update src/lib/filler-data.ts: Enhance fetchFillerDataFromGitHub() to actually parse the GitHub repo data. The function already exists but may not properly handle the API response format. Add a fallback to fetch from https://raw.githubusercontent.com/xsunzukz/anime-filler-episodes-api/main/data.json. Keep the local FILLER_DATABASE as final fallback.",
+    "Update scripts/seed.ts seedFillerData function: Call fetchFillerDataFromGitHub() instead of getAllFillerData() so it fetches the full remote dataset rather than just the 10 hardcoded entries.",
+    "Add a new function to scripts/seed.ts: seedEpisodeTitles() that iterates through all anime with malId set, fetches episode data from Jikan API (GET /anime/{id}/episodes), and updates Episode records with titles. Respect Jikan rate limits (350ms between requests). Process in batches with progress logging.",
+    "Create src/app/api/cron/sync/route.ts: A GET route handler that performs an incremental sync - fetches the first 5 pages from AniList (currently airing + recently updated), upserts anime records, updates filler data, and updates episode titles for new entries. Include a CRON_SECRET env var check for security (compare against Authorization header).",
+    "Update vercel.json to add cron configuration: { \"crons\": [{ \"path\": \"/api/cron/sync\", \"schedule\": \"0 3 * * 0\" }] } (weekly on Sunday at 3am UTC).",
+    "Update .env.example to include CRON_SECRET variable.",
+    "Add rate limiting helpers: create src/lib/rate-limiter.ts with a simple async sleep utility and a request queue that respects per-second limits for both AniList and Jikan APIs."
+  ],
+  "acceptance_criteria": [
+    "scripts/seed.ts fetches 20 pages (1000+ anime) from AniList",
+    "Filler data is fetched from the GitHub repository API rather than only using hardcoded local data",
+    "Episode titles are fetched from Jikan API and stored in Episode.title field",
+    "src/app/api/cron/sync/route.ts exists and performs incremental sync",
+    "vercel.json includes cron configuration",
+    "CRON_SECRET is checked in the sync route for security",
+    "The build still succeeds (the cron route compiles correctly)"
+  ],
+  "verification": [
+    "Run 'npm run build' to confirm all new routes and updated scripts compile without errors",
+    "Run 'npm run lint' to check for TypeScript errors"
+  ],
+  "blocked_reason": null,
+  "findings": "All new files compile and build cleanly. Pre-existing lint errors in SearchBar.tsx (react-hooks/set-state-in-effect) and unused AnimeCard import in anime-like page remain from before this feature. The cron route appears as a dynamic route (f) in the build output. Seed script TypeScript compiles cleanly with tsc --noEmit."
+}

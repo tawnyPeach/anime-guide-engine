@@ -1,0 +1,36 @@
+{
+  "id": "FEAT-005",
+  "type": "feat",
+  "description": "User engagement features: dark/light mode toggle, reading progress tracking (localStorage), bookmarks/favorites (localStorage), share buttons, Giscus comments placeholder, newsletter signup placeholder, image optimization with blur placeholders, and a blog section stub.",
+  "status": "completed",
+  "steps": [
+    "Implement dark/light mode toggle: Update src/app/layout.tsx to remove hardcoded 'dark' class. Create src/components/ThemeProvider.tsx (client component) that manages theme via localStorage and system preference. Create src/components/ThemeToggle.tsx button component. Add it to src/components/Header.tsx. Update src/app/globals.css to support both dark and light theme variables using CSS custom properties and the 'dark' class on html.",
+    "Create src/components/EpisodeTracker.tsx: A client component ('use client') that shows checkboxes next to episodes on the episodes page. Stores watched episode numbers in localStorage keyed by anime slug. Shows progress bar (X/Y episodes watched). Add it to src/app/anime/[slug]/episodes/page.tsx.",
+    "Create src/components/BookmarkButton.tsx: A client component that adds/removes anime from a localStorage favorites list. Show a heart/bookmark icon. Create src/app/bookmarks/page.tsx that reads the localStorage list and displays saved anime (client-side rendering since it depends on localStorage).",
+    "Create src/components/ShareButtons.tsx: A client component with share buttons for Twitter (X), Reddit, and WhatsApp. Use Web Share API where available, fall back to URL-based share links. Add it to anime detail pages and filler/watch-order pages.",
+    "Create src/components/Comments.tsx: A placeholder Giscus component. Include the giscus script tag with configuration placeholders (repo, repo-id, category, category-id). Add clear comments and a note that users need to configure their own GitHub Discussions. Add it to anime detail and filler pages.",
+    "Create src/components/Newsletter.tsx: A simple email signup form placeholder. Show an input + button styled to match the theme. On submit, show a 'Thanks for subscribing!' message (no backend - just UI). Add a note in the code about connecting to Buttondown or similar. Add it to the Footer or homepage.",
+    "Image optimization with blur placeholders: Update src/components/AnimeCard.tsx to use next/image with a tiny blurDataURL (a 1x1 pixel base64 encoded placeholder in the dominant color - purple-ish for the theme). Add placeholder='blur' and blurDataURL props. Similarly update the anime detail page hero image.",
+    "Create src/app/blog/page.tsx: A blog index page that reads markdown files from a src/content/blog/ directory. Create 2 sample blog posts as .md files (e.g., 'best-anime-2024.md' and 'how-to-skip-filler.md'). Use a simple markdown parser (add 'gray-matter' and 'remark' packages or just do raw string parsing for now). List posts with title, date, excerpt.",
+    "Create src/app/blog/[slug]/page.tsx: Individual blog post page that renders markdown content. Include generateStaticParams from the file list.",
+    "Update src/components/Header.tsx to add a 'Blog' nav link and a bookmarks icon link.",
+    "Add the BookmarkButton to src/app/anime/[slug]/page.tsx and AnimeCard components."
+  ],
+  "acceptance_criteria": [
+    "Dark/light mode toggle works and persists preference in localStorage",
+    "Episode tracker shows checkboxes and progress bar on episodes page",
+    "Bookmark/favorites system saves anime to localStorage and shows them on /bookmarks",
+    "Share buttons appear on anime pages with Twitter, Reddit, WhatsApp links",
+    "Giscus comments placeholder component exists with configuration instructions",
+    "Newsletter signup form displays in footer/homepage",
+    "Images use next/image with blur placeholder for perceived performance",
+    "Blog section has index page and individual post pages with sample content",
+    "Build succeeds with all new components and pages"
+  ],
+  "verification": [
+    "Run 'npm run build' to confirm all new pages and components compile",
+    "Run 'npm run lint' for TypeScript validation"
+  ],
+  "blocked_reason": null,
+  "findings": "Used useSyncExternalStore pattern for all localStorage-based client components to satisfy the strict react-hooks/set-state-in-effect ESLint rule in this project. Pre-existing lint error exists in SearchBar.tsx (not introduced by this feature). CSS warnings about escaped bracket selectors were resolved by removing those selectors (not needed since the light theme overrides target semantic class names instead). Build passes clean with all new pages generated successfully."
+}

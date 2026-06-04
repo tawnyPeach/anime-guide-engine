@@ -1,0 +1,27 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Expand seed script to support 5000+ anime (100 pages from AniList) with incremental/resumable batch processing. Split the current monolithic seed into a separate script that fetches anime data in batches and can resume where it left off.",
+  "status": "completed",
+  "steps": [
+    "Create scripts/seed-anime.ts - a new standalone script that fetches anime from AniList API in batches. Key requirements: (1) Fetches up to 100 pages (5000 anime) sorted by popularity, (2) Is resumable - tracks progress by checking what already exists in DB (queries the max anilistId page equivalent or counts existing records to determine which page to start from), (3) Uses upserts so running it multiple times is safe (idempotent), (4) Respects AniList rate limits using the existing rate-limiter.ts (1.5s between requests), (5) Processes in batches of 5-10 pages at a time with progress logging, (6) Accepts optional --start-page and --end-page CLI arguments to allow manual batch control, (7) Creates episodes placeholders and stores relations just like the current seed.ts does, (8) Reports progress after each page.",
+    "Update the existing scripts/seed.ts main() function to call only seedFillerData(), seedEpisodeTitles(), generateWatchOrders(), and generateSEOPages() - remove the seedAnimeFromAniList() call from it since that's now handled by seed-anime.ts. OR better: keep seed.ts as-is for backwards compatibility but add the new seed-anime.ts as the dedicated large-scale anime fetcher.",
+    "Add npm scripts to package.json: \"seed:anime\": \"tsx scripts/seed-anime.ts\" so users can run `npm run seed:anime` or `npm run seed:anime -- --start-page 1 --end-page 100`",
+    "The script should log clear progress like: 'Page 45/100 - 2250 anime processed so far. 47 new, 3 updated this page.' and at the end print total stats."
+  ],
+  "acceptance_criteria": [
+    "scripts/seed-anime.ts exists and compiles with TypeScript",
+    "The script supports --start-page and --end-page arguments",
+    "The script uses upserts and is idempotent",
+    "The script respects rate limits (uses sleep/anilistLimiter between requests)",
+    "package.json has a seed:anime script",
+    "TypeScript compiles without errors (npx tsc --noEmit)"
+  ],
+  "verification": [
+    "Run npx tsc --noEmit to confirm TypeScript compiles",
+    "Verify scripts/seed-anime.ts exists with proper imports",
+    "Verify package.json includes the seed:anime script"
+  ],
+  "blocked_reason": null,
+  "findings": "Script created at scripts/seed-anime.ts. TypeScript compiles clean. Pre-existing lint error in SearchBar.tsx remains unrelated. Added seed:anime npm script to package.json. Script supports --start-page and --end-page CLI args, auto-resumes based on existing DB count, uses upserts for idempotency, and includes exponential backoff retry logic."
+}

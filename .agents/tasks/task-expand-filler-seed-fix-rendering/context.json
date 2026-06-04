@@ -1,0 +1,29 @@
+{
+  "project_type": "Next.js 16 App Router SEO site with Prisma ORM",
+  "language": "TypeScript",
+  "build_system": "npm with Next.js build, tsx for scripts",
+  "test_framework": "No test framework configured - lint only",
+  "build_command": "npm run build",
+  "test_command": "npm run lint",
+  "verification_instructions": "1. Run npm run lint to verify no errors. 2. Run npx tsc --noEmit to verify TypeScript compiles. 3. Do NOT run seed scripts (they require network access to AniList/Jikan and take too long).",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "1. npm install 2. npx prisma generate",
+  "environment_constraints": "OPEN_INTERNET network mode. Node.js 22 available. PostgreSQL database is remote (Neon). Do NOT run seed scripts during verification. The build may fail on generateStaticParams since there is no local DB - this is expected and acceptable.",
+  "contribution_requirements": "Push to main branch directly. Commit meaningful changes.",
+  "key_patterns": "Content generator returns markdown strings. Pages use dangerouslySetInnerHTML with .replace(/\\n/g, '<br/>') to render. Seed script uses AniList GraphQL with rate limiting. Filler data is in src/lib/filler-data.ts with a hardcoded FILLER_DATABASE array. The fetchFillerDataFromGitHub function attempts to fetch from GitHub but the repo is actually a web scraper of animefillerlist.com (no static JSON file exists). Scripts live in scripts/ dir and run via tsx.",
+  "relevant_files": [
+    "src/lib/content-generator.ts",
+    "src/lib/filler-data.ts",
+    "src/lib/anilist.ts",
+    "src/lib/rate-limiter.ts",
+    "scripts/seed.ts",
+    "src/app/anime/[slug]/episodes/page.tsx",
+    "src/app/anime/[slug]/filler-list/page.tsx",
+    "src/app/anime/[slug]/watch-order/page.tsx",
+    "src/app/anime-like/[slug]/page.tsx",
+    "src/app/genre/[genre]/page.tsx",
+    "src/app/year/[year]/page.tsx",
+    "package.json"
+  ],
+  "directory_structure": "src/app/ - Next.js App Router pages. src/lib/ - shared library code. src/components/ - React components. scripts/ - CLI scripts (seed.ts). prisma/ - schema and migrations."
+}

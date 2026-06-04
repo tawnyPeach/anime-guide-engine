@@ -1,0 +1,36 @@
+{
+  "id": "FEAT-004",
+  "type": "feat",
+  "description": "New page types: Studio pages, Comparison pages, Season pages, Top lists pages. Plus enhanced recommendations engine with genre overlap scoring + popularity weighting, and streaming availability display.",
+  "status": "completed",
+  "steps": [
+    "Create src/app/studio/[slug]/page.tsx: A page listing all anime by a specific studio. Parse the 'studios' JSON field from Anime records. Generate a slug from the studio name. Show studio name as h1, count of anime, and grid of AnimeCards. Include generateStaticParams that extracts unique studios from all anime. Add generateMetadata with canonical URL and OG image.",
+    "Create src/app/compare/[slugs]/page.tsx: A comparison page showing two anime side-by-side. Parse the slugs param as 'slug1-vs-slug2'. Show both anime with their stats (score, episodes, genres, year, studio, format) in a comparison table. Include genre overlap visualization. Add generateMetadata. Add generateStaticParams for the top 50 most popular anime paired with their similar anime.",
+    "Create src/app/season/[season]/page.tsx: Season archive pages like /season/winter-2024. Parse 'season' param as '{season}-{year}' (e.g., winter-2024). Query anime with matching season and seasonYear. Show seasonal chart grid with AnimeCards. Include generateStaticParams for recent 8 seasons. Add generateMetadata with canonical.",
+    "Create src/app/top/[type]/page.tsx: Top lists like /top/highest-rated, /top/most-popular, /top/longest-running. Parse type param and query accordingly: highest-rated = orderBy averageScore desc, most-popular = orderBy popularity desc, longest-running = orderBy totalEpisodes desc. Show ranked list with AnimeCards. Include generateStaticParams for the 3 list types. Add generateMetadata.",
+    "Enhance the recommendations engine in src/app/anime-like/[slug]/page.tsx: Replace the simple genre overlap with a weighted scoring algorithm: genre_overlap_score * 3 + format_match * 2 + popularity_percentile * 1 + same_studio_bonus * 1.5 + year_proximity_bonus * 0.5. This produces better recommendations than just genre matching.",
+    "Create src/lib/recommendations.ts: Extract the recommendation scoring logic into a reusable module. Export a function getRecommendations(animeId, limit) that performs the weighted scoring and returns ranked results.",
+    "Add streaming availability display: Update src/app/anime/[slug]/page.tsx to show a 'Where to Watch' section. Since AniList external links include streaming sites, update the AniList GraphQL query in src/lib/anilist.ts to fetch externalLinks { url site type } and store them in a new field on the Anime model. Display recognized streaming sites (Crunchyroll, Funimation, Netflix, Hulu, etc.) with their icons/links.",
+    "Update prisma/schema.prisma: Add 'externalLinks String?' field to Anime model (JSON array of {url, site, type}).",
+    "Update src/lib/anilist.ts MEDIA_FRAGMENT to include externalLinks { url site type } in the GraphQL query.",
+    "Update scripts/seed.ts to store externalLinks when seeding anime.",
+    "Update src/app/sitemap.ts to include new page types: /studio/[slug], /compare/[slugs], /season/[season], /top/[type].",
+    "Update src/components/Header.tsx navigation to include links to /top/most-popular and current season page."
+  ],
+  "acceptance_criteria": [
+    "src/app/studio/[slug]/page.tsx renders a list of anime by studio",
+    "src/app/compare/[slugs]/page.tsx renders side-by-side comparison of two anime",
+    "src/app/season/[season]/page.tsx renders seasonal anime grids",
+    "src/app/top/[type]/page.tsx renders ranked lists with 3 types supported",
+    "src/lib/recommendations.ts provides weighted scoring beyond simple genre overlap",
+    "Anime detail page shows streaming availability from external links",
+    "Sitemap includes all new page types",
+    "Build succeeds with all new pages"
+  ],
+  "verification": [
+    "Run 'npm run build' to confirm all new pages compile and generate static params",
+    "Run 'npm run lint' for TypeScript validation"
+  ],
+  "blocked_reason": null,
+  "findings": "All new pages compile and build successfully. The build generates static params for season pages (8 recent seasons), top pages (3 types), and studio pages. Pre-existing lint error in SearchBar.tsx remains (react-hooks/set-state-in-effect) from prior features. The anime-like page now uses the weighted scoring from src/lib/recommendations.ts. The streaming availability section on the anime detail page renders conditionally based on externalLinks data. The sitemap includes entries for studio, season, top, and compare pages."
+}

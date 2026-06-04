@@ -1,0 +1,26 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Expand filler data to 100+ anime by (1) massively expanding the hardcoded FILLER_DATABASE in src/lib/filler-data.ts and (2) creating a script that scrapes animefillerlist.com to fetch filler data and matches it against the database. The GitHub repo at xsunzukz/anime-filler-episodes-api is actually a scraper of animefillerlist.com - it has no static data file. Our script should scrape the same source directly.",
+  "status": "completed",
+  "steps": [
+    "Expand the FILLER_DATABASE array in src/lib/filler-data.ts from ~10 entries to 100+ entries with hardcoded filler data for popular long-running anime. Include data for: Naruto, Naruto Shippuden, Bleach, One Piece, Dragon Ball Z, Fairy Tail, Boruto, Black Clover, Gintama, Dragon Ball (already present), plus add: InuYasha (167 eps, many fillers), Rurouni Kenshin, Soul Eater, D.Gray-man, Katekyo Hitman Reborn, Sailor Moon, Yu Yu Hakusho, Hunter x Hunter (2011), Fullmetal Alchemist (2003), Pokemon, Detective Conan/Case Closed, Digimon Adventure, Dragon Ball GT, Dragon Ball Super, Bleach: Thousand Year Blood War, Sword Art Online, Tokyo Ghoul, My Hero Academia, Demon Slayer, Attack on Titan, Death Note, Jujutsu Kaisen, Mob Psycho 100, Cowboy Bebop, Trigun, Neon Genesis Evangelion, Code Geass, Steins;Gate, Psycho-Pass, Fate/Stay Night, Fate/Zero, Re:Zero, Konosuba, Overlord, That Time I Got Reincarnated as a Slime, Vinland Saga, Dr. Stone, Fire Force, Blue Exorcist, The Seven Deadly Sins, Magi, Haikyuu, Kuroko's Basketball, Ace of Diamond, Food Wars, One Punch Man, Mob Psycho 100, Berserk, Claymore, Hellsing Ultimate, Parasyte, Ajin, Tokyo Revengers, Chainsaw Man, Spy x Family, Oshi no Ko, Frieren, Solo Leveling, Dandadan, Mashle, Undead Unluck, Zom 100, Hell's Paradise, Pluto, Blue Lock, Ranking of Kings, Bocchi the Rock, Lycoris Recoil, Cyberpunk Edgerunners, Summertime Rendering, Made in Abyss, Mushoku Tensei, 86 Eighty Six, Vivy, Odd Taxi, Wonder Egg Priority, Akudama Drive, Jujutsu Kaisen Season 2, Oshi no Ko Season 2, and more. For anime that have zero or very few filler episodes (like most 12-24 ep anime), use empty arrays for fillerEpisodes. The key is having 100+ entries with accurate filler data where it exists.",
+    "Create scripts/seed-filler.ts - a standalone script that: (1) Reads a list of anime show slugs from animefillerlist.com, (2) Scrapes the filler data for each show using the same cheerio-based approach as the xsunzukz repo (fetching https://www.animefillerlist.com/shows/{slug}), (3) Matches the scraped anime against the existing database by slug/title, (4) Upserts FillerMapping records and updates Episode filler markers. The script should: use rate limiting (1 req/sec to be polite), be resumable (skip anime that already have filler mappings unless --force flag is passed), log progress, handle errors gracefully. Install cheerio as a dependency if needed.",
+    "Update the fetchFillerDataFromGitHub function in src/lib/filler-data.ts to be a no-op that just returns FILLER_DATABASE (since the GitHub repo has no static JSON to fetch). Rename it to something clearer or just make it return the local data directly. The seed-filler script will be the proper way to fetch fresh data.",
+    "Add a 'seed:filler' script to package.json: \"seed:filler\": \"tsx scripts/seed-filler.ts\""
+  ],
+  "acceptance_criteria": [
+    "FILLER_DATABASE in src/lib/filler-data.ts contains 100+ entries",
+    "scripts/seed-filler.ts exists and is a valid TypeScript file that compiles",
+    "package.json has a seed:filler script",
+    "TypeScript compiles without errors (npx tsc --noEmit)",
+    "The seed-filler script handles rate limiting, error recovery, and can be run idempotently"
+  ],
+  "verification": [
+    "Run npx tsc --noEmit to confirm TypeScript compiles",
+    "Count entries in FILLER_DATABASE to confirm 100+",
+    "Verify scripts/seed-filler.ts exists and imports correctly"
+  ],
+  "blocked_reason": null,
+  "findings": "FILLER_DATABASE expanded to 107 entries (107 slug: occurrences). cheerio installed as dependency. Pre-existing lint error in SearchBar.tsx (react-hooks/set-state-in-effect) remains unrelated to this change. TypeScript compiles clean."
+}
