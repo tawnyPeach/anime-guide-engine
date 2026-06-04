@@ -92,7 +92,7 @@ export default function FillerCarousel({ items }: FillerCarouselProps) {
                 </h3>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-muted-foreground">
-                    {anime.totalEpisodes} eps
+                    {anime.totalEpisodes > 0 ? `${anime.totalEpisodes} eps` : "Ongoing"}
                   </span>
                   <span
                     className={`font-bold ${
