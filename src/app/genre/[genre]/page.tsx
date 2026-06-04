@@ -4,6 +4,7 @@ import AnimeCard from "@/components/AnimeCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdBanner from "@/components/AdBanner";
 import LoadMore from "@/components/LoadMore";
+import GenrePageClient from "@/components/GenrePageClient";
 import {
   generateGenrePageContent,
   generateMetaTitle,
@@ -15,6 +16,27 @@ export const revalidate = 86400;
 interface Props {
   params: Promise<{ genre: string }>;
 }
+
+const RELATED_GENRES: Record<string, string[]> = {
+  Action: ["Adventure", "Sci-Fi", "Fantasy", "Thriller"],
+  Adventure: ["Action", "Fantasy", "Sci-Fi"],
+  Comedy: ["Romance", "Slice of Life", "School"],
+  Drama: ["Romance", "Psychological", "Music"],
+  Fantasy: ["Adventure", "Action", "Supernatural", "Isekai"],
+  Horror: ["Thriller", "Supernatural", "Mystery", "Psychological"],
+  Romance: ["Drama", "Comedy", "Slice of Life"],
+  "Sci-Fi": ["Action", "Mecha", "Thriller"],
+  Mystery: ["Thriller", "Psychological", "Horror"],
+  Thriller: ["Mystery", "Horror", "Psychological", "Action"],
+  Sports: ["Drama", "Comedy", "School"],
+  Supernatural: ["Fantasy", "Horror", "Action"],
+};
+
+const ALL_GENRES = [
+  "Action", "Adventure", "Comedy", "Drama", "Fantasy",
+  "Horror", "Mystery", "Romance", "Sci-Fi", "Thriller",
+  "Sports", "Supernatural", "Slice of Life", "Mecha",
+];
 
 function formatGenreName(slug: string): string {
   return slug
@@ -56,21 +78,45 @@ export default async function GenrePage({ params }: Props) {
   const { genre } = await params;
   const genreName = formatGenreName(genre);
 
-  // Find anime that contain this genre
-  const allAnime = await prisma.anime.findMany({
-    where: {
-      genres: { contains: genreName },
-    },
-    orderBy: { popularity: "desc" },
-    take: 20,
-    include: { fillerMapping: { select: { totalFiller: true, fillerPercent: true } } },
-  });
-
-  const total = await prisma.anime.count({
-    where: { genres: { contains: genreName } },
-  });
+  // Parallel queries for all sections
+  const [allAnime, total, currentlyAiring, hiddenGems] = await Promise.all([
+    // Main grid
+    prisma.anime.findMany({
+      where: { genres: { contains: genreName } },
+      orderBy: { popularity: "desc" },
+      take: 20,
+      include: { fillerMapping: { select: { totalFiller: true, fillerPercent: true } } },
+    }),
+    // Total count
+    prisma.anime.count({
+      where: { genres: { contains: genreName } },
+    }),
+    // Currently Airing
+    prisma.anime.findMany({
+      where: {
+        genres: { contains: genreName },
+        status: "RELEASING",
+      },
+      orderBy: { popularity: "desc" },
+      take: 5,
+    }),
+    // Hidden Gems: high score, low popularity
+    prisma.anime.findMany({
+      where: {
+        genres: { contains: genreName },
+        averageScore: { gt: 75 },
+      },
+      orderBy: { popularity: "asc" },
+      take: 5,
+    }),
+  ]);
 
   const content = generateGenrePageContent(genreName, allAnime.length);
+
+  // Related genres
+  const relatedGenres =
+    RELATED_GENRES[genreName] ||
+    ALL_GENRES.filter((g) => g.toLowerCase() !== genreName.toLowerCase());
 
   return (
     <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
@@ -106,6 +152,33 @@ export default async function GenrePage({ params }: Props) {
         </div>
       </div>
 
+      {/* Currently Airing Section */}
+      {currentlyAiring.length > 0 && (
+        <section className="mb-8">
+          <h2 className="text-xl font-bold text-foreground mb-4">
+            Currently Airing in {genreName}
+          </h2>
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border">
+            {currentlyAiring.map((anime, index) => (
+              <div key={anime.id} className="min-w-[160px] max-w-[180px] flex-shrink-0">
+                <AnimeCard
+                  title={anime.title}
+                  titleEnglish={anime.titleEnglish}
+                  slug={anime.slug}
+                  coverImage={anime.coverImage}
+                  genres={JSON.parse(anime.genres || "[]")}
+                  totalEpisodes={anime.totalEpisodes}
+                  averageScore={anime.averageScore}
+                  status={anime.status}
+                  seasonYear={anime.seasonYear}
+                  index={index}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Content */}
       <article className="prose prose-themed max-w-none mb-8">
         <div
@@ -114,6 +187,9 @@ export default async function GenrePage({ params }: Props) {
       </article>
 
       <AdBanner className="mb-8" />
+
+      {/* Genre Filter Client Component */}
+      <GenrePageClient genre={genreName} />
 
       {/* Anime Grid */}
       {allAnime.length > 0 ? (
@@ -156,27 +232,50 @@ export default async function GenrePage({ params }: Props) {
 
       <AdBanner className="mb-8" />
 
+      {/* Hidden Gems Section */}
+      {hiddenGems.length > 0 && (
+        <section className="mb-8">
+          <h2 className="text-xl font-bold text-foreground mb-2">
+            Hidden Gems - High Quality, Under the Radar
+          </h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            These {genreName.toLowerCase()} anime scored above 7.5 but fly under the radar with lower popularity.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {hiddenGems.map((anime, index) => (
+              <AnimeCard
+                key={anime.id}
+                title={anime.title}
+                titleEnglish={anime.titleEnglish}
+                slug={anime.slug}
+                coverImage={anime.coverImage}
+                genres={JSON.parse(anime.genres || "[]")}
+                totalEpisodes={anime.totalEpisodes}
+                averageScore={anime.averageScore}
+                status={anime.status}
+                seasonYear={anime.seasonYear}
+                index={index}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Related Genres */}
       <section className="mb-8">
         <h2 className="text-xl font-bold text-foreground mb-4">
-          Explore More Genres
+          Related Genres
         </h2>
         <div className="flex flex-wrap gap-2">
-          {[
-            "Action", "Adventure", "Comedy", "Drama", "Fantasy",
-            "Horror", "Mystery", "Romance", "Sci-Fi", "Thriller",
-            "Sports", "Supernatural",
-          ]
-            .filter((g) => g.toLowerCase() !== genreName.toLowerCase())
-            .map((g) => (
-              <a
-                key={g}
-                href={`/genre/${g.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
-                className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
-              >
-                {g}
-              </a>
-            ))}
+          {relatedGenres.map((g) => (
+            <a
+              key={g}
+              href={`/genre/${g.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
+              className="bg-card text-muted-foreground px-4 py-2 rounded-xl border border-border hover:border-primary/40 hover:text-primary text-sm transition-all duration-200"
+            >
+              {g}
+            </a>
+          ))}
         </div>
       </section>
     </div>
