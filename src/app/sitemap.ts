@@ -190,6 +190,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
       select: { slug: true, updatedAt: true },
       orderBy: { popularity: "desc" },
+      take: 200,
     });
     afterPages = animeWithRelations.map((anime) => ({
       url: `${SITE_URL}/after/${anime.slug}`,

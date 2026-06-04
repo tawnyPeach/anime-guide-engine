@@ -250,39 +250,39 @@ export default async function TopListPage({ params }: Props) {
 
       <AdBanner className="mb-8" />
 
-      {allAnime.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
-          {allAnime.map((anime, index) => (
-            <div key={anime.id} className="relative">
-              <span className="absolute top-2 left-2 z-10 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs font-bold px-2 py-1 rounded-md shadow-lg">
-                #{index + 1}
-              </span>
-              <AnimeCard
-                title={anime.title}
-                titleEnglish={anime.titleEnglish}
-                slug={anime.slug}
-                coverImage={anime.coverImage}
-                genres={JSON.parse(anime.genres || "[]")}
-                totalEpisodes={anime.totalEpisodes}
-                averageScore={anime.averageScore}
-                status={anime.status}
-                seasonYear={anime.seasonYear}
-                fillerCount={anime.fillerMapping?.totalFiller}
-                fillerPercent={anime.fillerMapping?.fillerPercent}
-              />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="bg-card rounded-xl p-8 text-center mb-8 border border-border">
-          <p className="text-muted-foreground">
-            No anime data available yet. Run the seed script to populate the database.
-          </p>
-        </div>
-      )}
-
-      {/* Client-side filter bar and pagination */}
-      <TopFilterBar type={type} />
+      {/* Client-side filter bar and pagination - SSR grid passed as children */}
+      <TopFilterBar type={type}>
+        {allAnime.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
+            {allAnime.map((anime, index) => (
+              <div key={anime.id} className="relative">
+                <span className="absolute top-2 left-2 z-10 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs font-bold px-2 py-1 rounded-md shadow-lg">
+                  #{index + 1}
+                </span>
+                <AnimeCard
+                  title={anime.title}
+                  titleEnglish={anime.titleEnglish}
+                  slug={anime.slug}
+                  coverImage={anime.coverImage}
+                  genres={JSON.parse(anime.genres || "[]")}
+                  totalEpisodes={anime.totalEpisodes}
+                  averageScore={anime.averageScore}
+                  status={anime.status}
+                  seasonYear={anime.seasonYear}
+                  fillerCount={anime.fillerMapping?.totalFiller}
+                  fillerPercent={anime.fillerMapping?.fillerPercent}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-card rounded-xl p-8 text-center mb-8 border border-border">
+            <p className="text-muted-foreground">
+              No anime data available yet. Run the seed script to populate the database.
+            </p>
+          </div>
+        )}
+      </TopFilterBar>
 
       <AdBanner className="mb-8" />
     </div>

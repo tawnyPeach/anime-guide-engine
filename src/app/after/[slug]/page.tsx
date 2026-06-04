@@ -65,34 +65,32 @@ export default async function AfterPage({ params }: Props) {
   const displayTitle = anime.titleEnglish || anime.title;
   const genres: string[] = JSON.parse(anime.genres || "[]");
 
-  // Get sequels
-  const sequelRelations = await prisma.animeRelation.findMany({
-    where: {
-      fromAnimeId: anime.id,
-      relationType: "SEQUEL",
-    },
-    include: {
-      toAnime: {
-        include: { fillerMapping: true },
+  // Get sequels, side stories, and recommendations in parallel
+  const [sequelRelations, sideStoryRelations, recommendations] = await Promise.all([
+    prisma.animeRelation.findMany({
+      where: {
+        fromAnimeId: anime.id,
+        relationType: "SEQUEL",
       },
-    },
-  });
-
-  // Get side stories and spin-offs
-  const sideStoryRelations = await prisma.animeRelation.findMany({
-    where: {
-      fromAnimeId: anime.id,
-      relationType: { in: ["SIDE_STORY", "SPIN_OFF"] },
-    },
-    include: {
-      toAnime: {
-        include: { fillerMapping: true },
+      include: {
+        toAnime: {
+          include: { fillerMapping: true },
+        },
       },
-    },
-  });
-
-  // Get recommendations
-  const recommendations = await getRecommendations(anime.id, 10);
+    }),
+    prisma.animeRelation.findMany({
+      where: {
+        fromAnimeId: anime.id,
+        relationType: { in: ["SIDE_STORY", "SPIN_OFF"] },
+      },
+      include: {
+        toAnime: {
+          include: { fillerMapping: true },
+        },
+      },
+    }),
+    getRecommendations(anime.id, 10),
+  ]);
 
   // Build structured data
   const allItems = [

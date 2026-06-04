@@ -3,8 +3,8 @@ import { cached } from "@/lib/cache";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const genre = searchParams.get("genre") || "";
-  const subGenre = searchParams.get("subGenre") || undefined;
+  const genre = (searchParams.get("genre") || "").slice(0, 100);
+  const subGenre = searchParams.get("subGenre")?.slice(0, 100) || undefined;
   const yearMin = searchParams.get("yearMin")
     ? parseInt(searchParams.get("yearMin")!, 10)
     : undefined;
@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     : undefined;
   const format = searchParams.get("format") || undefined;
   const sort = searchParams.get("sort") || "popularity";
-  const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
+  const page = Math.max(1, Math.min(parseInt(searchParams.get("page") || "1", 10), 500));
   const limit = Math.min(parseInt(searchParams.get("limit") || "20", 10), 50);
 
   const skip = (page - 1) * limit;

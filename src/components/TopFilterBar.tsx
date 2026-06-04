@@ -38,9 +38,10 @@ interface AnimeItem {
 
 interface TopFilterBarProps {
   type: string;
+  children?: React.ReactNode;
 }
 
-export default function TopFilterBar({ type }: TopFilterBarProps) {
+export default function TopFilterBar({ type, children }: TopFilterBarProps) {
   const [genre, setGenre] = useState("");
   const [year, setYear] = useState("");
   const [format, setFormat] = useState("");
@@ -149,6 +150,9 @@ export default function TopFilterBar({ type }: TopFilterBarProps) {
           </select>
         </div>
       </div>
+
+      {/* Show SSR children when no filter is active, otherwise show filtered results */}
+      {!hasFiltered && children}
 
       {/* Results */}
       {hasFiltered && (

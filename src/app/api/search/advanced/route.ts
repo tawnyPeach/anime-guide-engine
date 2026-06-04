@@ -4,13 +4,13 @@ import { cached } from "@/lib/cache";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const q = searchParams.get("q")?.trim().slice(0, 200) || "";
-  const genre = searchParams.get("genre") || "";
+  const genre = (searchParams.get("genre") || "").slice(0, 100);
   const yearMin = searchParams.get("yearMin") || "";
   const yearMax = searchParams.get("yearMax") || "";
   const scoreMin = searchParams.get("scoreMin") || "";
-  const format = searchParams.get("format") || "";
+  const format = (searchParams.get("format") || "").slice(0, 100);
   const status = searchParams.get("status") || "";
-  const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
+  const page = Math.max(1, Math.min(parseInt(searchParams.get("page") || "1", 10), 500));
   const limit = Math.min(parseInt(searchParams.get("limit") || "20", 10), 50);
 
   const skip = (page - 1) * limit;
