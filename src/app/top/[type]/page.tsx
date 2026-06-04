@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import AnimeCard from "@/components/AnimeCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdBanner from "@/components/AdBanner";
+import TopFilterBar from "@/components/TopFilterBar";
 
 export const revalidate = 86400;
 
@@ -26,6 +27,21 @@ const LIST_TYPES: Record<string, { title: string; description: string; emoji: st
     title: "Longest Running Anime",
     description: "Anime series with the most episodes, from long-running shonen to enduring classics.",
     emoji: "📺",
+  },
+  "currently-airing": {
+    title: "Currently Airing Anime",
+    description: "Anime series currently broadcasting new episodes.",
+    emoji: "📡",
+  },
+  "most-filler": {
+    title: "Most Filler Anime",
+    description: "Anime series ranked by highest filler episode percentage.",
+    emoji: "⏭️",
+  },
+  "least-filler": {
+    title: "Least Filler Anime",
+    description: "Anime series with the lowest filler percentage - mostly canon content.",
+    emoji: "✅",
   },
 };
 
@@ -56,7 +72,24 @@ export async function generateStaticParams() {
     { type: "highest-rated" },
     { type: "most-popular" },
     { type: "longest-running" },
+    { type: "currently-airing" },
+    { type: "most-filler" },
+    { type: "least-filler" },
   ];
+}
+
+interface AnimeWithFiller {
+  id: number;
+  title: string;
+  titleEnglish: string | null;
+  slug: string;
+  coverImage: string | null;
+  genres: string;
+  totalEpisodes: number;
+  averageScore: number | null;
+  status: string | null;
+  seasonYear: number | null;
+  fillerMapping?: { totalFiller: number; fillerPercent: number } | null;
 }
 
 export default async function TopListPage({ params }: Props) {
@@ -65,7 +98,7 @@ export default async function TopListPage({ params }: Props) {
 
   if (!listType) notFound();
 
-  let allAnime: Awaited<ReturnType<typeof prisma.anime.findMany<{ include: { fillerMapping: { select: { totalFiller: true; fillerPercent: true } } } }>>> = [];
+  let allAnime: AnimeWithFiller[] = [];
 
   try {
     switch (type) {
@@ -92,6 +125,69 @@ export default async function TopListPage({ params }: Props) {
           include: { fillerMapping: { select: { totalFiller: true, fillerPercent: true } } },
         });
         break;
+      case "currently-airing":
+        allAnime = await prisma.anime.findMany({
+          where: { status: "RELEASING" },
+          orderBy: { popularity: "desc" },
+          take: 100,
+          include: { fillerMapping: { select: { totalFiller: true, fillerPercent: true } } },
+        });
+        break;
+      case "most-filler": {
+        const fillerResults = await prisma.fillerMapping.findMany({
+          orderBy: { fillerPercent: "desc" },
+          take: 100,
+          include: {
+            anime: {
+              select: {
+                id: true,
+                title: true,
+                titleEnglish: true,
+                slug: true,
+                coverImage: true,
+                genres: true,
+                totalEpisodes: true,
+                averageScore: true,
+                status: true,
+                seasonYear: true,
+              },
+            },
+          },
+        });
+        allAnime = fillerResults.map((fm) => ({
+          ...fm.anime,
+          fillerMapping: { totalFiller: fm.totalFiller, fillerPercent: fm.fillerPercent },
+        }));
+        break;
+      }
+      case "least-filler": {
+        const leastFillerResults = await prisma.fillerMapping.findMany({
+          where: { fillerPercent: { gt: 0 } },
+          orderBy: { fillerPercent: "asc" },
+          take: 100,
+          include: {
+            anime: {
+              select: {
+                id: true,
+                title: true,
+                titleEnglish: true,
+                slug: true,
+                coverImage: true,
+                genres: true,
+                totalEpisodes: true,
+                averageScore: true,
+                status: true,
+                seasonYear: true,
+              },
+            },
+          },
+        });
+        allAnime = leastFillerResults.map((fm) => ({
+          ...fm.anime,
+          fillerMapping: { totalFiller: fm.totalFiller, fillerPercent: fm.fillerPercent },
+        }));
+        break;
+      }
     }
   } catch {
     // Graceful degradation
@@ -184,6 +280,9 @@ export default async function TopListPage({ params }: Props) {
           </p>
         </div>
       )}
+
+      {/* Client-side filter bar and pagination */}
+      <TopFilterBar type={type} />
 
       <AdBanner className="mb-8" />
     </div>

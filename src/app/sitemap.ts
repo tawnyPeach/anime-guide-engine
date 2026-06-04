@@ -153,6 +153,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "highest-rated",
     "most-popular",
     "longest-running",
+    "currently-airing",
+    "most-filler",
+    "least-filler",
   ].map((type) => ({
     url: `${SITE_URL}/top/${type}`,
     lastModified: new Date(),
