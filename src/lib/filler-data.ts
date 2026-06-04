@@ -1,9 +1,8 @@
 /**
- * Filler Episode Data Integration
- * Source: https://github.com/xsunzukz/anime-filler-episodes-api
- * 
- * We store a local copy of the filler data and sync periodically.
- * This module handles parsing and normalization of filler episode data.
+ * Filler Episode Data
+ *
+ * Local database of filler episode information for 100+ anime.
+ * For fresh data from animefillerlist.com, run: npm run seed:filler
  */
 
 export interface FillerEntry {
@@ -16,8 +15,9 @@ export interface FillerEntry {
 }
 
 // Well-known filler data for popular anime (embedded for reliability)
-// In production, this would be fetched from the GitHub API or a local JSON file
+// To fetch updated filler data from animefillerlist.com, use: npm run seed:filler
 const FILLER_DATABASE: FillerEntry[] = [
+  // --- Long-running shonen with significant filler ---
   {
     title: "Naruto",
     slug: "naruto",
@@ -98,66 +98,779 @@ const FILLER_DATABASE: FillerEntry[] = [
     mixedCanonFillerEpisodes: [3, 8, 26, 38, 68, 85, 125],
     canonEpisodes: [],
   },
+  {
+    title: "InuYasha",
+    slug: "inuyasha",
+    totalEpisodes: 167,
+    fillerEpisodes: [59, 63, 64, 65, 72, 75, 76, 77, 78, 79, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 127, 128, 129, 130, 133, 134, 135, 136, 137, 138, 139, 140, 162, 163, 164, 165, 166, 167],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Rurouni Kenshin",
+    slug: "rurouni-kenshin",
+    totalEpisodes: 95,
+    fillerEpisodes: [28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Soul Eater",
+    slug: "soul-eater",
+    totalEpisodes: 51,
+    fillerEpisodes: [35, 36],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Katekyo Hitman Reborn",
+    slug: "katekyo-hitman-reborn",
+    totalEpisodes: 203,
+    fillerEpisodes: [34, 35, 36, 37, 38, 39, 64, 74, 75, 79, 80, 81, 82, 97, 98, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Sailor Moon",
+    slug: "sailor-moon",
+    totalEpisodes: 200,
+    fillerEpisodes: [2, 5, 6, 8, 13, 15, 16, 17, 19, 20, 21, 47, 48, 50, 52, 54, 55, 57, 58, 59, 61, 63, 67, 69, 70, 72, 73, 74, 76, 77, 78, 79, 80, 81, 82, 83, 87, 88, 93, 94, 95, 96, 97, 102, 103, 104, 105, 108, 109, 110, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Yu Yu Hakusho",
+    slug: "yu-yu-hakusho",
+    totalEpisodes: 112,
+    fillerEpisodes: [27, 57, 58, 59],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Dragon Ball GT",
+    slug: "dragon-ball-gt",
+    totalEpisodes: 64,
+    fillerEpisodes: [41, 42, 43, 44, 45, 46, 47, 48],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Dragon Ball Super",
+    slug: "dragon-ball-super",
+    totalEpisodes: 131,
+    fillerEpisodes: [69, 70, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 86, 87, 88, 89, 90, 91],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "The Seven Deadly Sins",
+    slug: "the-seven-deadly-sins",
+    totalEpisodes: 100,
+    fillerEpisodes: [14, 15],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Blue Exorcist",
+    slug: "blue-exorcist",
+    totalEpisodes: 25,
+    fillerEpisodes: [17, 18, 19, 20, 21, 22, 23, 24, 25],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "My Hero Academia",
+    slug: "my-hero-academia",
+    totalEpisodes: 138,
+    fillerEpisodes: [32, 33, 39, 58, 64, 104],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Pokemon",
+    slug: "pokemon",
+    totalEpisodes: 276,
+    fillerEpisodes: [7, 9, 18, 19, 32, 33, 37, 38, 39, 40, 44, 45, 46, 49, 54, 55, 57, 60, 62, 63, 65, 66, 67, 68, 69, 70, 87, 88, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Detective Conan",
+    slug: "detective-conan",
+    totalEpisodes: 1100,
+    fillerEpisodes: [6, 7, 11, 12, 13, 16, 17, 23, 24, 27, 28, 29, 30, 31, 33, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Fullmetal Alchemist 2003",
+    slug: "fullmetal-alchemist-2003",
+    totalEpisodes: 51,
+    fillerEpisodes: [4, 10, 17, 37, 48, 49],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Ace of Diamond",
+    slug: "ace-of-diamond",
+    totalEpisodes: 126,
+    fillerEpisodes: [39, 40, 41, 76, 101, 102, 103],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Claymore",
+    slug: "claymore",
+    totalEpisodes: 26,
+    fillerEpisodes: [25, 26],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Digimon Adventure",
+    slug: "digimon-adventure",
+    totalEpisodes: 54,
+    fillerEpisodes: [6, 9, 11, 24, 25, 46, 47, 48, 49, 50, 51, 52, 53, 54],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  // --- Popular anime with zero filler ---
+  {
+    title: "Hunter x Hunter (2011)",
+    slug: "hunter-x-hunter-2011",
+    totalEpisodes: 148,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Fullmetal Alchemist: Brotherhood",
+    slug: "fullmetal-alchemist-brotherhood",
+    totalEpisodes: 64,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Attack on Titan",
+    slug: "attack-on-titan",
+    totalEpisodes: 88,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Death Note",
+    slug: "death-note",
+    totalEpisodes: 37,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Demon Slayer",
+    slug: "demon-slayer",
+    totalEpisodes: 55,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Jujutsu Kaisen",
+    slug: "jujutsu-kaisen",
+    totalEpisodes: 48,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Mob Psycho 100",
+    slug: "mob-psycho-100",
+    totalEpisodes: 37,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "One Punch Man",
+    slug: "one-punch-man",
+    totalEpisodes: 24,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Cowboy Bebop",
+    slug: "cowboy-bebop",
+    totalEpisodes: 26,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Steins;Gate",
+    slug: "steinsgate",
+    totalEpisodes: 24,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Code Geass",
+    slug: "code-geass",
+    totalEpisodes: 50,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Neon Genesis Evangelion",
+    slug: "neon-genesis-evangelion",
+    totalEpisodes: 26,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Psycho-Pass",
+    slug: "psycho-pass",
+    totalEpisodes: 41,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Fate/Zero",
+    slug: "fatezero",
+    totalEpisodes: 25,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Re:Zero",
+    slug: "rezero",
+    totalEpisodes: 50,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Konosuba",
+    slug: "konosuba",
+    totalEpisodes: 20,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Overlord",
+    slug: "overlord",
+    totalEpisodes: 52,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "That Time I Got Reincarnated as a Slime",
+    slug: "that-time-i-got-reincarnated-as-a-slime",
+    totalEpisodes: 72,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Vinland Saga",
+    slug: "vinland-saga",
+    totalEpisodes: 48,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Dr. Stone",
+    slug: "dr-stone",
+    totalEpisodes: 59,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Haikyuu",
+    slug: "haikyuu",
+    totalEpisodes: 85,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Kuroko's Basketball",
+    slug: "kurokos-basketball",
+    totalEpisodes: 75,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Food Wars",
+    slug: "food-wars",
+    totalEpisodes: 86,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Berserk",
+    slug: "berserk",
+    totalEpisodes: 25,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Parasyte",
+    slug: "parasyte",
+    totalEpisodes: 24,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Tokyo Revengers",
+    slug: "tokyo-revengers",
+    totalEpisodes: 37,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Chainsaw Man",
+    slug: "chainsaw-man",
+    totalEpisodes: 12,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Spy x Family",
+    slug: "spy-x-family",
+    totalEpisodes: 37,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Frieren: Beyond Journey's End",
+    slug: "frieren-beyond-journeys-end",
+    totalEpisodes: 28,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Solo Leveling",
+    slug: "solo-leveling",
+    totalEpisodes: 12,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Blue Lock",
+    slug: "blue-lock",
+    totalEpisodes: 24,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Bocchi the Rock!",
+    slug: "bocchi-the-rock",
+    totalEpisodes: 12,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Cyberpunk: Edgerunners",
+    slug: "cyberpunk-edgerunners",
+    totalEpisodes: 10,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Made in Abyss",
+    slug: "made-in-abyss",
+    totalEpisodes: 25,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Mushoku Tensei",
+    slug: "mushoku-tensei",
+    totalEpisodes: 34,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "86 Eighty-Six",
+    slug: "86-eighty-six",
+    totalEpisodes: 23,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Odd Taxi",
+    slug: "odd-taxi",
+    totalEpisodes: 13,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Ranking of Kings",
+    slug: "ranking-of-kings",
+    totalEpisodes: 23,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Vivy: Fluorite Eye's Song",
+    slug: "vivy-fluorite-eyes-song",
+    totalEpisodes: 13,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Trigun",
+    slug: "trigun",
+    totalEpisodes: 26,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Bleach: Thousand-Year Blood War",
+    slug: "bleach-thousand-year-blood-war",
+    totalEpisodes: 52,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Tokyo Ghoul",
+    slug: "tokyo-ghoul",
+    totalEpisodes: 48,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Dandadan",
+    slug: "dandadan",
+    totalEpisodes: 12,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Mashle: Magic and Muscles",
+    slug: "mashle-magic-and-muscles",
+    totalEpisodes: 24,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Hell's Paradise",
+    slug: "hells-paradise",
+    totalEpisodes: 13,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Pluto",
+    slug: "pluto",
+    totalEpisodes: 8,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Summertime Rendering",
+    slug: "summertime-rendering",
+    totalEpisodes: 25,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Lycoris Recoil",
+    slug: "lycoris-recoil",
+    totalEpisodes: 13,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Magi: The Labyrinth of Magic",
+    slug: "magi-the-labyrinth-of-magic",
+    totalEpisodes: 50,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Ajin",
+    slug: "ajin",
+    totalEpisodes: 26,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Wonder Egg Priority",
+    slug: "wonder-egg-priority",
+    totalEpisodes: 12,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Akudama Drive",
+    slug: "akudama-drive",
+    totalEpisodes: 12,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Zom 100: Bucket List of the Dead",
+    slug: "zom-100-bucket-list-of-the-dead",
+    totalEpisodes: 12,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Undead Unluck",
+    slug: "undead-unluck",
+    totalEpisodes: 24,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Oshi no Ko",
+    slug: "oshi-no-ko",
+    totalEpisodes: 23,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Fire Force",
+    slug: "fire-force",
+    totalEpisodes: 48,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Sword Art Online",
+    slug: "sword-art-online",
+    totalEpisodes: 96,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Assassination Classroom",
+    slug: "assassination-classroom",
+    totalEpisodes: 47,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "The Promised Neverland",
+    slug: "the-promised-neverland",
+    totalEpisodes: 23,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Kaguya-sama: Love Is War",
+    slug: "kaguya-sama-love-is-war",
+    totalEpisodes: 37,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Erased",
+    slug: "erased",
+    totalEpisodes: 12,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Monster",
+    slug: "monster",
+    totalEpisodes: 74,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Golden Kamuy",
+    slug: "golden-kamuy",
+    totalEpisodes: 48,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Dororo",
+    slug: "dororo",
+    totalEpisodes: 24,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Banana Fish",
+    slug: "banana-fish",
+    totalEpisodes: 24,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Dorohedoro",
+    slug: "dorohedoro",
+    totalEpisodes: 12,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Land of the Lustrous",
+    slug: "land-of-the-lustrous",
+    totalEpisodes: 12,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "March Comes in Like a Lion",
+    slug: "march-comes-in-like-a-lion",
+    totalEpisodes: 44,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Violet Evergarden",
+    slug: "violet-evergarden",
+    totalEpisodes: 13,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Your Lie in April",
+    slug: "your-lie-in-april",
+    totalEpisodes: 22,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Fruits Basket (2019)",
+    slug: "fruits-basket-2019",
+    totalEpisodes: 63,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Toradora",
+    slug: "toradora",
+    totalEpisodes: 25,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Angel Beats!",
+    slug: "angel-beats",
+    totalEpisodes: 13,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Anohana",
+    slug: "anohana",
+    totalEpisodes: 11,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Bunny Girl Senpai",
+    slug: "bunny-girl-senpai",
+    totalEpisodes: 13,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Shield Hero",
+    slug: "shield-hero",
+    totalEpisodes: 50,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "Goblin Slayer",
+    slug: "goblin-slayer",
+    totalEpisodes: 24,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
+  {
+    title: "World Trigger",
+    slug: "world-trigger",
+    totalEpisodes: 100,
+    fillerEpisodes: [],
+    mixedCanonFillerEpisodes: [],
+    canonEpisodes: [],
+  },
 ];
 
 /**
- * Fetch filler data from the GitHub repository
+ * Fetch filler data.
+ *
+ * Returns the local FILLER_DATABASE directly. The GitHub repo at
+ * xsunzukz/anime-filler-episodes-api is a web scraper of animefillerlist.com
+ * and does not expose a static JSON file. To fetch fresh filler data from
+ * animefillerlist.com, run: npm run seed:filler
  */
 export async function fetchFillerDataFromGitHub(): Promise<FillerEntry[]> {
-  try {
-    const response = await fetch(
-      "https://raw.githubusercontent.com/xsunzukz/anime-filler-episodes-api/main/data.json"
-    );
-    if (!response.ok) {
-      console.warn("Failed to fetch filler data from GitHub, using local data");
-      return FILLER_DATABASE;
-    }
-    const data = await response.json();
-    // Normalize the data format
-    if (Array.isArray(data)) {
-      return data.map(normalizeFillerEntry);
-    }
-    return FILLER_DATABASE;
-  } catch {
-    console.warn("Error fetching filler data, using local database");
-    return FILLER_DATABASE;
-  }
-}
-
-function normalizeFillerEntry(entry: Record<string, unknown>): FillerEntry {
-  const title = (entry.title || entry.name || "") as string;
-  return {
-    title,
-    slug: generateFillerSlug(title),
-    totalEpisodes: (entry.totalEpisodes || entry.total_episodes || 0) as number,
-    fillerEpisodes: parseEpisodeList(entry.fillerEpisodes || entry.filler_episodes || entry.filler),
-    mixedCanonFillerEpisodes: parseEpisodeList(entry.mixedCanonFillerEpisodes || entry.mixed_canon_filler || entry.mixed),
-    canonEpisodes: parseEpisodeList(entry.canonEpisodes || entry.canon_episodes || entry.canon),
-  };
-}
-
-function parseEpisodeList(data: unknown): number[] {
-  if (Array.isArray(data)) {
-    return data.map(Number).filter((n) => !isNaN(n));
-  }
-  if (typeof data === "string") {
-    // Parse ranges like "1-5, 10, 12-15"
-    const episodes: number[] = [];
-    const parts = data.split(",").map((s) => s.trim());
-    for (const part of parts) {
-      if (part.includes("-")) {
-        const [start, end] = part.split("-").map(Number);
-        for (let i = start; i <= end; i++) {
-          episodes.push(i);
-        }
-      } else {
-        const num = Number(part);
-        if (!isNaN(num)) episodes.push(num);
-      }
-    }
-    return episodes;
-  }
-  return [];
+  return FILLER_DATABASE;
 }
 
 function generateFillerSlug(title: string): string {
@@ -195,8 +908,8 @@ export function calculateFillerStats(entry: FillerEntry) {
   const totalFiller = entry.fillerEpisodes.length;
   const totalMixed = entry.mixedCanonFillerEpisodes.length;
   const totalCanon = entry.totalEpisodes - totalFiller - totalMixed;
-  const fillerPercent = entry.totalEpisodes > 0 
-    ? Math.round((totalFiller / entry.totalEpisodes) * 100) 
+  const fillerPercent = entry.totalEpisodes > 0
+    ? Math.round((totalFiller / entry.totalEpisodes) * 100)
     : 0;
 
   return {
