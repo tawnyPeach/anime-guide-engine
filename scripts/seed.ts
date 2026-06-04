@@ -8,7 +8,7 @@
 
 import { PrismaClient } from "@prisma/client";
 import { fetchPopularAnime, normalizeAniListMedia, generateSlug } from "../src/lib/anilist";
-import { fetchFillerDataFromGitHub, getAllFillerData, calculateFillerStats, type FillerEntry } from "../src/lib/filler-data";
+import { getAllFillerData, calculateFillerStats, type FillerEntry } from "../src/lib/filler-data";
 import { sleep, jikanLimiter } from "../src/lib/rate-limiter";
 
 const prisma = new PrismaClient();
@@ -203,13 +203,13 @@ async function seedAnimeFromAniList() {
 async function seedFillerData() {
   console.log("\n📊 Seeding filler episode data...\n");
 
-  console.log("  📡 Fetching filler data from GitHub...");
+  console.log("  📡 Fetching filler data...");
   let fillerData: FillerEntry[];
   try {
-    fillerData = await fetchFillerDataFromGitHub();
-    console.log(`  ✅ Fetched ${fillerData.length} filler entries from remote`);
+    fillerData = getAllFillerData();
+    console.log(`  ✅ Loaded ${fillerData.length} filler entries`);
   } catch {
-    console.log("  ⚠️ Remote fetch failed, falling back to local data");
+    console.log("  ⚠️ Failed to load filler data");
     fillerData = getAllFillerData();
   }
 

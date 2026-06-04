@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { fetchPopularAnime, normalizeAniListMedia, generateSlug } from "@/lib/anilist";
-import { fetchFillerDataFromGitHub, calculateFillerStats } from "@/lib/filler-data";
+import { getAllFillerData, calculateFillerStats } from "@/lib/filler-data";
 import { sleep, jikanLimiter } from "@/lib/rate-limiter";
 
 interface JikanEpisode {
@@ -145,10 +145,10 @@ export async function GET(request: Request) {
       }
     }
 
-    // Step 2: Update filler data from GitHub
+    // Step 2: Update filler data
     if (Date.now() - startTime < TIMEOUT_LIMIT_MS) {
       try {
-        const fillerData = await fetchFillerDataFromGitHub();
+        const fillerData = getAllFillerData();
 
         for (const entry of fillerData) {
           const anime = await prisma.anime.findFirst({

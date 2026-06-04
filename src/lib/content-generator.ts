@@ -4,6 +4,19 @@
  * Returns valid HTML strings with Tailwind CSS classes for styling
  */
 
+/**
+ * Escapes special HTML characters to prevent XSS when interpolating
+ * user-provided data into HTML template strings.
+ */
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 interface AnimeData {
   title: string;
   titleEnglish?: string | null;
@@ -23,7 +36,7 @@ interface FillerStats {
 }
 
 export function generateFillerPageContent(anime: AnimeData, stats: FillerStats): string {
-  const title = anime.titleEnglish || anime.title;
+  const title = escapeHtml(anime.titleEnglish || anime.title);
   const totalEps = anime.totalEpisodes;
 
   const skipAdvice = stats.fillerPercent > 30
@@ -50,7 +63,7 @@ export function generateFillerPageContent(anime: AnimeData, stats: FillerStats):
 }
 
 export function generateWatchOrderContent(anime: AnimeData, relatedAnime: { title: string; slug: string; type: string }[]): string {
-  const title = anime.titleEnglish || anime.title;
+  const title = escapeHtml(anime.titleEnglish || anime.title);
 
   const hasPrequels = relatedAnime.some(r => r.type === "PREQUEL");
   const hasSequels = relatedAnime.some(r => r.type === "SEQUEL");
@@ -68,7 +81,7 @@ export function generateWatchOrderContent(anime: AnimeData, relatedAnime: { titl
 
   let orderList: string;
   if (relatedAnime.length > 0) {
-    const items = relatedAnime.map((r) => `<li class="text-gray-300"><strong class="text-white font-semibold">${r.title}</strong> (${r.type.replace(/_/g, " ").toLowerCase()})</li>`).join("\n");
+    const items = relatedAnime.map((r) => `<li class="text-gray-300"><strong class="text-white font-semibold">${escapeHtml(r.title)}</strong> (${r.type.replace(/_/g, " ").toLowerCase()})</li>`).join("\n");
     orderList = `<ol class="list-decimal list-inside space-y-1 text-gray-300 mb-4">\n${items}\n</ol>`;
   } else {
     orderList = `<ol class="list-decimal list-inside space-y-1 text-gray-300 mb-4">\n<li class="text-gray-300"><strong class="text-white font-semibold">${title}</strong> (Main Series)</li>\n</ol>`;
@@ -92,9 +105,9 @@ ${orderList}
 }
 
 export function generateEpisodeGuideContent(anime: AnimeData): string {
-  const title = anime.titleEnglish || anime.title;
+  const title = escapeHtml(anime.titleEnglish || anime.title);
 
-  const aboutText = anime.description || `${title} is a popular anime series${anime.genres.length > 0 ? ` in the ${anime.genres.slice(0, 3).join(", ")} genre${anime.genres.length > 1 ? "s" : ""}` : ""}.`;
+  const aboutText = anime.description ? escapeHtml(anime.description) : `${title} is a popular anime series${anime.genres.length > 0 ? ` in the ${anime.genres.slice(0, 3).map(g => escapeHtml(g)).join(", ")} genre${anime.genres.length > 1 ? "s" : ""}` : ""}.`;
 
   const seriesInfoItems: string[] = [
     `<li><strong class="text-white font-semibold">Total Episodes:</strong> <span class="text-purple-400 font-semibold">${anime.totalEpisodes}</span></li>`,
@@ -104,7 +117,7 @@ export function generateEpisodeGuideContent(anime: AnimeData): string {
     seriesInfoItems.push(`<li><strong class="text-white font-semibold">Year:</strong> ${anime.seasonYear}</li>`);
   }
   if (anime.genres.length > 0) {
-    seriesInfoItems.push(`<li><strong class="text-white font-semibold">Genres:</strong> ${anime.genres.join(", ")}</li>`);
+    seriesInfoItems.push(`<li><strong class="text-white font-semibold">Genres:</strong> ${anime.genres.map(g => escapeHtml(g)).join(", ")}</li>`);
   }
 
   return `<h2 class="text-xl font-bold text-white mt-6 mb-3">${title} Episode Guide</h2>
@@ -124,9 +137,9 @@ ${seriesInfoItems.join("\n")}
 }
 
 export function generateAnimePageContent(anime: AnimeData): string {
-  const title = anime.titleEnglish || anime.title;
+  const title = escapeHtml(anime.titleEnglish || anime.title);
 
-  const descText = anime.description || `${title} is an anime series${anime.genres.length > 0 ? ` featuring ${anime.genres.slice(0, 3).join(", ").toLowerCase()} themes` : ""}.`;
+  const descText = anime.description ? escapeHtml(anime.description) : `${title} is an anime series${anime.genres.length > 0 ? ` featuring ${anime.genres.slice(0, 3).map(g => escapeHtml(g)).join(", ").toLowerCase()} themes` : ""}.`;
 
   const detailItems: string[] = [
     `<li><strong class="text-white font-semibold">Episodes:</strong> ${anime.totalEpisodes || "Unknown"}</li>`,
@@ -136,7 +149,7 @@ export function generateAnimePageContent(anime: AnimeData): string {
     detailItems.push(`<li><strong class="text-white font-semibold">Aired:</strong> ${anime.seasonYear}</li>`);
   }
   if (anime.genres.length > 0) {
-    detailItems.push(`<li><strong class="text-white font-semibold">Genres:</strong> ${anime.genres.join(", ")}</li>`);
+    detailItems.push(`<li><strong class="text-white font-semibold">Genres:</strong> ${anime.genres.map(g => escapeHtml(g)).join(", ")}</li>`);
   }
 
   return `<p class="text-gray-300 leading-relaxed mb-4">${descText}</p>
@@ -149,9 +162,10 @@ ${detailItems.join("\n")}
 }
 
 export function generateGenrePageContent(genre: string, animeCount: number): string {
-  return `<h2 class="text-xl font-bold text-white mt-6 mb-3">Best ${genre} Anime</h2>
-<p class="text-gray-300 leading-relaxed mb-4">Discover the top <strong class="text-purple-400 font-semibold">${animeCount}</strong> ${genre.toLowerCase()} anime series ranked by popularity. Whether you're a long-time fan of ${genre.toLowerCase()} anime or looking to explore the genre for the first time, this curated list features the most acclaimed and popular series.</p>
-<h3 class="text-lg font-semibold text-white mt-5 mb-2">What is ${genre} Anime?</h3>
+  const safeGenre = escapeHtml(genre);
+  return `<h2 class="text-xl font-bold text-white mt-6 mb-3">Best ${safeGenre} Anime</h2>
+<p class="text-gray-300 leading-relaxed mb-4">Discover the top <strong class="text-purple-400 font-semibold">${animeCount}</strong> ${safeGenre.toLowerCase()} anime series ranked by popularity. Whether you're a long-time fan of ${safeGenre.toLowerCase()} anime or looking to explore the genre for the first time, this curated list features the most acclaimed and popular series.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">What is ${safeGenre} Anime?</h3>
 <p class="text-gray-300 leading-relaxed mb-4">${getGenreDescription(genre)}</p>
 <h3 class="text-lg font-semibold text-white mt-5 mb-2">How We Rank</h3>
 <p class="text-gray-300 leading-relaxed mb-4">Our ranking is based on a combination of popularity scores, user ratings, and critical reception from major anime databases. We update this list regularly to include new releases and reflect changing audience preferences.</p>`;
@@ -173,12 +187,12 @@ export function generateYearPageContent(year: number, animeCount: number): strin
 }
 
 export function generateAnimeLikeContent(anime: AnimeData, similarAnime: { title: string; slug: string }[]): string {
-  const title = anime.titleEnglish || anime.title;
+  const title = escapeHtml(anime.titleEnglish || anime.title);
 
   return `<h2 class="text-xl font-bold text-white mt-6 mb-3">Anime Like ${title}</h2>
 <p class="text-gray-300 leading-relaxed mb-4">Looking for anime similar to <strong class="text-white font-semibold">${title}</strong>? Here are ${similarAnime.length} anime recommendations that share similar themes, genres, or storytelling styles.</p>
 <h3 class="text-lg font-semibold text-white mt-5 mb-2">Why These Recommendations?</h3>
-<p class="text-gray-300 leading-relaxed mb-4">We selected these anime based on shared genres (${anime.genres.slice(0, 3).join(", ")}), similar narrative structures, comparable art styles, and positive fan overlap. If you enjoyed ${title}, these series should appeal to your taste.</p>
+<p class="text-gray-300 leading-relaxed mb-4">We selected these anime based on shared genres (${anime.genres.slice(0, 3).map(g => escapeHtml(g)).join(", ")}), similar narrative structures, comparable art styles, and positive fan overlap. If you enjoyed ${title}, these series should appeal to your taste.</p>
 <h3 class="text-lg font-semibold text-white mt-5 mb-2">Our Top Picks</h3>`;
 }
 

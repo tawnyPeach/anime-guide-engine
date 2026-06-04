@@ -1,0 +1,24 @@
+{
+  "id": "FEAT-004",
+  "type": "fix",
+  "description": "Address semantic review findings: XSS sanitization in content-generator.ts, move cheerio to devDependencies, rename misleading fetchFillerDataFromGitHub function.",
+  "status": "in_progress",
+  "steps": [
+    "Add an escapeHtml() helper to content-generator.ts and apply it to all user-provided data interpolated into HTML templates (title, description, genre names).",
+    "Move cheerio from dependencies to devDependencies in package.json.",
+    "Rename fetchFillerDataFromGitHub to getAllFillerData (or remove it in favor of existing getAllFillerData). Update all import sites."
+  ],
+  "acceptance_criteria": [
+    "All user-provided data in content-generator.ts is escaped before HTML interpolation",
+    "cheerio is listed under devDependencies, not dependencies",
+    "No references to fetchFillerDataFromGitHub remain in the codebase",
+    "TypeScript compiles without errors",
+    "Lint passes (same pre-existing errors only)"
+  ],
+  "verification": [
+    "npx tsc --noEmit",
+    "npm run lint"
+  ],
+  "blocked_reason": null,
+  "findings": null
+}

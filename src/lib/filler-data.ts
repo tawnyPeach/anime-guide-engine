@@ -862,14 +862,14 @@ const FILLER_DATABASE: FillerEntry[] = [
 ];
 
 /**
- * Fetch filler data.
+ * Get all filler data from the local database.
  *
  * Returns the local FILLER_DATABASE directly. The GitHub repo at
  * xsunzukz/anime-filler-episodes-api is a web scraper of animefillerlist.com
  * and does not expose a static JSON file. To fetch fresh filler data from
  * animefillerlist.com, run: npm run seed:filler
  */
-export async function fetchFillerDataFromGitHub(): Promise<FillerEntry[]> {
+export function getAllFillerData(): FillerEntry[] {
   return FILLER_DATABASE;
 }
 
@@ -898,10 +898,6 @@ export function getFillerDataByTitle(title: string): FillerEntry | null {
         entry.slug === generateFillerSlug(title)
     ) || null
   );
-}
-
-export function getAllFillerData(): FillerEntry[] {
-  return FILLER_DATABASE;
 }
 
 export function calculateFillerStats(entry: FillerEntry) {
