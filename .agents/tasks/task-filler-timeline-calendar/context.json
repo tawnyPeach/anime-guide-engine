@@ -1,0 +1,29 @@
+{
+  "project_type": "Next.js 16 App Router programmatic SEO site for anime guides",
+  "language": "TypeScript",
+  "build_system": "npm with next build (runs prisma generate first)",
+  "test_framework": "No test framework configured - validation is build-only",
+  "build_command": "npx prisma generate && npx next build",
+  "test_command": "npx next build",
+  "verification_instructions": "Run `npx prisma generate && npx next build` and confirm zero errors. Also run `npx next lint` for lint checks.",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "1. npm install, 2. Set DATABASE_URL in .env to Neon PostgreSQL, 3. npx prisma generate",
+  "environment_constraints": "OPEN_INTERNET network - full access. Node.js 22 available. No test suite exists - verification is build pass only. Next.js 16 has breaking changes from training data - consult node_modules/next/dist/docs/ for API reference. cacheComponents flag is NOT enabled so the previous caching model with `export const revalidate` works. Route segment config `dynamic` and `revalidate` are available.",
+  "contribution_requirements": "Follow AGENTS.md - check Next.js 16 docs in node_modules/next/dist/docs/ before writing code. Use 'use client' directive for interactive components.",
+  "key_patterns": "- Client components use 'use client' directive. - API routes at src/app/api/[name]/route.ts using Response.json(). - In-memory cache via src/lib/cache.ts with `cached()` helper. - AniList GraphQL API calls in src/lib/anilist.ts using fetch directly. - TailwindCSS 4 with @theme inline for custom colors. - Global CSS uses gradients, glow effects, glass morphism. - Existing filler-list page has Quick Stats grid section followed by percentage bar - new timeline goes after this. - Header has desktop nav links and MobileNav component. - Sitemap at src/app/sitemap.ts dynamically generates all URLs. - Homepage at src/app/page.tsx fetches data server-side with try/catch for DB unavailability.",
+  "relevant_files": [
+    "src/app/anime/[slug]/filler-list/page.tsx",
+    "src/components/Header.tsx",
+    "src/components/MobileNav.tsx",
+    "src/app/page.tsx",
+    "src/app/sitemap.ts",
+    "src/app/layout.tsx",
+    "src/app/globals.css",
+    "src/lib/anilist.ts",
+    "src/lib/cache.ts",
+    "src/app/api/anime/route.ts",
+    "prisma/schema.prisma",
+    "next.config.ts"
+  ],
+  "directory_structure": "src/app/ - App Router pages and API routes. src/components/ - Shared React components. src/lib/ - Utilities (prisma, anilist, cache, content-generator). prisma/ - Schema and migrations. scripts/ - Seed scripts. public/ - Static assets."
+}

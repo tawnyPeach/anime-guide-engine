@@ -1,0 +1,21 @@
+{
+  "id": "FEAT-001",
+  "type": "chore",
+  "description": "Set up the environment: update .env with Neon DATABASE_URL, run prisma generate, and confirm the existing build passes cleanly before making any code changes.",
+  "status": "completed",
+  "steps": [
+    "Update /projects/sandbox/anime-guide-engine/.env to set DATABASE_URL to: postgresql://neondb_owner:npg_pB6gMSrLdx5z@ep-soft-darkness-apywtanh.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require",
+    "Run `npx prisma generate` in the project root to generate the Prisma client",
+    "Run `npx next build` to confirm the existing build passes cleanly"
+  ],
+  "acceptance_criteria": [
+    "DATABASE_URL in .env points to the Neon PostgreSQL instance",
+    "`npx prisma generate` completes without errors",
+    "`npx next build` completes without errors"
+  ],
+  "verification": [
+    "Run `npx prisma generate && npx next build` and confirm exit code 0"
+  ],
+  "blocked_reason": null,
+  "findings": "Prisma 5.22.0 generate and Next.js 16.2.7 build both pass cleanly. 950 static pages generated successfully. No test suite exists - validation is build pass only."
+}
