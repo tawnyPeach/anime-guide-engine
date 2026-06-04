@@ -1,0 +1,27 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Create the Interactive Filler Timeline component and integrate it into the filler-list page. This is a 'use client' component that renders a minimap-style horizontal bar of colored episode blocks with tooltips, arc grouping, summary stats, glow effects, and a share button.",
+  "status": "completed",
+  "steps": [
+    "Create src/components/FillerTimeline.tsx as a 'use client' component with these features: (a) A horizontal bar of colored blocks - green for canon, red for filler, yellow for mixed. (b) Block sizes scale based on total episode count (wider for 12-episode anime, thinner for 1000+ episodes). (c) Hover tooltip showing 'Episode X - Canon/Filler/Mixed' and arc name if available. (d) Segments grouped by arcs with arc labels below the bar. (e) Summary line above the bar showing 'X canon | Y filler | Z mixed'. (f) Visually striking with gradients and glow effects matching the anime theme (use the existing glow-purple, glow-blue CSS classes and gradient patterns from globals.css). (g) A 'Share this timeline' button that copies the current page URL to clipboard with a brief 'Copied!' feedback.",
+    "The component props should accept: episodes (array of {episodeNumber, isFiller, isMixed, arcName}), totalCanon, totalFiller, totalMixed, and shareUrl (string).",
+    "Integrate FillerTimeline into src/app/anime/[slug]/filler-list/page.tsx - place it after the 'Filler percentage bar' section (the bg-gray-800 rounded-lg p-4 mb-8 div with the bar chart) and before the AdBanner. Pass the episode data from the existing query, mapping episodes to the component's expected format. Use fillerEpisodes and mixedEpisodes arrays to determine each episode's type, and pass ep.arcName for arc grouping.",
+    "Ensure the component handles edge cases: anime with 0 episodes gracefully, missing arc names (group as 'Unknown Arc' or just skip arc grouping if no arcs exist), and extremely long series (1000+ episodes)."
+  ],
+  "acceptance_criteria": [
+    "src/components/FillerTimeline.tsx exists as a 'use client' component",
+    "The filler-list page imports and renders FillerTimeline between the percentage bar and the AdBanner",
+    "The component displays colored blocks for each episode (green=canon, red=filler, yellow=mixed)",
+    "Hovering a block shows a tooltip with episode number, type, and arc name",
+    "A summary line shows canon/filler/mixed counts",
+    "Arc labels appear below grouped segments when arc data exists",
+    "A 'Share this timeline' button copies the page URL to clipboard",
+    "The build passes: `npx next build` succeeds with no errors"
+  ],
+  "verification": [
+    "Run `npx next build` and confirm exit code 0 with no TypeScript or build errors"
+  ],
+  "blocked_reason": null,
+  "findings": "Build passes cleanly with 950+ static pages generated. Component handles 0 episodes (returns null), missing arcs (groups as Unknown Arc, hides arc labels if only 1 group), and 1000+ episodes (1px block width). Integrated after percentage bar and before AdBanner as specified."
+}

@@ -1,0 +1,14 @@
+{
+  "task_id": "task-filler-timeline-calendar",
+  "task_description": "Build two new features: (1) Interactive Filler Timeline component for filler-list pages with colored episode blocks, tooltips, arc grouping, and share button. (2) Anime Calendar page at /calendar with weekly airing schedule from AniList, real-time countdown timers, navigation links, sitemap entry, and 'Currently Airing' homepage highlights.",
+  "status": "completed",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003"],
+  "blocked_reason": null,
+  "verification": {
+    "build": "pass",
+    "tests": "pass",
+    "test_quality": "skipped",
+    "docker_build": "skipped",
+    "summary": "npx next build completed with exit code 0. All pages generated successfully including /calendar with ISR. 5 review issues (unbounded retry, timezone mismatch, dead API route, ISR latency, hydration mismatch) were identified and fixed. Final build clean."
+  }
+}
