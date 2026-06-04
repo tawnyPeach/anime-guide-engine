@@ -178,6 +178,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
+  // After pages (What to Watch After) - anime with at least one relation
+  let afterPages: MetadataRoute.Sitemap = [];
+  try {
+    const animeWithRelations = await prisma.anime.findMany({
+      where: {
+        OR: [
+          { relationsFrom: { some: {} } },
+          { relationsTo: { some: {} } },
+        ],
+      },
+      select: { slug: true, updatedAt: true },
+      orderBy: { popularity: "desc" },
+    });
+    afterPages = animeWithRelations.map((anime) => ({
+      url: `${SITE_URL}/after/${anime.slug}`,
+      lastModified: anime.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }));
+  } catch {
+    // skip if query fails
+  }
+
   return [
     ...staticPages,
     ...animePages,
@@ -191,5 +214,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...seasonPages,
     ...topPages,
     ...comparePages,
+    ...afterPages,
   ];
 }
