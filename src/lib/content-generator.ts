@@ -1,6 +1,7 @@
 /**
  * Content Generator for SEO pages
  * Generates human-readable, SEO-optimized content for each page type
+ * Returns valid HTML strings with Tailwind CSS classes for styling
  */
 
 interface AnimeData {
@@ -25,35 +26,27 @@ export function generateFillerPageContent(anime: AnimeData, stats: FillerStats):
   const title = anime.titleEnglish || anime.title;
   const totalEps = anime.totalEpisodes;
 
-  return `
-## ${title} Filler Episode Guide
+  const skipAdvice = stats.fillerPercent > 30
+    ? `With <strong class="text-purple-400 font-semibold">${stats.fillerPercent}%</strong> filler content, ${title} has a significant amount of non-canon episodes. If you're primarily interested in the main storyline, skipping the filler episodes can save you considerable time without missing any important plot developments.`
+    : stats.fillerPercent > 15
+      ? `${title} has a moderate amount of filler at <strong class="text-purple-400 font-semibold">${stats.fillerPercent}%</strong>. While not excessive, skipping these episodes will give you a more streamlined viewing experience focused on the core narrative.`
+      : `${title} has relatively little filler at only <strong class="text-purple-400 font-semibold">${stats.fillerPercent}%</strong>. The series stays mostly faithful to its source material, making it a good watch even without skipping any episodes.`;
 
-If you're watching **${title}** and want to skip the filler episodes, you're in the right place. This comprehensive filler guide breaks down every episode so you can focus on the main storyline.
-
-### Quick Summary
-
-- **Total Episodes:** ${totalEps}
-- **Canon Episodes:** ${stats.totalCanon} (${Math.round((stats.totalCanon / totalEps) * 100)}%)
-- **Filler Episodes:** ${stats.totalFiller} (${stats.fillerPercent}%)
-- **Mixed Canon/Filler:** ${stats.totalMixed} (${Math.round((stats.totalMixed / totalEps) * 100)}%)
-
-### What Are Filler Episodes?
-
-Filler episodes in ${title} are episodes that were not adapted from the original source material (manga/light novel). These episodes were created by the anime studio to prevent the anime from catching up to the manga. While some filler episodes can be entertaining, they don't advance the main plot.
-
-### Should You Skip ${title} Filler?
-
-${stats.fillerPercent > 30 
-  ? `With **${stats.fillerPercent}%** filler content, ${title} has a significant amount of non-canon episodes. If you're primarily interested in the main storyline, skipping the filler episodes can save you considerable time without missing any important plot developments.`
-  : stats.fillerPercent > 15
-    ? `${title} has a moderate amount of filler at **${stats.fillerPercent}%**. While not excessive, skipping these episodes will give you a more streamlined viewing experience focused on the core narrative.`
-    : `${title} has relatively little filler at only **${stats.fillerPercent}%**. The series stays mostly faithful to its source material, making it a good watch even without skipping any episodes.`
-}
-
-### How to Use This Guide
-
-Episodes marked as **Canon** are essential to the story. **Filler** episodes can be safely skipped. **Mixed** episodes contain some canon material alongside filler content — we recommend watching these as they may contain character development or minor plot points that are referenced later.
-  `.trim();
+  return `<h2 class="text-xl font-bold text-white mt-6 mb-3">${title} Filler Episode Guide</h2>
+<p class="text-gray-300 leading-relaxed mb-4">If you're watching <strong class="text-white font-semibold">${title}</strong> and want to skip the filler episodes, you're in the right place. This comprehensive filler guide breaks down every episode so you can focus on the main storyline.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Quick Summary</h3>
+<ul class="list-disc list-inside space-y-1 text-gray-300 mb-4">
+<li><strong class="text-white font-semibold">Total Episodes:</strong> <span class="text-purple-400 font-semibold">${totalEps}</span></li>
+<li><strong class="text-white font-semibold">Canon Episodes:</strong> <span class="text-purple-400 font-semibold">${stats.totalCanon}</span> (${Math.round((stats.totalCanon / totalEps) * 100)}%)</li>
+<li><strong class="text-white font-semibold">Filler Episodes:</strong> <span class="text-purple-400 font-semibold">${stats.totalFiller}</span> (${stats.fillerPercent}%)</li>
+<li><strong class="text-white font-semibold">Mixed Canon/Filler:</strong> <span class="text-purple-400 font-semibold">${stats.totalMixed}</span> (${Math.round((stats.totalMixed / totalEps) * 100)}%)</li>
+</ul>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">What Are Filler Episodes?</h3>
+<p class="text-gray-300 leading-relaxed mb-4">Filler episodes in ${title} are episodes that were not adapted from the original source material (manga/light novel). These episodes were created by the anime studio to prevent the anime from catching up to the manga. While some filler episodes can be entertaining, they don't advance the main plot.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Should You Skip ${title} Filler?</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${skipAdvice}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">How to Use This Guide</h3>
+<p class="text-gray-300 leading-relaxed mb-4">Episodes marked as <strong class="text-white font-semibold">Canon</strong> are essential to the story. <strong class="text-white font-semibold">Filler</strong> episodes can be safely skipped. <strong class="text-white font-semibold">Mixed</strong> episodes contain some canon material alongside filler content — we recommend watching these as they may contain character development or minor plot points that are referenced later.</p>`;
 }
 
 export function generateWatchOrderContent(anime: AnimeData, relatedAnime: { title: string; slug: string; type: string }[]): string {
@@ -63,136 +56,130 @@ export function generateWatchOrderContent(anime: AnimeData, relatedAnime: { titl
   const hasSequels = relatedAnime.some(r => r.type === "SEQUEL");
   const hasSideStories = relatedAnime.some(r => r.type === "SIDE_STORY" || r.type === "SPIN_OFF");
 
-  return `
-## ${title} Watch Order Guide
+  const includeParts: string[] = [];
+  if (hasPrequels) includeParts.push("prequels");
+  if (hasSequels) includeParts.push("sequels");
+  if (hasSideStories) includeParts.push("side stories");
+  const includesText = includeParts.length > 0 ? includeParts.join(", ") + ", and related entries" : "related entries";
 
-Looking for the correct order to watch the **${title}** series? This guide covers the recommended watch order including ${hasPrequels ? "prequels, " : ""}${hasSequels ? "sequels, " : ""}${hasSideStories ? "side stories, " : ""}and related entries.
+  const whyMatters = relatedAnime.length > 2
+    ? `The ${title} franchise has <strong class="text-purple-400 font-semibold">${relatedAnime.length + 1}</strong> entries, making it important to watch them in the right order to fully understand the story, character development, and plot connections between series.`
+    : `While ${title} can be enjoyed on its own, watching related entries in the correct order enhances the overall experience and helps you catch references and connections between the series.`;
 
-### Why Watch Order Matters
+  let orderList: string;
+  if (relatedAnime.length > 0) {
+    const items = relatedAnime.map((r) => `<li class="text-gray-300"><strong class="text-white font-semibold">${r.title}</strong> (${r.type.replace(/_/g, " ").toLowerCase()})</li>`).join("\n");
+    orderList = `<ol class="list-decimal list-inside space-y-1 text-gray-300 mb-4">\n${items}\n</ol>`;
+  } else {
+    orderList = `<ol class="list-decimal list-inside space-y-1 text-gray-300 mb-4">\n<li class="text-gray-300"><strong class="text-white font-semibold">${title}</strong> (Main Series)</li>\n</ol>`;
+  }
 
-${relatedAnime.length > 2
-  ? `The ${title} franchise has **${relatedAnime.length + 1}** entries, making it important to watch them in the right order to fully understand the story, character development, and plot connections between series.`
-  : `While ${title} can be enjoyed on its own, watching related entries in the correct order enhances the overall experience and helps you catch references and connections between the series.`
-}
-
-### Recommended Watch Order
-
-The following order is recommended for the best viewing experience. This is the **chronological order** that follows the story timeline:
-
-${relatedAnime.length > 0 
-  ? relatedAnime.map((r, i) => `${i + 1}. **${r.title}** (${r.type.replace(/_/g, " ").toLowerCase()})`).join("\n")
-  : `1. **${title}** (Main Series)`
-}
-
-### Release Order vs Chronological Order
-
-For first-time viewers, we generally recommend **release order** as it provides the intended viewing experience designed by the creators. Chronological order is better suited for rewatches when you want to experience the story's timeline linearly.
-
-### Tips for New Viewers
-
-- Start with the main series if you're unsure
-- Side stories and OVAs can be watched after completing the main storyline
-- Movies may or may not be canon — check individual entries for details
-  `.trim();
+  return `<h2 class="text-xl font-bold text-white mt-6 mb-3">${title} Watch Order Guide</h2>
+<p class="text-gray-300 leading-relaxed mb-4">Looking for the correct order to watch the <strong class="text-white font-semibold">${title}</strong> series? This guide covers the recommended watch order including ${includesText}.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Why Watch Order Matters</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${whyMatters}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Recommended Watch Order</h3>
+<p class="text-gray-300 leading-relaxed mb-4">The following order is recommended for the best viewing experience. This is the <strong class="text-white font-semibold">chronological order</strong> that follows the story timeline:</p>
+${orderList}
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Release Order vs Chronological Order</h3>
+<p class="text-gray-300 leading-relaxed mb-4">For first-time viewers, we generally recommend <strong class="text-white font-semibold">release order</strong> as it provides the intended viewing experience designed by the creators. Chronological order is better suited for rewatches when you want to experience the story's timeline linearly.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Tips for New Viewers</h3>
+<ul class="list-disc list-inside space-y-1 text-gray-300 mb-4">
+<li>Start with the main series if you're unsure</li>
+<li>Side stories and OVAs can be watched after completing the main storyline</li>
+<li>Movies may or may not be canon — check individual entries for details</li>
+</ul>`;
 }
 
 export function generateEpisodeGuideContent(anime: AnimeData): string {
   const title = anime.titleEnglish || anime.title;
 
-  return `
-## ${title} Episode Guide
+  const aboutText = anime.description || `${title} is a popular anime series${anime.genres.length > 0 ? ` in the ${anime.genres.slice(0, 3).join(", ")} genre${anime.genres.length > 1 ? "s" : ""}` : ""}.`;
 
-Complete episode guide for **${title}** with ${anime.totalEpisodes} episodes. This guide includes filler markers to help you identify which episodes are canon and which can be skipped.
+  const seriesInfoItems: string[] = [
+    `<li><strong class="text-white font-semibold">Total Episodes:</strong> <span class="text-purple-400 font-semibold">${anime.totalEpisodes}</span></li>`,
+    `<li><strong class="text-white font-semibold">Status:</strong> ${formatStatus(anime.status)}</li>`,
+  ];
+  if (anime.seasonYear) {
+    seriesInfoItems.push(`<li><strong class="text-white font-semibold">Year:</strong> ${anime.seasonYear}</li>`);
+  }
+  if (anime.genres.length > 0) {
+    seriesInfoItems.push(`<li><strong class="text-white font-semibold">Genres:</strong> ${anime.genres.join(", ")}</li>`);
+  }
 
-### About ${title}
-
-${anime.description || `${title} is a popular anime series${anime.genres.length > 0 ? ` in the ${anime.genres.slice(0, 3).join(", ")} genre${anime.genres.length > 1 ? "s" : ""}` : ""}.`}
-
-### Series Information
-
-- **Total Episodes:** ${anime.totalEpisodes}
-- **Status:** ${formatStatus(anime.status)}
-${anime.seasonYear ? `- **Year:** ${anime.seasonYear}` : ""}
-${anime.genres.length > 0 ? `- **Genres:** ${anime.genres.join(", ")}` : ""}
-
-### Episode Legend
-
-- 🟢 **Canon** — Essential to the main storyline
-- 🔴 **Filler** — Can be safely skipped
-- 🟡 **Mixed** — Contains both canon and filler content
-  `.trim();
+  return `<h2 class="text-xl font-bold text-white mt-6 mb-3">${title} Episode Guide</h2>
+<p class="text-gray-300 leading-relaxed mb-4">Complete episode guide for <strong class="text-white font-semibold">${title}</strong> with ${anime.totalEpisodes} episodes. This guide includes filler markers to help you identify which episodes are canon and which can be skipped.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">About ${title}</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${aboutText}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Series Information</h3>
+<ul class="list-disc list-inside space-y-1 text-gray-300 mb-4">
+${seriesInfoItems.join("\n")}
+</ul>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Episode Legend</h3>
+<ul class="list-none space-y-1 text-gray-300 mb-4">
+<li>🟢 <strong class="text-white font-semibold">Canon</strong> — Essential to the main storyline</li>
+<li>🔴 <strong class="text-white font-semibold">Filler</strong> — Can be safely skipped</li>
+<li>🟡 <strong class="text-white font-semibold">Mixed</strong> — Contains both canon and filler content</li>
+</ul>`;
 }
 
 export function generateAnimePageContent(anime: AnimeData): string {
   const title = anime.titleEnglish || anime.title;
 
-  return `
-${anime.description || `${title} is an anime series${anime.genres.length > 0 ? ` featuring ${anime.genres.slice(0, 3).join(", ").toLowerCase()} themes` : ""}.`}
+  const descText = anime.description || `${title} is an anime series${anime.genres.length > 0 ? ` featuring ${anime.genres.slice(0, 3).join(", ").toLowerCase()} themes` : ""}.`;
 
-### Series Details
+  const detailItems: string[] = [
+    `<li><strong class="text-white font-semibold">Episodes:</strong> ${anime.totalEpisodes || "Unknown"}</li>`,
+    `<li><strong class="text-white font-semibold">Status:</strong> ${formatStatus(anime.status)}</li>`,
+  ];
+  if (anime.seasonYear) {
+    detailItems.push(`<li><strong class="text-white font-semibold">Aired:</strong> ${anime.seasonYear}</li>`);
+  }
+  if (anime.genres.length > 0) {
+    detailItems.push(`<li><strong class="text-white font-semibold">Genres:</strong> ${anime.genres.join(", ")}</li>`);
+  }
 
-- **Episodes:** ${anime.totalEpisodes || "Unknown"}
-- **Status:** ${formatStatus(anime.status)}
-${anime.seasonYear ? `- **Aired:** ${anime.seasonYear}` : ""}
-${anime.genres.length > 0 ? `- **Genres:** ${anime.genres.join(", ")}` : ""}
-
-### Guides Available
-
-Explore our comprehensive guides for ${title}:
-  `.trim();
+  return `<p class="text-gray-300 leading-relaxed mb-4">${descText}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Series Details</h3>
+<ul class="list-disc list-inside space-y-1 text-gray-300 mb-4">
+${detailItems.join("\n")}
+</ul>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Guides Available</h3>
+<p class="text-gray-300 leading-relaxed mb-4">Explore our comprehensive guides for ${title}:</p>`;
 }
 
 export function generateGenrePageContent(genre: string, animeCount: number): string {
-  return `
-## Best ${genre} Anime
-
-Discover the top **${animeCount}** ${genre.toLowerCase()} anime series ranked by popularity. Whether you're a long-time fan of ${genre.toLowerCase()} anime or looking to explore the genre for the first time, this curated list features the most acclaimed and popular series.
-
-### What is ${genre} Anime?
-
-${getGenreDescription(genre)}
-
-### How We Rank
-
-Our ranking is based on a combination of popularity scores, user ratings, and critical reception from major anime databases. We update this list regularly to include new releases and reflect changing audience preferences.
-  `.trim();
+  return `<h2 class="text-xl font-bold text-white mt-6 mb-3">Best ${genre} Anime</h2>
+<p class="text-gray-300 leading-relaxed mb-4">Discover the top <strong class="text-purple-400 font-semibold">${animeCount}</strong> ${genre.toLowerCase()} anime series ranked by popularity. Whether you're a long-time fan of ${genre.toLowerCase()} anime or looking to explore the genre for the first time, this curated list features the most acclaimed and popular series.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">What is ${genre} Anime?</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${getGenreDescription(genre)}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">How We Rank</h3>
+<p class="text-gray-300 leading-relaxed mb-4">Our ranking is based on a combination of popularity scores, user ratings, and critical reception from major anime databases. We update this list regularly to include new releases and reflect changing audience preferences.</p>`;
 }
 
 export function generateYearPageContent(year: number, animeCount: number): string {
-  return `
-## Best Anime of ${year}
+  const overviewText = year >= 2020
+    ? `${year} was a standout year for anime with high-quality productions across multiple genres and studios pushing creative boundaries.`
+    : year >= 2010
+      ? `${year} represented the modern era of anime with improved production quality and diverse storytelling.`
+      : `${year} was part of anime's classic era, producing timeless series that continue to influence the medium today.`;
 
-Explore the top **${animeCount}** anime series that aired in **${year}**. From action-packed adventures to emotional dramas, ${year} brought us some incredible anime worth watching.
-
-### ${year} Anime Overview
-
-${year >= 2020
-  ? `${year} was a standout year for anime with high-quality productions across multiple genres and studios pushing creative boundaries.`
-  : year >= 2010
-    ? `${year} represented the modern era of anime with improved production quality and diverse storytelling.`
-    : `${year} was part of anime's classic era, producing timeless series that continue to influence the medium today.`
-}
-
-### How to Use This Page
-
-Browse our curated selection of ${year}'s best anime below. Each entry includes key information like genre, episode count, and synopsis to help you find your next watch.
-  `.trim();
+  return `<h2 class="text-xl font-bold text-white mt-6 mb-3">Best Anime of ${year}</h2>
+<p class="text-gray-300 leading-relaxed mb-4">Explore the top <strong class="text-purple-400 font-semibold">${animeCount}</strong> anime series that aired in <strong class="text-purple-400 font-semibold">${year}</strong>. From action-packed adventures to emotional dramas, ${year} brought us some incredible anime worth watching.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">${year} Anime Overview</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${overviewText}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">How to Use This Page</h3>
+<p class="text-gray-300 leading-relaxed mb-4">Browse our curated selection of ${year}'s best anime below. Each entry includes key information like genre, episode count, and synopsis to help you find your next watch.</p>`;
 }
 
 export function generateAnimeLikeContent(anime: AnimeData, similarAnime: { title: string; slug: string }[]): string {
   const title = anime.titleEnglish || anime.title;
 
-  return `
-## Anime Like ${title}
-
-Looking for anime similar to **${title}**? Here are ${similarAnime.length} anime recommendations that share similar themes, genres, or storytelling styles.
-
-### Why These Recommendations?
-
-We selected these anime based on shared genres (${anime.genres.slice(0, 3).join(", ")}), similar narrative structures, comparable art styles, and positive fan overlap. If you enjoyed ${title}, these series should appeal to your taste.
-
-### Our Top Picks
-  `.trim();
+  return `<h2 class="text-xl font-bold text-white mt-6 mb-3">Anime Like ${title}</h2>
+<p class="text-gray-300 leading-relaxed mb-4">Looking for anime similar to <strong class="text-white font-semibold">${title}</strong>? Here are ${similarAnime.length} anime recommendations that share similar themes, genres, or storytelling styles.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Why These Recommendations?</h3>
+<p class="text-gray-300 leading-relaxed mb-4">We selected these anime based on shared genres (${anime.genres.slice(0, 3).join(", ")}), similar narrative structures, comparable art styles, and positive fan overlap. If you enjoyed ${title}, these series should appeal to your taste.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Our Top Picks</h3>`;
 }
 
 function formatStatus(status: string | null | undefined): string {

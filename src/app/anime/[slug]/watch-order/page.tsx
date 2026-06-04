@@ -203,7 +203,7 @@ export default async function WatchOrderPage({ params }: Props) {
       {/* SEO Content */}
       <article className="prose prose-invert max-w-none mb-8">
         <div
-          dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, "<br/>") }}
+          dangerouslySetInnerHTML={{ __html: content }}
         />
       </article>
 

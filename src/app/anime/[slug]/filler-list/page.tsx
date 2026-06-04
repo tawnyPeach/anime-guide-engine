@@ -239,7 +239,7 @@ export default async function FillerListPage({ params }: Props) {
 
       {/* Content */}
       <article className="prose prose-invert max-w-none mb-8">
-        <div dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, "<br/>") }} />
+        <div dangerouslySetInnerHTML={{ __html: content }} />
       </article>
 
       {/* Episode Table */}
