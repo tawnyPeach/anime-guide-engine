@@ -1,0 +1,29 @@
+{
+  "id": "FEAT-004",
+  "type": "feat",
+  "description": "Genre page enhancement: unique descriptions, sub-genre filters, year/score/format filters, Hidden Gems section, Currently Airing section, related genres",
+  "status": "completed",
+  "steps": [
+    "Update src/lib/content-generator.ts: Replace the generic generateGenrePageContent function with unique, rich descriptions for each genre. Add substantially different intro text, 'What is X Anime?' content, and recommendation tips for each genre (Action, Adventure, Comedy, Drama, Fantasy, Horror, Romance, Sci-Fi, Mystery, Thriller, Sports, Supernatural, Slice of Life, Mecha). Each should be 3-5 paragraphs of unique content.",
+    "Create src/components/GenrePageClient.tsx as a 'use client' component for the interactive parts of the genre page. It should accept the genre name and render: (1) Sub-genre tag filters as clickable pills based on the sub-genre mapping: Action: ['Shounen', 'Martial Arts', 'Military', 'Mecha', 'Samurai'], Adventure: ['Isekai', 'Fantasy', 'Space', 'Historical'], Comedy: ['Parody', 'Slice of Life', 'School', 'Harem'], Drama: ['Psychological', 'Tragedy', 'Romance', 'Music'], Fantasy: ['Isekai', 'Magic', 'Supernatural', 'Mythology'], Horror: ['Psychological', 'Gore', 'Supernatural', 'Thriller'], Romance: ['School', 'Harem', 'Josei', 'Shoujo'], Sci-Fi: ['Mecha', 'Space', 'Cyberpunk', 'Time Travel']. (2) Year range filter dropdown. (3) Score filter (7.0+ toggle button). (4) Format filter (TV/Movie/OVA/ONA pills).",
+    "Create src/app/api/genre/route.ts: API route that accepts params: genre, subGenre (optional additional genre filter), yearMin, yearMax, scoreMin, format, sort (popularity/score/year), page, limit. Query anime where genres contains the main genre AND optionally the sub-genre. Return paginated results.",
+    "Update src/app/genre/[genre]/page.tsx to include: (1) A 'Currently Airing in [Genre]' section at the top showing anime with status='RELEASING' in this genre (max 5, horizontal scroll). (2) The main grid with GenrePageClient filters above it. (3) A 'Hidden Gems' section: query anime in this genre with averageScore > 75 but popularity in the bottom 50% of the genre (use a subquery or calculate the median popularity). Show max 5 in a separate row.",
+    "In the genre page, for anime with totalEpisodes > 100 that have filler data, show the filler percentage prominently on their cards (this should already work from FEAT-001 AnimeCard changes).",
+    "Update the 'Explore More Genres' section at the bottom to be a 'Related Genres' section: show genres that commonly co-occur with the current genre. For Action show Adventure, Sci-Fi, Fantasy. For Romance show Drama, Comedy, Slice of Life. Create a RELATED_GENRES map in the genre page file."
+  ],
+  "acceptance_criteria": [
+    "Each genre page has unique, multi-paragraph descriptions (not template text)",
+    "Sub-genre filter pills appear based on the genre-specific mapping",
+    "Clicking a sub-genre pill filters results via the /api/genre route",
+    "Year, score, and format filters work",
+    "Currently Airing section shows airing anime for that genre",
+    "Hidden Gems section shows high-score low-popularity anime",
+    "Related Genres section shows contextually relevant genres",
+    "Build passes"
+  ],
+  "verification": [
+    "Run: cd /projects/sandbox/anime-guide-engine && npx prisma generate && npx next build"
+  ],
+  "blocked_reason": null,
+  "findings": "Build passes. All 4 parts implemented: (1) content-generator.ts now has unique multi-paragraph content per genre (intro, defines, why fans love it, tips), (2) GenrePageClient.tsx created with sub-genre pills, year dropdown, 7.0+ toggle, format pills, and API fetch on filter change, (3) /api/genre route created with all filter params including combined genre+subGenre AND query, (4) Genre page updated with Currently Airing section (horizontal scroll), GenrePageClient above grid, Hidden Gems section (averageScore > 75 ordered by popularity ASC), and Related Genres section with contextual mapping."
+}

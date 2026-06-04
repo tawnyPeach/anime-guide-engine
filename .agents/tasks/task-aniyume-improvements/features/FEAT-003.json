@@ -1,0 +1,31 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Top pages enhancement: new types (currently-airing, most-filler, least-filler), filter bar, sorting, pagination, and /api/top route",
+  "status": "completed",
+  "steps": [
+    "Create src/app/api/top/route.ts: API route that accepts params: type (highest-rated, most-popular, longest-running, currently-airing, most-filler, least-filler), genre, year, format, sort (score, popularity, year, episodes), page, limit. Build appropriate Prisma queries for each type. For currently-airing: where status='RELEASING'. For most-filler: join fillerMapping orderBy fillerPercent desc. For least-filler: join fillerMapping where fillerPercent > 0 orderBy fillerPercent asc. Return { items, total, page, hasMore }. Use cached() wrapper.",
+    "Update the LIST_TYPES object in src/app/top/[type]/page.tsx to add three new entries: 'currently-airing' with title 'Currently Airing Anime', emoji '📡', 'most-filler' with title 'Most Filler Anime', emoji '⏭️', 'least-filler' with title 'Least Filler Anime', emoji '✅'. Update generateStaticParams to include these new types.",
+    "Update the data fetching in src/app/top/[type]/page.tsx to handle the new types: for 'currently-airing' query with status='RELEASING' orderBy popularity desc; for 'most-filler' include fillerMapping, filter where fillerMapping is not null, sort by fillerPercent desc; for 'least-filler' include fillerMapping, filter where fillerMapping is not null and fillerPercent > 0, sort by fillerPercent asc.",
+    "Create src/components/TopFilterBar.tsx as a 'use client' component: a horizontal bar with dropdowns for Year (all years from 1990-2026), Genre (common genres list), Format (TV/Movie/OVA/ONA), and Sort (Score/Popularity/Year/Episodes). When filters change, fetch from /api/top with the selected params and update displayed results. Show total count: 'Showing X of Y'.",
+    "Create src/components/Pagination.tsx: a numbered pagination component showing page numbers (1, 2, 3 ... N), Previous/Next buttons. Accept props: currentPage, totalPages, onPageChange. Use the brand teal styling for active page.",
+    "Integrate TopFilterBar and Pagination into the top/[type] page. The initial server-rendered content stays as-is (first 100 items). The filter bar and pagination are client components that re-fetch from /api/top when changed. Show 'Showing 20 of 4996' style count.",
+    "Update src/app/sitemap.ts: add the three new top types to the topPages array: 'currently-airing', 'most-filler', 'least-filler'.",
+    "Pass filler data props to AnimeCard in the top pages where fillerMapping is included (most-filler, least-filler types)."
+  ],
+  "acceptance_criteria": [
+    "/top/currently-airing shows anime with status RELEASING",
+    "/top/most-filler shows anime sorted by highest filler percentage",
+    "/top/least-filler shows anime sorted by lowest filler percentage",
+    "/api/top route works with all filter combinations",
+    "Filter bar updates results dynamically",
+    "Pagination component shows numbered pages",
+    "Sitemap includes new top page types",
+    "Build passes"
+  ],
+  "verification": [
+    "Run: cd /projects/sandbox/anime-guide-engine && npx prisma generate && npx next build"
+  ],
+  "blocked_reason": null,
+  "findings": "Build passes cleanly. All 6 top page types generate statically. The /api/top route is dynamic. Used explicit AnimeWithFiller interface instead of Prisma's complex Awaited ReturnType for cleaner typing. Query FillerMapping directly for filler-related types as recommended."
+}

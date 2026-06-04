@@ -1,0 +1,34 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Dedicated search page at /search with filters, recent searches, popular searches, and full-page search experience",
+  "status": "completed",
+  "steps": [
+    "Create src/app/search/page.tsx as a full-page search experience. Add metadata with title 'Search Anime - Find Your Next Watch | AniYume', canonical '/search'. The page should have a SearchPageClient component.",
+    "Create src/components/SearchPageClient.tsx as a 'use client' component with: (1) Large search input at top with debounced real-time results (reuse /api/search endpoint), (2) Filter section below with dropdowns for: genre (all genres from schema), year range (2000-2026), minimum score (slider or select: 6.0, 7.0, 8.0, 9.0), format (TV/Movie/OVA/ONA/Special), airing status (All/Airing/Finished/Upcoming), (3) Results grid using AnimeCard-like display.",
+    "In SearchPageClient.tsx, implement recent searches stored in localStorage (key: 'aniyume-recent-searches', max 10 items). Show recent searches as clickable chips when input is focused and empty.",
+    "In SearchPageClient.tsx, show popular/suggested searches when input is empty: ['Naruto', 'Bleach', 'One Piece', 'Attack on Titan', 'Dragon Ball Z', 'Death Note', 'Fullmetal Alchemist', 'My Hero Academia', 'Demon Slayer', 'Jujutsu Kaisen']. Display as clickable pills.",
+    "Create a new API route src/app/api/search/advanced/route.ts that accepts query params: q (search text), genre, yearMin, yearMax, scoreMin, format, status, page, limit. Build a Prisma where clause combining all filters. Return paginated results with total count. Use the cached() wrapper from lib/cache.ts.",
+    "In SearchPageClient.tsx, implement empty state showing trending anime (fetch from /api/anime?sort=popularity&limit=10), and 'no results' state with suggestions like 'Try a different spelling' or 'Browse by genre' with genre links.",
+    "Make genre tags in search results clickable - clicking a genre tag should add it as a filter.",
+    "Update src/app/sitemap.ts to include { url: SITE_URL + '/search', changeFrequency: 'daily', priority: 0.8 }.",
+    "Update src/components/Sidebar.tsx: change the Search sidebar item href from '/top/most-popular' to '/search'."
+  ],
+  "acceptance_criteria": [
+    "/search page renders with search input and filter controls",
+    "Typing in search triggers debounced API call and shows results",
+    "Filters (genre, year, score, format, status) work via the advanced search API",
+    "Recent searches persist in localStorage and display as chips",
+    "Popular searches shown when input is empty",
+    "Empty state shows trending anime",
+    "No results state shows helpful suggestions",
+    "Sitemap includes /search",
+    "Sidebar Search link points to /search",
+    "Build passes"
+  ],
+  "verification": [
+    "Run: cd /projects/sandbox/anime-guide-engine && npx prisma generate && npx next build"
+  ],
+  "blocked_reason": null,
+  "findings": "Build passes cleanly. The /search page is static, /api/search/advanced is dynamic. Sidebar search link now points to /search. Sitemap includes /search entry. No test suite exists in this project."
+}

@@ -1,0 +1,14 @@
+{
+  "task_id": "task-aniyume-improvements",
+  "task_description": "Large set of improvements to the AniYume anime guide project: AnimeCard enhancements with filler badges, dedicated search page, top pages with new types and filters, genre page enhancements, and new /after/[slug] page",
+  "status": "completed",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004", "FEAT-005"],
+  "blocked_reason": null,
+  "verification": {
+    "build": "pass",
+    "tests": "pass",
+    "test_quality": "skipped",
+    "docker_build": "skipped",
+    "summary": "Build passes cleanly with all static pages generated. No test framework in this project. All new routes (after/[slug], /search, /api/top, /api/genre, /api/search/advanced) present in build output. All 6 top types generate static params. 50 after/ pages pre-generated."
+  }
+}
