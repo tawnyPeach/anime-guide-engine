@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import CalendarGrid from "@/components/CalendarGrid";
-import { fetchWeeklySchedule, WeeklySchedule } from "@/lib/calendar";
+import { fetchWeeklySchedule, AiringEntry } from "@/lib/calendar";
 
 export const revalidate = 3600;
 
@@ -13,19 +13,14 @@ export const metadata: Metadata = {
 };
 
 export default async function CalendarPage() {
-  let schedule: WeeklySchedule = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+  let entries: AiringEntry[] = [];
 
   try {
     const data = await fetchWeeklySchedule();
-    schedule = data.schedule;
+    entries = data.entries;
   } catch {
     // AniList unavailable - render empty schedule
   }
-
-  const totalEpisodes = Object.values(schedule).reduce(
-    (sum, entries) => sum + entries.length,
-    0
-  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -41,12 +36,12 @@ export default async function CalendarPage() {
         </div>
         <p className="text-gray-400 max-w-2xl">
           Weekly airing schedule for currently broadcasting anime. Times are shown
-          in your local timezone. {totalEpisodes > 0 && `${totalEpisodes} episodes this week.`}
+          in your local timezone. {entries.length > 0 && `${entries.length} episodes this week.`}
         </p>
       </section>
 
       {/* Calendar Grid */}
-      <CalendarGrid schedule={schedule} />
+      <CalendarGrid entries={entries} />
     </div>
   );
 }

@@ -37,6 +37,7 @@ export interface WeeklySchedule {
 
 export interface CalendarData {
   schedule: WeeklySchedule;
+  entries: AiringEntry[];
   weekStart: number;
   weekEnd: number;
 }
@@ -44,7 +45,8 @@ export interface CalendarData {
 async function fetchAiringPage(
   page: number,
   airingAtGreater: number,
-  airingAtLesser: number
+  airingAtLesser: number,
+  maxRetries: number = 3
 ): Promise<{ entries: AiringEntry[]; hasNextPage: boolean }> {
   const response = await fetch(ANILIST_API, {
     method: "POST",
@@ -56,12 +58,16 @@ async function fetchAiringPage(
       query: AIRING_SCHEDULE_QUERY,
       variables: { page, airingAtGreater, airingAtLesser },
     }),
+    signal: AbortSignal.timeout(5000),
   });
 
   if (response.status === 429) {
+    if (maxRetries <= 0) {
+      throw new Error(`AniList API rate limited: max retries exhausted`);
+    }
     const retryAfter = parseInt(response.headers.get("Retry-After") || "60", 10);
     await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
-    return fetchAiringPage(page, airingAtGreater, airingAtLesser);
+    return fetchAiringPage(page, airingAtGreater, airingAtLesser, maxRetries - 1);
   }
 
   if (!response.ok) {
@@ -134,7 +140,7 @@ export async function fetchWeeklySchedule(): Promise<CalendarData> {
     schedule[dayIndex].push(entry);
   }
 
-  return { schedule, weekStart, weekEnd };
+  return { schedule, entries: allEntries, weekStart, weekEnd };
 }
 
 export async function fetchTodaySchedule(): Promise<AiringEntry[]> {

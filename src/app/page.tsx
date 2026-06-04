@@ -6,6 +6,7 @@ import AnimeCard from "@/components/AnimeCard";
 import AdBanner from "@/components/AdBanner";
 import LoadMore from "@/components/LoadMore";
 import FillerCarousel from "@/components/FillerCarousel";
+import AiringTimeDisplay from "@/components/AiringTimeDisplay";
 import { fetchTodaySchedule, AiringEntry } from "@/lib/calendar";
 
 export const revalidate = 3600; // ISR: revalidate every hour
@@ -139,10 +140,7 @@ export default async function HomePage() {
                     {entry.media.title.english || entry.media.title.romaji}
                   </h3>
                   <p className="text-xs text-gray-400 mt-1">
-                    {new Date(entry.airingAt * 1000).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    <AiringTimeDisplay airingAt={entry.airingAt} />
                   </p>
                 </div>
               </div>

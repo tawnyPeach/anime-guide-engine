@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { AiringEntry, WeeklySchedule } from "@/lib/calendar";
+import { AiringEntry } from "@/lib/calendar";
 
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -10,6 +10,17 @@ function getCurrentDayIndex(): number {
   const now = new Date();
   const day = now.getDay(); // 0=Sunday, 1=Monday...
   return day === 0 ? 6 : day - 1; // Convert to 0=Monday, 6=Sunday
+}
+
+function groupByLocalDay(entries: AiringEntry[]): Record<number, AiringEntry[]> {
+  const grouped: Record<number, AiringEntry[]> = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+  for (const entry of entries) {
+    const date = new Date(entry.airingAt * 1000);
+    const localDay = date.getDay(); // 0=Sunday, 1=Monday...
+    const dayIndex = localDay === 0 ? 6 : localDay - 1; // Convert to 0=Monday, 6=Sunday
+    grouped[dayIndex].push(entry);
+  }
+  return grouped;
 }
 
 function formatCountdown(airingAt: number): string {
@@ -40,10 +51,10 @@ function formatLocalTime(airingAt: number): string {
 }
 
 interface CalendarGridProps {
-  schedule: WeeklySchedule;
+  entries: AiringEntry[];
 }
 
-export default function CalendarGrid({ schedule }: CalendarGridProps) {
+export default function CalendarGrid({ entries }: CalendarGridProps) {
   const [selectedDay, setSelectedDay] = useState(getCurrentDayIndex);
   const [, setTick] = useState(0);
 
@@ -54,7 +65,9 @@ export default function CalendarGrid({ schedule }: CalendarGridProps) {
     return () => clearInterval(interval);
   }, []);
 
-  const entries: AiringEntry[] = schedule[selectedDay] || [];
+  const schedule = useMemo(() => groupByLocalDay(entries), [entries]);
+
+  const dayEntries: AiringEntry[] = schedule[selectedDay] || [];
 
   return (
     <div>
@@ -85,13 +98,13 @@ export default function CalendarGrid({ schedule }: CalendarGridProps) {
       </div>
 
       {/* Anime Cards */}
-      {entries.length === 0 ? (
+      {dayEntries.length === 0 ? (
         <div className="text-center py-12 text-gray-500">
           <p className="text-lg">No anime airing on this day</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {entries.map((entry, idx) => (
+          {dayEntries.map((entry, idx) => (
             <div
               key={`${entry.media.id}-${entry.episode}-${idx}`}
               className="bg-anime-card border border-anime-border rounded-xl overflow-hidden hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 group"
