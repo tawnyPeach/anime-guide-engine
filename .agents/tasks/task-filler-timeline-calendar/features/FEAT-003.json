@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Create the Anime Calendar page (/calendar) with weekly airing schedule, real-time countdown timers, AniList API integration, API route with caching, Header/MobileNav navigation link, sitemap entry, and a 'Currently Airing' highlights section on the homepage.",
+  "status": "completed",
+  "steps": [
+    "Create src/app/api/calendar/route.ts - an API route that: (a) Calculates the current week's Monday 00:00 UTC and Sunday 23:59 UTC timestamps. (b) Fetches the weekly airing schedule from AniList using the provided GraphQL query (airingAt_greater and airingAt_lesser with TIME sort, paginating through all pages). (c) Caches the result for 1 hour using the existing `cached()` helper from src/lib/cache.ts. (d) Returns Response.json() with the schedule data grouped by day of week.",
+    "Create src/app/calendar/page.tsx as a server component page with ISR (export const revalidate = 3600). It should: (a) Fetch the weekly schedule from the API route (or directly from AniList for SSR). (b) Display day tabs (Mon through Sun) with the current day highlighted. (c) Show each entry as a card with: anime cover image (using next/image with s4.anilist.co domain already configured), title (romaji/english), episode number, and time display. (d) Use a client component for the countdown timers and day tab switching.",
+    "Create src/components/CalendarGrid.tsx as a 'use client' component that: (a) Receives the weekly schedule data as props. (b) Renders day tabs with the current day auto-selected and highlighted. (c) Shows anime cards for the selected day. (d) Each card shows a countdown timer ('Airing in Xh Ym' or 'Aired Xh ago') that updates every minute via setInterval. (e) Displays the airing time in the user's local timezone. (f) Card-based layout with anime aesthetic matching the site's existing glow/gradient style.",
+    "Add a 'Calendar' navigation link in src/components/Header.tsx in the desktop nav section (between 'This Season' and 'Action' links). Also add it to the navLinks array in src/components/MobileNav.tsx.",
+    "Add the /calendar route to src/app/sitemap.ts in the staticPages array with changeFrequency 'daily' and priority 0.8.",
+    "Add a 'Currently Airing' highlights section to src/app/page.tsx: (a) Fetch today's airing schedule (using the AniList query with today's start/end timestamps). (b) Show the next 5 anime episodes airing today in a horizontal card strip. (c) Each card shows cover image, title, episode number, and time until airing. (d) Place this section after the Hero Section and before the AdBanner. (e) Wrap in try/catch so it gracefully handles API failures (show nothing if fetch fails)."
+  ],
+  "acceptance_criteria": [
+    "src/app/api/calendar/route.ts exists and returns weekly schedule JSON from AniList",
+    "src/app/calendar/page.tsx exists with ISR revalidation of 3600 seconds",
+    "src/components/CalendarGrid.tsx exists as a 'use client' component with day tabs and countdown timers",
+    "Day tabs show Mon-Sun with current day highlighted",
+    "Countdown timers update in real-time showing time until/since airing",
+    "Times are displayed in the user's local timezone",
+    "Header.tsx includes a 'Calendar' link to /calendar",
+    "MobileNav.tsx includes a 'Calendar' link in its navLinks array",
+    "src/app/sitemap.ts includes /calendar in its output",
+    "Homepage shows a 'Currently Airing' section with up to 5 anime cards",
+    "The build passes: `npx next build` succeeds with no errors"
+  ],
+  "verification": [
+    "Run `npx next build` and confirm exit code 0 with no TypeScript or build errors"
+  ],
+  "blocked_reason": null,
+  "findings": "Build passes successfully with /calendar as a static page with 1h ISR revalidation, /api/calendar as a dynamic route. All 7 sub-steps implemented: shared calendar lib, API route with caching, CalendarGrid client component with real-time countdown timers, calendar page with breadcrumbs, Header + MobileNav nav links, sitemap entry, and Currently Airing homepage section. The AniList GraphQL airing schedule query paginates up to 10 pages for weekly and 5 pages for daily."
+}
