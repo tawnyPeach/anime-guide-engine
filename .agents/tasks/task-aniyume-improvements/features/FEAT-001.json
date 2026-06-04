@@ -1,0 +1,29 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "AnimeCard enhancements: filler badge, canon episode count, improved AIRING badge, footer year update, and meta keywords fix",
+  "status": "in_progress",
+  "steps": [
+    "Update src/components/AnimeCard.tsx to accept new optional props: fillerCount (number | null), fillerPercent (number | null). Show episode count as '220 EP (95 filler)' when fillerCount is provided and > 0, otherwise just '64 EP'. For anime without filler data, show just 'N EP'.",
+    "Add a filler badge overlay on the card image (bottom-left area, near the year) when fillerPercent is provided and > 0. Use a small colored indicator like 'XX% filler' with brand-orange/red coloring for high filler (>30%), yellow for moderate (15-30%), and green for low (<15%).",
+    "Update the AIRING badge in AnimeCard.tsx: replace the current simple text badge with a pulsing green dot (using animate-pulse) + 'AIRING' text. Use bg-emerald-500/20 backdrop with text-emerald-400 and a small dot that pulses.",
+    "Update src/components/Footer.tsx: change the years array from [2024, 2023, 2022, 2021, 2020] to [2026, 2025, 2024, 2023, 2022, 2021, 2020].",
+    "Update src/lib/content-generator.ts generateMetaTitle and generateMetaDescription functions: ensure they generate unique per-page keywords. Add a new exported function generateMetaKeywords(type: string, anime?: AnimeData, extra?: string): string[] that returns relevant keywords based on page type. For 'filler' type: include anime title + 'filler list', 'filler guide', 'episodes to skip', genre keywords. For 'genre' type: include genre name + 'best', 'top', 'anime', year. For 'anime' type: include title variants, genres, status.",
+    "Update all pages that use AnimeCard to pass filler data when available. Key pages to update: src/app/page.tsx (already has filler data for fillerAnime section), src/app/top/[type]/page.tsx (add fillerMapping include to queries), src/app/genre/[genre]/page.tsx (add fillerMapping include to query). The include should be: fillerMapping: { select: { totalFiller: true, fillerPercent: true } }.",
+    "In src/app/top/[type]/page.tsx, update all prisma.anime.findMany calls to include fillerMapping select, then pass fillerCount={anime.fillerMapping?.totalFiller} fillerPercent={anime.fillerMapping?.fillerPercent} to AnimeCard.",
+    "In src/app/genre/[genre]/page.tsx, update the prisma.anime.findMany call to include fillerMapping select, then pass filler props to AnimeCard."
+  ],
+  "acceptance_criteria": [
+    "AnimeCard shows 'N EP (X filler)' format when filler data is available",
+    "AnimeCard shows a colored filler percentage badge when fillerPercent > 0",
+    "AIRING badge has a pulsing green dot animation",
+    "Footer shows years 2026, 2025, 2024, 2023, 2022, 2021, 2020",
+    "content-generator.ts exports a generateMetaKeywords function",
+    "Build passes: npx prisma generate && npx next build"
+  ],
+  "verification": [
+    "Run: cd /projects/sandbox/anime-guide-engine && npx prisma generate && npx next build"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

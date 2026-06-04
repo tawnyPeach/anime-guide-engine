@@ -2,7 +2,7 @@ import Link from "next/link";
 import Newsletter from "./Newsletter";
 
 const genres = ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Romance", "Sci-Fi", "Thriller"];
-const years = [2024, 2023, 2022, 2021, 2020];
+const years = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
 
 export default function Footer() {
   return (

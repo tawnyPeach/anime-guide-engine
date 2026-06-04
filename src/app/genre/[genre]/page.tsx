@@ -63,6 +63,7 @@ export default async function GenrePage({ params }: Props) {
     },
     orderBy: { popularity: "desc" },
     take: 20,
+    include: { fillerMapping: { select: { totalFiller: true, fillerPercent: true } } },
   });
 
   const total = await prisma.anime.count({
@@ -132,6 +133,8 @@ export default async function GenrePage({ params }: Props) {
                 averageScore={anime.averageScore}
                 status={anime.status}
                 seasonYear={anime.seasonYear}
+                fillerCount={anime.fillerMapping?.totalFiller}
+                fillerPercent={anime.fillerMapping?.fillerPercent}
               />
             </div>
           ))}

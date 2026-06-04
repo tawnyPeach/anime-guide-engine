@@ -270,3 +270,62 @@ export function generateMetaDescription(type: string, anime?: AnimeData, extra?:
       return "Comprehensive anime guides including filler lists, watch orders, and episode guides for all popular anime series.";
   }
 }
+
+export function generateMetaKeywords(type: string, anime?: AnimeData, extra?: string): string[] {
+  const baseKeywords = ["anime", "guide", "AniYume"];
+  const currentYear = new Date().getFullYear().toString();
+
+  switch (type) {
+    case "filler": {
+      const title = anime?.titleEnglish || anime?.title || "";
+      const keywords = [
+        title,
+        `${title} filler list`,
+        `${title} filler guide`,
+        `${title} episodes to skip`,
+        `${title} canon episodes`,
+        ...baseKeywords,
+      ];
+      if (anime?.genres) {
+        keywords.push(...anime.genres.slice(0, 3).map(g => `${g.toLowerCase()} anime`));
+      }
+      return keywords;
+    }
+    case "genre": {
+      const genre = extra || "";
+      return [
+        `${genre} anime`,
+        `best ${genre.toLowerCase()} anime`,
+        `top ${genre.toLowerCase()} anime`,
+        `${genre.toLowerCase()} anime ${currentYear}`,
+        `${genre.toLowerCase()} anime recommendations`,
+        ...baseKeywords,
+      ];
+    }
+    case "anime": {
+      const title = anime?.titleEnglish || anime?.title || "";
+      const keywords = [title, ...baseKeywords];
+      if (anime?.title && anime.title !== anime.titleEnglish) {
+        keywords.push(anime.title);
+      }
+      if (anime?.genres) {
+        keywords.push(...anime.genres.slice(0, 3));
+      }
+      if (anime?.status) {
+        keywords.push(anime.status === "RELEASING" ? "currently airing" : "completed anime");
+      }
+      return keywords;
+    }
+    case "year": {
+      return [
+        `best anime ${extra}`,
+        `top anime ${extra}`,
+        `anime ${extra}`,
+        `${extra} anime list`,
+        ...baseKeywords,
+      ];
+    }
+    default:
+      return baseKeywords;
+  }
+}

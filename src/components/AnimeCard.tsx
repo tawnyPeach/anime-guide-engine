@@ -14,6 +14,8 @@ interface AnimeCardProps {
   status?: string | null;
   seasonYear?: number | null;
   index?: number;
+  fillerCount?: number | null;
+  fillerPercent?: number | null;
 }
 
 export default function AnimeCard({
@@ -27,6 +29,8 @@ export default function AnimeCard({
   status,
   seasonYear,
   index = 0,
+  fillerCount,
+  fillerPercent,
 }: AnimeCardProps) {
   const displayTitle = titleEnglish || title;
 
@@ -60,8 +64,24 @@ export default function AnimeCard({
 
             {/* Type/status badge top-left */}
             {status === "RELEASING" && (
-              <span className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-md text-[10px] font-bold bg-black/60 backdrop-blur-sm text-emerald-400">
+              <span className="absolute top-2 left-2 z-10 flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 backdrop-blur-sm text-emerald-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 AIRING
+              </span>
+            )}
+
+            {/* Filler percentage badge bottom-left */}
+            {fillerPercent != null && fillerPercent > 0 && (
+              <span
+                className={`absolute bottom-8 left-2 z-10 px-1.5 py-0.5 rounded-md text-[10px] font-bold backdrop-blur-sm ${
+                  fillerPercent > 30
+                    ? "bg-red-500/20 text-red-400"
+                    : fillerPercent > 15
+                      ? "bg-yellow-500/20 text-yellow-400"
+                      : "bg-green-500/20 text-green-400"
+                }`}
+              >
+                {fillerPercent}% filler
               </span>
             )}
 
@@ -87,7 +107,7 @@ export default function AnimeCard({
               )}
               {totalEpisodes > 0 && (
                 <span className="text-[10px] font-medium text-white/90">
-                  {totalEpisodes} EP
+                  {totalEpisodes} EP{fillerCount != null && fillerCount > 0 ? ` (${fillerCount} filler)` : ""}
                 </span>
               )}
             </div>

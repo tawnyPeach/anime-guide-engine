@@ -65,7 +65,7 @@ export default async function TopListPage({ params }: Props) {
 
   if (!listType) notFound();
 
-  let allAnime: Awaited<ReturnType<typeof prisma.anime.findMany>> = [];
+  let allAnime: Awaited<ReturnType<typeof prisma.anime.findMany<{ include: { fillerMapping: { select: { totalFiller: true; fillerPercent: true } } } }>>> = [];
 
   try {
     switch (type) {
@@ -74,12 +74,14 @@ export default async function TopListPage({ params }: Props) {
           where: { averageScore: { not: null } },
           orderBy: { averageScore: "desc" },
           take: 100,
+          include: { fillerMapping: { select: { totalFiller: true, fillerPercent: true } } },
         });
         break;
       case "most-popular":
         allAnime = await prisma.anime.findMany({
           orderBy: { popularity: "desc" },
           take: 100,
+          include: { fillerMapping: { select: { totalFiller: true, fillerPercent: true } } },
         });
         break;
       case "longest-running":
@@ -87,6 +89,7 @@ export default async function TopListPage({ params }: Props) {
           where: { totalEpisodes: { gt: 0 } },
           orderBy: { totalEpisodes: "desc" },
           take: 100,
+          include: { fillerMapping: { select: { totalFiller: true, fillerPercent: true } } },
         });
         break;
     }
@@ -168,6 +171,8 @@ export default async function TopListPage({ params }: Props) {
                 averageScore={anime.averageScore}
                 status={anime.status}
                 seasonYear={anime.seasonYear}
+                fillerCount={anime.fillerMapping?.totalFiller}
+                fillerPercent={anime.fillerMapping?.fillerPercent}
               />
             </div>
           ))}
