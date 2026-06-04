@@ -17,6 +17,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.8,
     },
+    {
+      url: `${SITE_URL}/search`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
   ];
 
   let allAnime: { slug: string; updatedAt: Date; fillerMapping: { id: number } | null; watchOrder: { id: number } | null; totalEpisodes: number; studios: string | null }[] = [];
