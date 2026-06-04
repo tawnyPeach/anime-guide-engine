@@ -14,7 +14,7 @@ export const revalidate = 3600; // ISR: revalidate every hour
 export const metadata: Metadata = {
   alternates: { canonical: '/' },
   openGraph: {
-    images: [{ url: '/api/og?title=Anime+Guide+Engine&subtitle=Filler+Lists,+Watch+Orders+%26+Episode+Guides' }],
+    images: [{ url: '/api/og?title=AniYume&subtitle=Anime+Filler+Lists,+Watch+Orders+%26+Episode+Guides' }],
   },
 };
 
@@ -73,22 +73,21 @@ export default async function HomePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
-      <section className="relative text-center mb-16 py-12 rounded-2xl overflow-hidden">
+      <section className="relative text-center mb-16 py-12 rounded-xl overflow-hidden">
         {/* Background decoration */}
-        <div className="absolute inset-0 hero-gradient rounded-2xl" />
-        <div className="absolute top-10 left-10 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl animate-pulse-glow" />
-        <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-pink-500/5 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '3s' }} />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-brand-orange/5 rounded-xl" />
+        <div className="absolute top-10 left-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl animate-pulse-glow" />
+        <div className="absolute bottom-10 right-10 w-40 h-40 bg-brand-orange/10 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
 
         <div className="relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 gradient-text">
-            Anime Guide Engine
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+            <span className="text-brand-teal">Ani</span><span className="text-brand-orange">Yume</span>
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-4">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
             Your ultimate resource for anime filler guides, watch orders, and
             episode lists. Skip the filler, watch what matters.
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground/60">
             Showing {totalAnime} anime in our database
           </p>
         </div>
@@ -99,21 +98,21 @@ export default async function HomePage() {
         <section className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
-              <div className="w-1 h-8 bg-gradient-to-b from-emerald-500 to-blue-500 rounded-full mr-3" />
-              <h2 className="text-2xl font-bold gradient-text">Currently Airing</h2>
+              <div className="w-1 h-6 bg-primary rounded-full mr-3" />
+              <h2 className="text-2xl font-bold text-foreground">Currently Airing</h2>
             </div>
             <Link
               href="/calendar"
-              className="text-sm text-purple-400 hover:text-purple-300 transition-colors"
+              className="text-sm text-primary hover:text-primary/80 transition-colors"
             >
               View full calendar &rarr;
             </Link>
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-2">
+          <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
             {todayAiring.map((entry, idx) => (
               <div
                 key={`${entry.media.id}-${entry.episode}-${idx}`}
-                className="flex-shrink-0 w-56 bg-anime-card border border-anime-border rounded-xl overflow-hidden hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
+                className="flex-shrink-0 w-56 bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
               >
                 <div className="relative h-32 w-full">
                   {entry.media.coverImage?.large ? (
@@ -125,21 +124,21 @@ export default async function HomePage() {
                       className="object-cover w-full h-full"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                      <span className="text-gray-600">No image</span>
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <span className="text-muted-foreground">No image</span>
                     </div>
                   )}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                    <span className="text-xs text-emerald-400 font-medium">
+                    <span className="text-xs text-primary font-medium">
                       Ep {entry.episode}
                     </span>
                   </div>
                 </div>
                 <div className="p-3">
-                  <h3 className="text-sm font-medium text-white truncate">
+                  <h3 className="text-sm font-medium text-foreground truncate">
                     {entry.media.title.english || entry.media.title.romaji}
                   </h3>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     <AiringTimeDisplay airingAt={entry.airingAt} />
                   </p>
                 </div>
@@ -155,11 +154,11 @@ export default async function HomePage() {
       {fillerAnime.length > 0 && (
         <section className="mb-12">
           <div className="flex items-center mb-6">
-            <div className="w-1 h-8 bg-gradient-to-b from-purple-500 to-blue-500 rounded-full mr-3" />
-            <h2 className="text-2xl font-bold gradient-text">
+            <div className="w-1 h-6 bg-brand-orange rounded-full mr-3" />
+            <h2 className="text-2xl font-bold text-foreground">
               Popular Filler Guides
             </h2>
-            <span className="ml-3 text-sm text-gray-400">
+            <span className="ml-3 text-sm text-muted-foreground">
               {fillerAnime.length} guides
             </span>
           </div>
@@ -170,11 +169,11 @@ export default async function HomePage() {
       {/* Most Popular Anime */}
       <section className="mb-12">
         <div className="flex items-center mb-6">
-          <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full mr-3" />
-          <h2 className="text-2xl font-bold gradient-text-alt">Most Popular Anime</h2>
+          <div className="w-1 h-6 bg-primary rounded-full mr-3" />
+          <h2 className="text-2xl font-bold text-foreground">Most Popular Anime</h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {popularAnime.map((anime) => (
+          {popularAnime.map((anime, idx) => (
             <AnimeCard
               key={anime.id}
               title={anime.title}
@@ -186,6 +185,7 @@ export default async function HomePage() {
               averageScore={anime.averageScore}
               status={anime.status}
               seasonYear={anime.seasonYear}
+              index={idx}
             />
           ))}
         </div>
@@ -200,11 +200,11 @@ export default async function HomePage() {
       {recentAnime.length > 0 && (
         <section className="mb-12">
           <div className="flex items-center mb-6">
-            <div className="w-1 h-8 bg-gradient-to-b from-pink-500 to-purple-500 rounded-full mr-3" />
-            <h2 className="text-2xl font-bold gradient-text">Recent Anime</h2>
+            <div className="w-1 h-6 bg-brand-orange rounded-full mr-3" />
+            <h2 className="text-2xl font-bold text-foreground">Recent Anime</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {recentAnime.map((anime) => (
+            {recentAnime.map((anime, idx) => (
               <AnimeCard
                 key={anime.id}
                 title={anime.title}
@@ -216,6 +216,7 @@ export default async function HomePage() {
                 averageScore={anime.averageScore}
                 status={anime.status}
                 seasonYear={anime.seasonYear}
+                index={idx}
               />
             ))}
           </div>
@@ -225,39 +226,39 @@ export default async function HomePage() {
       {/* SEO Internal Links - Genre Browse */}
       <section className="mb-12">
         <div className="flex items-center mb-6">
-          <div className="w-1 h-8 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full mr-3" />
-          <h2 className="text-2xl font-bold gradient-text-alt">
+          <div className="w-1 h-6 bg-primary rounded-full mr-3" />
+          <h2 className="text-2xl font-bold text-foreground">
             Browse Anime Guides
           </h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Link
             href="/genre/action"
-            className="bg-gradient-to-br from-red-900/30 to-anime-card border border-red-800/30 p-4 rounded-xl text-center hover:border-red-600/50 hover:glow-card-hover transition-all duration-300"
+            className="bg-card border border-border p-4 rounded-xl text-center hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300"
           >
             <span className="text-2xl block mb-2">⚔️</span>
-            <span className="text-white font-medium">Action Anime</span>
+            <span className="text-foreground font-medium">Action Anime</span>
           </Link>
           <Link
             href="/genre/romance"
-            className="bg-gradient-to-br from-pink-900/30 to-anime-card border border-pink-800/30 p-4 rounded-xl text-center hover:border-pink-600/50 hover:glow-card-hover transition-all duration-300"
+            className="bg-card border border-border p-4 rounded-xl text-center hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300"
           >
             <span className="text-2xl block mb-2">💕</span>
-            <span className="text-white font-medium">Romance Anime</span>
+            <span className="text-foreground font-medium">Romance Anime</span>
           </Link>
           <Link
             href="/genre/fantasy"
-            className="bg-gradient-to-br from-purple-900/30 to-anime-card border border-purple-800/30 p-4 rounded-xl text-center hover:border-purple-600/50 hover:glow-card-hover transition-all duration-300"
+            className="bg-card border border-border p-4 rounded-xl text-center hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300"
           >
             <span className="text-2xl block mb-2">🧙</span>
-            <span className="text-white font-medium">Fantasy Anime</span>
+            <span className="text-foreground font-medium">Fantasy Anime</span>
           </Link>
           <Link
             href="/genre/comedy"
-            className="bg-gradient-to-br from-yellow-900/30 to-anime-card border border-yellow-800/30 p-4 rounded-xl text-center hover:border-yellow-600/50 hover:glow-card-hover transition-all duration-300"
+            className="bg-card border border-border p-4 rounded-xl text-center hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300"
           >
             <span className="text-2xl block mb-2">😂</span>
-            <span className="text-white font-medium">Comedy Anime</span>
+            <span className="text-foreground font-medium">Comedy Anime</span>
           </Link>
         </div>
       </section>

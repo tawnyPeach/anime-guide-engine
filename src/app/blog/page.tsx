@@ -36,7 +36,7 @@ function getBlogPosts(): BlogPost[] {
       title: frontmatter.title || file.replace('.md', '').replace(/-/g, ' '),
       date: frontmatter.date || '',
       excerpt: frontmatter.excerpt || '',
-      author: frontmatter.author || 'Anime Guide Engine',
+      author: frontmatter.author || 'AniYume',
     };
   });
 

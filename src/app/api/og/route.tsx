@@ -4,7 +4,7 @@ export const runtime = 'edge';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const rawTitle = searchParams.get('title') || 'Anime Guide Engine';
+  const rawTitle = searchParams.get('title') || 'AniYume';
   const rawSubtitle = searchParams.get('subtitle') || '';
   const type = searchParams.get('type') || '';
 
@@ -120,7 +120,7 @@ export async function GET(request: Request) {
               color: 'transparent',
             }}
           >
-            Anime Guide Engine
+            AniYume
           </div>
         </div>
       </div>

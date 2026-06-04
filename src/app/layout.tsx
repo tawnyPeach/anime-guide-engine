@@ -3,16 +3,17 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Sidebar from "@/components/Sidebar";
 import BackToTop from "@/components/BackToTop";
 import ThemeProvider from "@/components/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://animeguideengine.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://aniyume.com'),
   title: {
-    default: "Anime Guide Engine - Filler Lists, Watch Orders & Episode Guides",
-    template: "%s | Anime Guide Engine",
+    default: "AniYume - Anime Filler Lists, Watch Orders & Episode Guides",
+    template: "%s | AniYume",
   },
   description:
     "Your ultimate resource for anime filler guides, watch orders, and episode lists. Skip the filler, watch what matters.",
@@ -23,11 +24,11 @@ export const metadata: Metadata = {
     "skip filler episodes",
     "anime guide",
   ],
-  authors: [{ name: "Anime Guide Engine" }],
+  authors: [{ name: "AniYume" }],
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Anime Guide Engine",
+    siteName: "AniYume",
   },
   twitter: {
     card: "summary_large_image",
@@ -63,12 +64,13 @@ export default function RootLayout({
           />
         )}
       </head>
-      <body className={`${inter.className} bg-[#0a0a1a] text-gray-100 min-h-screen flex flex-col`}>
+      <body className={`${inter.className} bg-background text-foreground min-h-screen flex flex-col`}>
         <ThemeProvider>
-          {/* Background gradient mesh */}
-          <div className="fixed inset-0 gradient-mesh-bg -z-10" aria-hidden="true" />
           <Header />
-          <main className="flex-1">{children}</main>
+          <Sidebar />
+          <main className="flex-1 md:ml-[68px] pt-14 md:pt-16 pb-20 md:pb-0">
+            {children}
+          </main>
           <Footer />
           <BackToTop />
         </ThemeProvider>

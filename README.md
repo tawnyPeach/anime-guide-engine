@@ -1,4 +1,4 @@
-# Anime Guide Engine
+# AniYume
 
 A production-ready programmatic SEO website that generates anime guide pages to rank on Google and monetize with AdSense. Built with Next.js App Router, Prisma, SQLite, and TailwindCSS.
 
@@ -66,7 +66,7 @@ Copy `.env.example` to `.env` and configure:
 ```env
 DATABASE_URL="postgresql://localhost:5432/anime_guide_dev"
 NEXT_PUBLIC_SITE_URL="https://your-domain.com"
-NEXT_PUBLIC_SITE_NAME="Anime Guide Engine"
+NEXT_PUBLIC_SITE_NAME="AniYume"
 NEXT_PUBLIC_ADSENSE_CLIENT_ID=""  # Optional
 ```
 

@@ -100,7 +100,7 @@ export default async function FillerListPage({ params }: Props) {
             "@type": "Article",
             headline: `${displayTitle} Filler Episode Guide`,
             description: `Complete filler guide for ${displayTitle} with ${stats.totalFiller} filler episodes identified.`,
-            author: { "@type": "Organization", name: "Anime Guide Engine" },
+            author: { "@type": "Organization", name: "AniYume" },
           }),
         }}
       />

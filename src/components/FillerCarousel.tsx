@@ -38,7 +38,7 @@ export default function FillerCarousel({ items }: FillerCarouselProps) {
       <button
         onClick={() => scroll("left")}
         aria-label="Scroll left"
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/70 hover:bg-black/90 text-white w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 -ml-3 shadow-lg border border-purple-700/40"
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background text-foreground w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 -ml-3 shadow-lg border border-border"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -49,7 +49,7 @@ export default function FillerCarousel({ items }: FillerCarouselProps) {
       <button
         onClick={() => scroll("right")}
         aria-label="Scroll right"
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/70 hover:bg-black/90 text-white w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 -mr-3 shadow-lg border border-purple-700/40"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background text-foreground w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 -mr-3 shadow-lg border border-border"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -59,23 +59,17 @@ export default function FillerCarousel({ items }: FillerCarouselProps) {
       {/* Scrollable Container */}
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 no-scrollbar"
       >
-        <style jsx>{`
-          div::-webkit-scrollbar {
-            display: none;
-          }
-        `}</style>
         {items.map((anime) => (
           <Link
             key={anime.id}
             href={`/anime/${anime.slug}/filler-list`}
-            className="flex-shrink-0 snap-start w-[260px] bg-anime-card rounded-xl overflow-hidden border border-anime-border hover:border-purple-700/50 hover:glow-card-hover transition-all duration-300 group"
+            className="flex-shrink-0 snap-start w-[260px] bg-card rounded-xl overflow-hidden border border-border hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group"
           >
             <div className="flex h-[100px]">
               {/* Cover Image */}
-              <div className="relative w-[70px] h-full flex-shrink-0 bg-gray-800">
+              <div className="relative w-[70px] h-full flex-shrink-0 bg-muted">
                 {anime.coverImage ? (
                   <Image
                     src={anime.coverImage}
@@ -85,7 +79,7 @@ export default function FillerCarousel({ items }: FillerCarouselProps) {
                     sizes="70px"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-500">
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                     <span className="text-2xl">🎬</span>
                   </div>
                 )}
@@ -93,11 +87,11 @@ export default function FillerCarousel({ items }: FillerCarouselProps) {
 
               {/* Content */}
               <div className="flex-1 p-3 flex flex-col justify-between min-w-0">
-                <h3 className="text-white font-semibold text-sm line-clamp-2 group-hover:text-purple-300 transition-colors duration-200">
+                <h3 className="text-foreground font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors duration-200">
                   {anime.titleEnglish || anime.title}
                 </h3>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-400">
+                  <span className="text-muted-foreground">
                     {anime.totalEpisodes} eps
                   </span>
                   <span
@@ -105,17 +99,17 @@ export default function FillerCarousel({ items }: FillerCarouselProps) {
                       anime.fillerPercent > 30
                         ? "text-red-400"
                         : anime.fillerPercent > 15
-                        ? "text-yellow-400"
-                        : "text-green-400"
+                        ? "text-brand-orange"
+                        : "text-emerald-400"
                     }`}
                   >
                     {Math.round(anime.fillerPercent)}% filler
                   </span>
                 </div>
                 {/* Filler bar */}
-                <div className="bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                <div className="bg-muted rounded-full h-1.5 overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-red-500 to-pink-500 h-full rounded-full"
+                    className="bg-gradient-to-r from-brand-orange to-red-500 h-full rounded-full"
                     style={{ width: `${Math.min(anime.fillerPercent, 100)}%` }}
                   />
                 </div>

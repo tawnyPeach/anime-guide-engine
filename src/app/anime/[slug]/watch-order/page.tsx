@@ -145,7 +145,7 @@ export default async function WatchOrderPage({ params }: Props) {
             "@type": "Article",
             headline: `${displayTitle} Watch Order Guide`,
             description: `Complete watch order for the ${displayTitle} franchise.`,
-            author: { "@type": "Organization", name: "Anime Guide Engine" },
+            author: { "@type": "Organization", name: "AniYume" },
           }),
         }}
       />

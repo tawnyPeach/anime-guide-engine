@@ -72,7 +72,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const display = formatSeasonDisplay(parsed.season, parsed.year);
 
   return {
-    title: `${display} Anime - Seasonal Chart | Anime Guide Engine`,
+    title: `${display} Anime - Seasonal Chart | AniYume`,
     description: `Complete list of anime from ${display}. Browse the ${display} anime season chart with ratings and details.`,
     alternates: { canonical: `/season/${seasonParam}` },
     openGraph: {

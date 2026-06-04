@@ -20,6 +20,7 @@ export default function SearchBar() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -36,7 +37,6 @@ export default function SearchBar() {
 
     setIsLoading(true);
     const timeout = setTimeout(async () => {
-      // Abort any previous in-flight request
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
@@ -105,10 +105,14 @@ export default function SearchBar() {
 
   return (
     <div ref={containerRef} className="relative w-full max-w-md">
-      <div className="relative">
+      <div className={`relative flex items-center rounded-xl transition-all duration-200 ${
+        isFocused
+          ? "bg-card ring-2 ring-primary/30 shadow-lg shadow-primary/5"
+          : "bg-muted/60 hover:bg-muted/80"
+      }`}>
         {/* Search icon */}
         <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+          className="absolute left-3 w-4 h-4 text-muted-foreground"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -126,22 +130,24 @@ export default function SearchBar() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => {
+            setIsFocused(true);
             if (hasSearched && results.length > 0) setIsOpen(true);
           }}
+          onBlur={() => setIsFocused(false)}
           placeholder="Search anime..."
-          className="w-full pl-10 pr-4 py-2 rounded-full bg-white/5 backdrop-blur border border-anime-border text-sm text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 transition-all"
+          className="w-full bg-transparent border-0 pl-9 pr-4 py-2.5 text-sm text-foreground placeholder-muted-foreground/60 focus:outline-none rounded-xl"
         />
         {/* Loading spinner */}
         {isLoading && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <div className="w-4 h-4 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+          <div className="absolute right-3">
+            <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
           </div>
         )}
       </div>
 
       {/* Dropdown results */}
       {isOpen && (
-        <div className="absolute top-full mt-2 w-full bg-gray-900/95 backdrop-blur-xl border border-anime-border rounded-xl shadow-lg shadow-purple-500/10 overflow-hidden z-50">
+        <div className="absolute top-full mt-2 w-full bg-card/95 backdrop-blur-xl border border-border rounded-xl shadow-lg shadow-primary/10 overflow-hidden z-50">
           {results.length > 0 ? (
             <ul className="max-h-80 overflow-y-auto">
               {results.map((result) => (
@@ -149,7 +155,7 @@ export default function SearchBar() {
                   <Link
                     href={`/anime/${result.slug}`}
                     onClick={handleResultClick}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors"
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-muted/60 transition-colors"
                   >
                     {result.coverImage ? (
                       <Image
@@ -160,24 +166,24 @@ export default function SearchBar() {
                         className="rounded object-cover flex-shrink-0"
                       />
                     ) : (
-                      <div className="w-10 h-14 rounded bg-gray-700 flex-shrink-0" />
+                      <div className="w-10 h-14 rounded bg-muted flex-shrink-0" />
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white truncate">
+                      <p className="text-sm font-medium text-foreground truncate">
                         {result.titleEnglish || result.title}
                       </p>
                       {result.titleEnglish && result.titleEnglish !== result.title && (
-                        <p className="text-xs text-gray-400 truncate">{result.title}</p>
+                        <p className="text-xs text-muted-foreground truncate">{result.title}</p>
                       )}
                       <div className="flex items-center gap-2 mt-1">
                         {result.format && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-medium">
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/20 text-primary font-medium">
                             {result.format}
                           </span>
                         )}
                         {result.averageScore && (
-                          <span className="text-[10px] text-yellow-400 font-medium">
-                            ⭐ {formatScore(result.averageScore)}
+                          <span className="text-[10px] text-brand-orange font-medium">
+                            ★ {formatScore(result.averageScore)}
                           </span>
                         )}
                       </div>
@@ -187,7 +193,7 @@ export default function SearchBar() {
               ))}
             </ul>
           ) : hasSearched ? (
-            <div className="px-4 py-6 text-center text-sm text-gray-400">
+            <div className="px-4 py-6 text-center text-sm text-muted-foreground">
               No anime found
             </div>
           ) : null}

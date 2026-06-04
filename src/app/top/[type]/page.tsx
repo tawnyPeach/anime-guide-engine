@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${listType.title} - Top 100 | Anime Guide Engine`,
+    title: `${listType.title} - Top 100 | AniYume`,
     description: listType.description,
     alternates: { canonical: `/top/${type}` },
     openGraph: {

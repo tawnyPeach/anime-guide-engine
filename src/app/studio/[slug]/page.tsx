@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const studioName = formatStudioName(slug);
 
   return {
-    title: `${studioName} Anime - All Series & Movies | Anime Guide Engine`,
+    title: `${studioName} Anime - All Series & Movies | AniYume`,
     description: `Browse all anime produced by ${studioName}. Complete list of ${studioName} anime series and movies ranked by popularity.`,
     alternates: { canonical: `/studio/${slug}` },
     openGraph: {
