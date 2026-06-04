@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "feat",
   "description": "AnimeCard enhancements: filler badge, canon episode count, improved AIRING badge, footer year update, and meta keywords fix",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Update src/components/AnimeCard.tsx to accept new optional props: fillerCount (number | null), fillerPercent (number | null). Show episode count as '220 EP (95 filler)' when fillerCount is provided and > 0, otherwise just '64 EP'. For anime without filler data, show just 'N EP'.",
     "Add a filler badge overlay on the card image (bottom-left area, near the year) when fillerPercent is provided and > 0. Use a small colored indicator like 'XX% filler' with brand-orange/red coloring for high filler (>30%), yellow for moderate (15-30%), and green for low (<15%).",
@@ -25,5 +25,5 @@
     "Run: cd /projects/sandbox/anime-guide-engine && npx prisma generate && npx next build"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Build passes cleanly with all changes. The Prisma type annotation for allAnime in top/[type]/page.tsx needed to use the generic form to include the fillerMapping relation type. No test suite exists in this project."
 }
