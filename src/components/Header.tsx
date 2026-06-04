@@ -46,6 +46,12 @@ export default function Header() {
               This Season
             </Link>
             <Link
+              href="/calendar"
+              className="nav-link text-gray-300 hover:text-white transition-colors text-sm"
+            >
+              Calendar
+            </Link>
+            <Link
               href="/genre/action"
               className="nav-link text-gray-300 hover:text-white transition-colors text-sm"
             >

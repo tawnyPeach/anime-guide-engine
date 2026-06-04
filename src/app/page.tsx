@@ -1,10 +1,12 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import prisma from "@/lib/prisma";
 import AnimeCard from "@/components/AnimeCard";
 import AdBanner from "@/components/AdBanner";
 import LoadMore from "@/components/LoadMore";
 import FillerCarousel from "@/components/FillerCarousel";
+import { fetchTodaySchedule, AiringEntry } from "@/lib/calendar";
 
 export const revalidate = 3600; // ISR: revalidate every hour
 
@@ -20,6 +22,7 @@ export default async function HomePage() {
   let fillerAnime: { id: number; title: string; titleEnglish: string | null; slug: string; coverImage: string | null; totalEpisodes: number; fillerPercent: number }[] = [];
   let recentAnime: Awaited<ReturnType<typeof prisma.anime.findMany>> = [];
   let totalAnime = 0;
+  let todayAiring: AiringEntry[] = [];
 
   try {
     popularAnime = await prisma.anime.findMany({
@@ -54,6 +57,18 @@ export default async function HomePage() {
     // Database unavailable - render with empty data
   }
 
+  try {
+    const airingData = await fetchTodaySchedule();
+    // Sort by airing time and take next 5
+    const now = Math.floor(Date.now() / 1000);
+    todayAiring = airingData
+      .sort((a, b) => a.airingAt - b.airingAt)
+      .filter((entry) => entry.airingAt >= now - 7200) // Include recently aired (last 2h)
+      .slice(0, 5);
+  } catch {
+    // AniList unavailable - skip section
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
@@ -77,6 +92,64 @@ export default async function HomePage() {
           </p>
         </div>
       </section>
+
+      {/* Currently Airing Today */}
+      {todayAiring.length > 0 && (
+        <section className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center">
+              <div className="w-1 h-8 bg-gradient-to-b from-emerald-500 to-blue-500 rounded-full mr-3" />
+              <h2 className="text-2xl font-bold gradient-text">Currently Airing</h2>
+            </div>
+            <Link
+              href="/calendar"
+              className="text-sm text-purple-400 hover:text-purple-300 transition-colors"
+            >
+              View full calendar &rarr;
+            </Link>
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-2">
+            {todayAiring.map((entry, idx) => (
+              <div
+                key={`${entry.media.id}-${entry.episode}-${idx}`}
+                className="flex-shrink-0 w-56 bg-anime-card border border-anime-border rounded-xl overflow-hidden hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
+              >
+                <div className="relative h-32 w-full">
+                  {entry.media.coverImage?.large ? (
+                    <Image
+                      src={entry.media.coverImage.large}
+                      alt={entry.media.title.english || entry.media.title.romaji}
+                      width={224}
+                      height={128}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+                      <span className="text-gray-600">No image</span>
+                    </div>
+                  )}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                    <span className="text-xs text-emerald-400 font-medium">
+                      Ep {entry.episode}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-3">
+                  <h3 className="text-sm font-medium text-white truncate">
+                    {entry.media.title.english || entry.media.title.romaji}
+                  </h3>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {new Date(entry.airingAt * 1000).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <AdBanner className="mb-8" format="horizontal" />
 
