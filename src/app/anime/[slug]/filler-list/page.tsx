@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdBanner from "@/components/AdBanner";
 import ShareButtons from "@/components/ShareButtons";
+import FillerTimeline from "@/components/FillerTimeline";
 import {
   generateFillerPageContent,
   generateMetaTitle,
@@ -234,6 +235,20 @@ export default async function FillerListPage({ params }: Props) {
           </span>
         </div>
       </div>
+
+      {/* Interactive Filler Timeline */}
+      <FillerTimeline
+        episodes={anime.episodes.map((ep) => ({
+          episodeNumber: ep.episodeNumber,
+          isFiller: fillerEpisodes.includes(ep.episodeNumber),
+          isMixed: mixedEpisodes.includes(ep.episodeNumber),
+          arcName: ep.arcName,
+        }))}
+        totalCanon={stats.totalCanon}
+        totalFiller={stats.totalFiller}
+        totalMixed={stats.totalMixed}
+        shareUrl={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://animeguideengine.com'}/anime/${slug}/filler-list`}
+      />
 
       <AdBanner className="mb-8" />
 
