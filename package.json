@@ -9,6 +9,7 @@
     "lint": "eslint",
     "seed": "tsx scripts/seed.ts",
     "seed:filler": "tsx scripts/seed-filler.ts",
+    "seed:anime": "tsx scripts/seed-anime.ts",
     "db:migrate": "npx prisma migrate dev",
     "db:reset": "npx prisma migrate reset --force",
     "db:studio": "npx prisma studio",
