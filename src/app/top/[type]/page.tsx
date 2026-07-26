@@ -6,6 +6,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import AdBanner from "@/components/AdBanner";
 import TopFilterBar from "@/components/TopFilterBar";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 86400;
 
 interface Props {
