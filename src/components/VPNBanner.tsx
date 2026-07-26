@@ -1,17 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { VPN_BANNERS } from "@/lib/affiliate";
 
 const DISMISS_KEY = "vpn-banner-dismissed";
 
 export default function VPNBanner() {
-  const [dismissed, setDismissed] = useState(true);
-
-  useEffect(() => {
-    const val = localStorage.getItem(DISMISS_KEY);
-    if (val !== "true") setDismissed(false);
-  }, []);
+  const [dismissed, setDismissed] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem(DISMISS_KEY) === "true";
+  });
 
   function dismiss() {
     setDismissed(true);

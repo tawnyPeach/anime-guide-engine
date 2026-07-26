@@ -45,7 +45,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { season, year } = getCurrentSeason();
   const display = formatSeason(season, year);
   return {
-    title: `Anime Seasonal Chart - ${display} ${year} | AniYume`,
+    title: `Anime Seasonal Chart - ${display}`,
     description: `Browse the ${display} anime seasonal chart. View rankings, scores, studios, and airing schedules for this season's anime lineup.`,
     alternates: { canonical: "/seasonal" },
     openGraph: {

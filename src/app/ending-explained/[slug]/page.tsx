@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: `In-depth explanation of the ${title} ending. Understand the plot twists, character arcs, and themes behind the finale.`,
     alternates: { canonical: `/ending-explained/${slug}` },
     openGraph: {
-      title: `${title} Ending Explained | AniYume`,
+      title: `${title} Ending Explained`,
       description: `In-depth explanation of the ${title} ending. Understand the plot twists, character arcs, and themes.`,
       images: anime.coverImage
         ? [{ url: anime.coverImage }]

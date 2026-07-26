@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     canonical: `${SITE_URL}/quotes`,
   },
   openGraph: {
-    title: "Famous Anime Quotes | AniYume",
+    title: "Famous Anime Quotes ",
     description:
       "A curated collection of famous anime quotes from legendary series. Filter, share, and explore iconic lines.",
     url: `${SITE_URL}/quotes`,

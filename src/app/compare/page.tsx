@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     canonical: `${SITE_URL}/compare`,
   },
   openGraph: {
-    title: "Compare Anime - Side by Side | AniYume",
+    title: "Compare Anime - Side by Side ",
     description:
       "Compare two anime side by side. Score, episodes, genres, studios, format, and more.",
     url: `${SITE_URL}/compare`,

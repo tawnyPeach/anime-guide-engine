@@ -26,17 +26,17 @@ export default function SearchBar() {
   const inputRef = useRef<HTMLInputElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  const isQueryShort = query.trim().length < 2;
+  const displayResults = isQueryShort ? [] : results;
+  const displayIsOpen = isQueryShort ? false : isOpen;
+  const displayHasSearched = isQueryShort ? false : hasSearched;
+
   // Debounced search
   useEffect(() => {
-    if (query.trim().length < 2) {
-      setResults([]);
-      setIsOpen(false);
-      setHasSearched(false);
-      return;
-    }
+    if (isQueryShort) return;
 
-    setIsLoading(true);
     const timeout = setTimeout(async () => {
+      setIsLoading(true);
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
@@ -68,7 +68,7 @@ export default function SearchBar() {
         abortControllerRef.current = null;
       }
     };
-  }, [query]);
+  }, [query, isQueryShort]);
 
   // Close on outside click
   useEffect(() => {
@@ -146,11 +146,11 @@ export default function SearchBar() {
       </div>
 
       {/* Dropdown results */}
-      {isOpen && (
+      {displayIsOpen && (
         <div className="absolute top-full mt-2 w-full bg-card/95 backdrop-blur-xl border border-border rounded-xl shadow-lg shadow-primary/10 overflow-hidden z-50">
-          {results.length > 0 ? (
+          {displayResults.length > 0 ? (
             <ul className="max-h-80 overflow-y-auto">
-              {results.map((result) => (
+              {displayResults.map((result) => (
                 <li key={result.id}>
                   <Link
                     href={`/anime/${result.slug}`}
@@ -192,7 +192,7 @@ export default function SearchBar() {
                 </li>
               ))}
             </ul>
-          ) : hasSearched ? (
+          ) : displayHasSearched ? (
             <div className="px-4 py-6 text-center text-sm text-muted-foreground">
               No anime found
             </div>

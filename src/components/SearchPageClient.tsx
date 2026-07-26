@@ -96,22 +96,19 @@ export default function SearchPageClient() {
   const [status, setStatus] = useState("");
 
   // Recent searches
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
-
-  const inputRef = useRef<HTMLInputElement>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
-
-  // Load recent searches from localStorage
-  useEffect(() => {
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
     try {
       const stored = localStorage.getItem(RECENT_SEARCHES_KEY);
-      if (stored) {
-        setRecentSearches(JSON.parse(stored));
-      }
+      if (stored) return JSON.parse(stored);
     } catch {
       // ignore
     }
-  }, []);
+    return [];
+  });
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Fetch trending anime for empty state
   useEffect(() => {
@@ -187,14 +184,14 @@ export default function SearchPageClient() {
   );
 
   // Debounced search effect
+  const hasActiveFilters = genre || yearMin || yearMax || scoreMin || format || status;
+  const isQueryTooShort = query.trim().length < 2 && !hasActiveFilters;
+  const displayResults = isQueryTooShort ? [] : results;
+  const displayHasSearched = isQueryTooShort ? false : hasSearched;
+  const displayTotal = isQueryTooShort ? 0 : total;
+
   useEffect(() => {
-    const hasFilters = genre || yearMin || yearMax || scoreMin || format || status;
-    if (query.trim().length < 2 && !hasFilters) {
-      setResults([]);
-      setHasSearched(false);
-      setTotal(0);
-      return;
-    }
+    if (isQueryTooShort) return;
 
     const timeout = setTimeout(() => {
       setPage(1);
@@ -205,7 +202,7 @@ export default function SearchPageClient() {
     }, 300);
 
     return () => clearTimeout(timeout);
-  }, [query, genre, yearMin, yearMax, scoreMin, format, status, performSearch, saveRecentSearch]);
+  }, [query, genre, yearMin, yearMax, scoreMin, format, status, performSearch, saveRecentSearch, isQueryTooShort]);
 
   // Load more
   const handleLoadMore = () => {
@@ -235,7 +232,6 @@ export default function SearchPageClient() {
     setStatus("");
   };
 
-  const hasActiveFilters = genre || yearMin || yearMax || scoreMin || format || status;
   const showSuggestions = isFocused && query.trim().length === 0 && !hasActiveFilters;
 
   return (
@@ -417,13 +413,13 @@ export default function SearchPageClient() {
       </div>
 
       {/* Results section */}
-      {hasSearched && results.length > 0 && (
+      {displayHasSearched && displayResults.length > 0 && (
         <div>
           <p className="text-sm text-muted-foreground mb-4">
-            {total} result{total !== 1 ? "s" : ""} found
+            {displayTotal} result{displayTotal !== 1 ? "s" : ""} found
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {results.map((anime, i) => {
+              {displayResults.map((anime, i) => {
               const genres: string[] = (() => {
                 try {
                   return JSON.parse(anime.genres || "[]");
@@ -482,7 +478,7 @@ export default function SearchPageClient() {
       )}
 
       {/* No results state */}
-      {hasSearched && results.length === 0 && !isLoading && (
+      {displayHasSearched && displayResults.length === 0 && !isLoading && (
         <div className="text-center py-12">
           <div className="text-4xl mb-4">🔍</div>
           <h3 className="text-lg font-semibold text-foreground mb-2">No results found</h3>

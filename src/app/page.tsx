@@ -72,6 +72,7 @@ export default async function HomePage() {
   try {
     const airingData = await fetchTodaySchedule();
     // Sort by airing time and take next 5
+    // eslint-disable-next-line react-hooks/purity -- Date.now is deterministic per server-render request
     const now = Math.floor(Date.now() / 1000);
     todayAiring = airingData
       .sort((a, b) => a.airingAt - b.airingAt)

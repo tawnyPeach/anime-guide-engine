@@ -114,7 +114,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const displayTitle = anime.titleEnglish || anime.title;
 
   return {
-    title: `${displayTitle} - Manga vs Anime Comparison | AniYume`,
+    title: `${displayTitle} - Manga vs Anime Comparison`,
     description: `Compare the manga and anime versions of ${displayTitle}. Story differences, art quality, character development, pacing, and overall verdict.`,
     alternates: { canonical: `/manga-vs-anime/${slug}` },
     openGraph: {

@@ -5,12 +5,12 @@ import TierList from "@/components/TierList";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Anime Tier List Maker | Rank Your Favorites | AniYume",
+  title: "Anime Tier List Maker | Rank Your Favorites ",
   description:
     "Create and share your own anime tier list! Drag and drop popular anime into S, A, B, C, D, and F tiers. Pre-ranked by community score.",
   keywords: ["anime tier list", "tier list maker", "rank anime", "anime ranking", "best anime"],
   openGraph: {
-    title: "Anime Tier List Maker | AniYume",
+    title: "Anime Tier List Maker ",
     description: "Create and share your own anime tier list!",
     images: [{ url: "/api/og?title=Anime+Tier+List+Maker&subtitle=Rank+Your+Favorites" }],
   },

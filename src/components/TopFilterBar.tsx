@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import AnimeCard from "@/components/AnimeCard";
 import Pagination from "@/components/Pagination";
 
@@ -56,14 +56,18 @@ export default function TopFilterBar({ type, children }: TopFilterBarProps) {
   const totalPages = Math.ceil(total / limit);
 
   const fetchData = useCallback(
-    async (currentPage: number) => {
+    async (currentPage: number, filters?: { genre?: string; year?: string; format?: string; sort?: string }) => {
       setLoading(true);
       try {
+        const g = filters?.genre ?? genre;
+        const y = filters?.year ?? year;
+        const f = filters?.format ?? format;
+        const s = filters?.sort ?? sort;
         const params = new URLSearchParams({ type, page: String(currentPage), limit: String(limit) });
-        if (genre) params.set("genre", genre);
-        if (year) params.set("year", year);
-        if (format) params.set("format", format);
-        if (sort) params.set("sort", sort);
+        if (g) params.set("genre", g);
+        if (y) params.set("year", y);
+        if (f) params.set("format", f);
+        if (s) params.set("sort", s);
 
         const res = await fetch(`/api/top?${params.toString()}`);
         if (res.ok) {
@@ -81,15 +85,12 @@ export default function TopFilterBar({ type, children }: TopFilterBarProps) {
     [type, genre, year, format, sort]
   );
 
-  useEffect(() => {
-    if (hasFiltered) {
-      fetchData(1);
-    }
-  }, [genre, year, format, sort, fetchData, hasFiltered]);
-
-  const handleFilterChange = (setter: (v: string) => void) => (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setter(e.target.value);
+  const handleFilterChange = (setter: (v: string) => void, key: string) => (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setter(value);
     setHasFiltered(true);
+    const newFilters = { genre, year, format, sort, [key]: value };
+    fetchData(1, newFilters);
   };
 
   const handlePageChange = (newPage: number) => {
@@ -107,7 +108,7 @@ export default function TopFilterBar({ type, children }: TopFilterBarProps) {
 
           <select
             value={year}
-            onChange={handleFilterChange(setYear)}
+            onChange={handleFilterChange(setYear, "year")}
             className="px-3 py-1.5 text-sm rounded-lg border border-border bg-background text-foreground focus:border-primary focus:outline-none"
           >
             <option value="">All Years</option>
@@ -118,7 +119,7 @@ export default function TopFilterBar({ type, children }: TopFilterBarProps) {
 
           <select
             value={genre}
-            onChange={handleFilterChange(setGenre)}
+            onChange={handleFilterChange(setGenre, "genre")}
             className="px-3 py-1.5 text-sm rounded-lg border border-border bg-background text-foreground focus:border-primary focus:outline-none"
           >
             <option value="">All Genres</option>
@@ -129,7 +130,7 @@ export default function TopFilterBar({ type, children }: TopFilterBarProps) {
 
           <select
             value={format}
-            onChange={handleFilterChange(setFormat)}
+            onChange={handleFilterChange(setFormat, "format")}
             className="px-3 py-1.5 text-sm rounded-lg border border-border bg-background text-foreground focus:border-primary focus:outline-none"
           >
             <option value="">All Formats</option>
@@ -140,7 +141,7 @@ export default function TopFilterBar({ type, children }: TopFilterBarProps) {
 
           <select
             value={sort}
-            onChange={handleFilterChange(setSort)}
+            onChange={handleFilterChange(setSort, "sort")}
             className="px-3 py-1.5 text-sm rounded-lg border border-border bg-background text-foreground focus:border-primary focus:outline-none"
           >
             <option value="">Default Sort</option>

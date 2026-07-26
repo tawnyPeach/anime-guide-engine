@@ -6,7 +6,7 @@ import WatchTimeCalculator from "./WatchTimeCalculator";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "How Long to Watch? - Anime Watch Time Calculator | AniYume",
+  title: "How Long to Watch? - Anime Watch Time Calculator ",
   description:
     "Calculate how long it takes to watch any anime. Enter a single anime or paste your full watchlist to see total hours, days, and fun comparisons.",
   alternates: { canonical: "/watch-time" },

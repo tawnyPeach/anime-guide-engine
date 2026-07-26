@@ -4,11 +4,11 @@ import TrackerClient from './TrackerClient';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'My Watch Tracker | AniYume',
-  description: 'Track your anime watching progress, rate shows, and manage your watchlist.',
+  title: 'My Watch Tracker',
+  description: 'Track your anime watching progress.',
   alternates: { canonical: '/tracker' },
   openGraph: {
-    title: 'My Watch Tracker | AniYume',
+    title: 'My Watch Tracker',
     description: 'Track your anime watching progress, rate shows, and manage your watchlist.',
     images: [{ url: '/api/og?title=Watch+Tracker&subtitle=Track+Your+Anime' }],
   },

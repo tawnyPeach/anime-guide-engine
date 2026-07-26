@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Review, getAllReviews } from "@/lib/reviews";
 import ReviewCard from "@/components/ReviewCard";
@@ -8,16 +8,12 @@ import ReviewCard from "@/components/ReviewCard";
 type SortOption = "recent" | "highest" | "lowest";
 
 export default function ReviewsPageClient() {
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews] = useState<Review[]>(() => getAllReviews());
   const [sort, setSort] = useState<SortOption>("recent");
   const [filterSlug, setFilterSlug] = useState("");
   const [minRating, setMinRating] = useState(0);
   const [page, setPage] = useState(1);
   const perPage = 10;
-
-  useEffect(() => {
-    setReviews(getAllReviews());
-  }, []);
 
   const slugs = [...new Set(reviews.map((r) => r.slug))];
 

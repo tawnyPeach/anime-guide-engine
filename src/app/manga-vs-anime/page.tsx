@@ -6,7 +6,7 @@ import MangaVsAnimeCard from "./MangaVsAnimeCard";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Manga vs Anime - Which Version is Better? | AniYume",
+  title: "Manga vs Anime - Which Version is Better? ",
   description:
     "Compare manga and anime versions of popular series. Find out which adaptation is better for story, animation, characters, and pacing.",
   alternates: { canonical: "/manga-vs-anime" },

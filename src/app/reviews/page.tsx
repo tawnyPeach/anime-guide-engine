@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Browse and read user reviews for your favorite anime series. Share your thoughts and discover what others think.",
   alternates: { canonical: "/reviews" },
   openGraph: {
-    title: "Anime Reviews | AniYume",
+    title: "Anime Reviews ",
     description: "Browse and read user reviews for your favorite anime series.",
     images: [{ url: "/api/og?title=Anime+Reviews&subtitle=User+Reviews+for+Your+Favorite+Anime" }],
   },

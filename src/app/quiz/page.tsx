@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     "anime trivia",
   ],
   openGraph: {
-    title: "Which Anime Character Are You? | AniYume",
+    title: "Which Anime Character Are You? ",
     description:
       "Answer 10 personality questions and find out which legendary anime character matches your vibe!",
     images: [
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Which Anime Character Are You? | AniYume",
+    title: "Which Anime Character Are You? ",
     description:
       "Take our anime personality quiz and discover your match!",
   },

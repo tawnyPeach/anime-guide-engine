@@ -113,13 +113,6 @@ function WatchEntryCard({
   const [notes, setNotes] = useState(entry.notes || '');
   const [expanded, setExpanded] = useState(false);
 
-  useEffect(() => {
-    setStatus(entry.status);
-    setEps(entry.episodesWatched);
-    setRating(entry.rating || 0);
-    setNotes(entry.notes || '');
-  }, [entry.status, entry.episodesWatched, entry.rating, entry.notes]);
-
   const pct = entry.totalEpisodes > 0 ? Math.round((eps / entry.totalEpisodes) * 100) : 0;
 
   const handleStatusChange = (newStatus: WatchStatus) => {

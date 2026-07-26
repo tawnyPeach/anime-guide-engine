@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "In-depth explanations of anime endings. Understand the plot twists, character arcs, and hidden meanings behind your favorite anime conclusions.",
   alternates: { canonical: "/ending-explained" },
   openGraph: {
-    title: "Anime Ending Explained | AniYume",
+    title: "Anime Ending Explained ",
     description: "In-depth explanations of anime endings. Understand plot twists, character arcs, and hidden meanings.",
     images: [{ url: "/api/og?title=Anime+Ending+Explained&subtitle=Understand+Your+Favorite+Anime+Endings" }],
   },

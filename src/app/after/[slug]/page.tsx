@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const displayTitle = anime.titleEnglish || anime.title;
 
   return {
-    title: `What to Watch After ${displayTitle} | AniYume`,
+    title: `What to Watch After ${displayTitle}`,
     description: `Finished watching ${displayTitle}? Here are sequels, side stories, and similar anime recommendations to watch next.`,
     alternates: { canonical: `/after/${slug}` },
     openGraph: {

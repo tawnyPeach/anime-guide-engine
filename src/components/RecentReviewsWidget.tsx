@@ -1,16 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Review, getRecentReviews } from "@/lib/reviews";
 import ReviewCard from "@/components/ReviewCard";
 
 export default function RecentReviewsWidget() {
-  const [reviews, setReviews] = useState<Review[]>([]);
-
-  useEffect(() => {
-    setReviews(getRecentReviews(4));
-  }, []);
+  const [reviews] = useState<Review[]>(() => getRecentReviews(4));
 
   if (reviews.length === 0) return null;
 

@@ -5,18 +5,18 @@ import RandomPickerClient from "./RandomPickerClient";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Random Anime Picker - Discover Something New | AniYume",
+  title: "Random Anime Picker - Discover Something New ",
   description:
     "Can't decide what to watch? Let fate choose! Spin the slot machine and discover a random anime from our curated database of 1000+ titles.",
   keywords: ["random anime", "anime picker", "what to watch", "anime recommendation", "surprise me"],
   openGraph: {
-    title: "Random Anime Picker - Discover Something New | AniYume",
+    title: "Random Anime Picker - Discover Something New ",
     description: "Can't decide what to watch? Let fate choose with our anime slot machine!",
     images: [{ url: "/api/og?title=Random+Anime+Picker&subtitle=Discover+Something+New" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Random Anime Picker | AniYume",
+    title: "Random Anime Picker ",
     description: "Spin the wheel and discover your next favorite anime!",
   },
 };

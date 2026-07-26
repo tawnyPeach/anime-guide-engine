@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     canonical: `${SITE_URL}/search`,
   },
   openGraph: {
-    title: "Search Anime - Find Your Next Watch | AniYume",
+    title: "Search Anime - Find Your Next Watch ",
     description:
       "Search and discover anime with advanced filters. Filter by genre, year, score, format, and airing status.",
     url: `${SITE_URL}/search`,

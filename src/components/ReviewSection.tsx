@@ -168,19 +168,14 @@ interface ReviewSectionProps {
 }
 
 export default function ReviewSection({ slug }: ReviewSectionProps) {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [stats, setStats] = useState({ average: 0, count: 0 });
+  const [reviews, setReviews] = useState<Review[]>(() => getReviews(slug));
+  const [stats, setStats] = useState(() => getAverageRating(slug));
   const [showForm, setShowForm] = useState(false);
   const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [sort, setSort] = useState<SortOption>("recent");
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const toast = useCallback((msg: string) => setToastMsg(msg), []);
-
-  useEffect(() => {
-    setReviews(getReviews(slug));
-    setStats(getAverageRating(slug));
-  }, [slug]);
 
   const refresh = useCallback(() => {
     setReviews(getReviews(slug));
