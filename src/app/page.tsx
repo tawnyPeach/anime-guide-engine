@@ -3,7 +3,8 @@ import prisma from "@/lib/prisma";
 import AnimeCard from "@/components/AnimeCard";
 import AdBanner from "@/components/AdBanner";
 
-export const revalidate = 3600; // ISR: revalidate every hour
+export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function HomePage() {
   const popularAnime = await prisma.anime.findMany({

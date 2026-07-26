@@ -7,7 +7,8 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import AdBanner from "@/components/AdBanner";
 import { generateMetaTitle, generateMetaDescription } from "@/lib/content-generator";
 
-export const revalidate = 86400; // ISR: revalidate daily
+export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 
 interface Props {
   params: Promise<{ slug: string }>;
