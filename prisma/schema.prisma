@@ -5,7 +5,6 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 model Anime {
@@ -119,4 +118,21 @@ model SEOPage {
   @@index([slug])
   @@index([type])
   @@index([animeId])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  slug      String
+  rating    Int      // 1-10
+  title     String
+  content   String
+  author    String?
+  upvotes   Int      @default(0)
+  downvotes Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([createdAt])
+  @@index([rating])
 }

@@ -55,20 +55,26 @@ function ReviewForm({ slug, initial, onSubmit, onCancel, toast }: ReviewFormProp
   const [content, setContent] = useState(initial?.content || "");
   const [author, setAuthor] = useState(initial?.author || "");
   const [hoverRating, setHoverRating] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !content.trim()) return;
-    if (initial) {
-      const updated = updateReview(initial.id, { rating, title: title.trim(), content: content.trim(), author: author.trim() || undefined });
-      if (updated) {
-        onSubmit(updated);
-        toast("Review updated!");
+    if (!title.trim() || !content.trim() || submitting) return;
+    setSubmitting(true);
+    try {
+      if (initial) {
+        const updated = await updateReview(initial.id, { rating, title: title.trim(), content: content.trim(), author: author.trim() || undefined });
+        if (updated) {
+          onSubmit(updated);
+          toast("Review updated!");
+        }
+      } else {
+        const newReview = await addReview({ slug, rating, title: title.trim(), content: content.trim(), author: author.trim() || undefined });
+        onSubmit(newReview);
+        toast("Review submitted!");
       }
-    } else {
-      const newReview = addReview({ slug, rating, title: title.trim(), content: content.trim(), author: author.trim() || undefined });
-      onSubmit(newReview);
-      toast("Review submitted!");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -144,10 +150,10 @@ function ReviewForm({ slug, initial, onSubmit, onCancel, toast }: ReviewFormProp
       <div className="flex items-center gap-3">
         <button
           type="submit"
-          disabled={!title.trim() || !content.trim()}
+          disabled={!title.trim() || !content.trim() || submitting}
           className="bg-gradient-to-r from-brand-teal to-brand-orange text-white font-bold px-6 py-2 rounded-xl hover:scale-105 active:scale-95 transition-transform duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm"
         >
-          {initial ? "Update Review" : "Submit Review"}
+          {submitting ? "Saving..." : initial ? "Update Review" : "Submit Review"}
         </button>
         <button
           type="button"
@@ -168,19 +174,33 @@ interface ReviewSectionProps {
 }
 
 export default function ReviewSection({ slug }: ReviewSectionProps) {
-  const [reviews, setReviews] = useState<Review[]>(() => getReviews(slug));
-  const [stats, setStats] = useState(() => getAverageRating(slug));
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [stats, setStats] = useState<{ average: number; count: number }>({ average: 0, count: 0 });
   const [showForm, setShowForm] = useState(false);
   const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [sort, setSort] = useState<SortOption>("recent");
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const toast = useCallback((msg: string) => setToastMsg(msg), []);
 
-  const refresh = useCallback(() => {
-    setReviews(getReviews(slug));
-    setStats(getAverageRating(slug));
+  const refresh = useCallback(async () => {
+    const [reviewsData, statsData] = await Promise.all([
+      getReviews(slug),
+      getAverageRating(slug),
+    ]);
+    setReviews(reviewsData);
+    setStats(statsData);
   }, [slug]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      await refresh();
+      if (!cancelled) setLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, [refresh]);
 
   const handleFormSubmit = (review: Review) => {
     setShowForm(false);
@@ -188,8 +208,8 @@ export default function ReviewSection({ slug }: ReviewSectionProps) {
     refresh();
   };
 
-  const handleDelete = (id: string) => {
-    deleteReview(id);
+  const handleDelete = async (id: string) => {
+    await deleteReview(id);
     refresh();
     toast("Review deleted");
   };
@@ -281,7 +301,17 @@ export default function ReviewSection({ slug }: ReviewSectionProps) {
       )}
 
       {/* Reviews List */}
-      {sorted.length > 0 ? (
+      {loading ? (
+        <div className="space-y-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="bg-card border border-border rounded-xl p-5 animate-pulse">
+              <div className="h-4 bg-muted rounded w-1/4 mb-3" />
+              <div className="h-3 bg-muted rounded w-3/4 mb-2" />
+              <div className="h-3 bg-muted rounded w-1/2" />
+            </div>
+          ))}
+        </div>
+      ) : sorted.length > 0 ? (
         <div className="space-y-3">
           {sorted.map((review) => (
             <ReviewCard

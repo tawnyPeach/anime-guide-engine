@@ -1,5 +1,3 @@
-"use client";
-
 export interface Review {
   id: string;
   slug: string;
@@ -13,78 +11,57 @@ export interface Review {
   downvotes?: number;
 }
 
-const STORAGE_KEY = "aniyume_reviews";
-
-function isClient(): boolean {
-  return typeof window !== "undefined";
+export async function getReviews(slug: string): Promise<Review[]> {
+  const res = await fetch(`/api/reviews?slug=${encodeURIComponent(slug)}&sort=recent&limit=100`);
+  if (!res.ok) return [];
+  const data = await res.json();
+  return data.reviews || [];
 }
 
-function generateId(): string {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
+export async function getAllReviews(
+  sort: string = "recent",
+  minRating: number = 0,
+  page: number = 1,
+  limit: number = 10
+): Promise<{ reviews: Review[]; total: number; totalPages: number }> {
+  const params = new URLSearchParams({ sort, minRating: String(minRating), page: String(page), limit: String(limit) });
+  const res = await fetch(`/api/reviews?${params}`);
+  if (!res.ok) return { reviews: [], total: 0, totalPages: 0 };
+  return res.json();
 }
 
-export function getReviews(slug: string): Review[] {
-  if (!isClient()) return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const all: Review[] = JSON.parse(raw);
-    return all.filter((r) => r.slug === slug);
-  } catch {
-    return [];
-  }
-}
-
-export function getAllReviews(): Review[] {
-  if (!isClient()) return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
-}
-
-export function addReview(
+export async function addReview(
   review: Omit<Review, "id" | "createdAt" | "updatedAt" | "upvotes" | "downvotes">
-): Review {
-  const all = getAllReviews();
-  const newReview: Review = {
-    ...review,
-    id: generateId(),
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    upvotes: 0,
-    downvotes: 0,
-  };
-  all.push(newReview);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-  return newReview;
+): Promise<Review> {
+  const res = await fetch("/api/reviews", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(review),
+  });
+  if (!res.ok) throw new Error("Failed to create review");
+  return res.json();
 }
 
-export function updateReview(
+export async function updateReview(
   id: string,
   updates: Partial<Pick<Review, "rating" | "title" | "content" | "author">>
-): Review | null {
-  const all = getAllReviews();
-  const idx = all.findIndex((r) => r.id === id);
-  if (idx === -1) return null;
-  all[idx] = { ...all[idx], ...updates, updatedAt: new Date().toISOString() };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-  return all[idx];
+): Promise<Review | null> {
+  const res = await fetch(`/api/reviews/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updates),
+  });
+  if (!res.ok) return null;
+  return res.json();
 }
 
-export function deleteReview(id: string): boolean {
-  const all = getAllReviews();
-  const filtered = all.filter((r) => r.id !== id);
-  if (filtered.length === all.length) return false;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
-  return true;
+export async function deleteReview(id: string): Promise<boolean> {
+  const res = await fetch(`/api/reviews/${id}`, { method: "DELETE" });
+  return res.ok;
 }
 
-export function getAverageRating(slug: string): { average: number; count: number } {
-  const reviews = getReviews(slug);
+export async function getAverageRating(slug: string): Promise<{ average: number; count: number }> {
+  const reviews = await getReviews(slug);
   if (reviews.length === 0) return { average: 0, count: 0 };
   const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
   return {
@@ -93,23 +70,19 @@ export function getAverageRating(slug: string): { average: number; count: number
   };
 }
 
-export function getRecentReviews(limit: number = 4): Review[] {
-  const all = getAllReviews();
-  return all
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, limit);
+export async function getRecentReviews(limit: number = 4): Promise<Review[]> {
+  const res = await fetch(`/api/reviews?sort=recent&limit=${limit}`);
+  if (!res.ok) return [];
+  const data = await res.json();
+  return data.reviews || [];
 }
 
-export function voteReview(id: string, type: "up" | "down"): Review | null {
-  const all = getAllReviews();
-  const idx = all.findIndex((r) => r.id === id);
-  if (idx === -1) return null;
-  const review = all[idx];
-  if (type === "up") {
-    review.upvotes = (review.upvotes || 0) + 1;
-  } else {
-    review.downvotes = (review.downvotes || 0) + 1;
-  }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-  return review;
+export async function voteReview(id: string, type: "up" | "down"): Promise<Review | null> {
+  const res = await fetch(`/api/reviews/${id}/vote`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ type }),
+  });
+  if (!res.ok) return null;
+  return res.json();
 }
