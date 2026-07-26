@@ -213,7 +213,7 @@ export const VPN_BANNERS: VPNBannerConfig[] = [
   },
   {
     name: "ExpressVPN",
-    url: `https://expressvpn.com/?ref=${AFFILIATE_TAG}`,
+    url: `https://www.expressvpn.com/go?affiliate_id=7523728`,
     gradient: "from-red-500 to-orange-500",
     tagline: "Premium speed & unlimited bandwidth",
     cta: "Try ExpressVPN",

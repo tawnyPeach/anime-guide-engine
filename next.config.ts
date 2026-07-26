@@ -9,11 +9,15 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "s4.anilist.co",
+        hostname: "*.anilist.co",
       },
       {
         protocol: "https",
         hostname: "img.anili.st",
+      },
+      {
+        protocol: "https",
+        hostname: "*.anili.st",
       },
       {
         protocol: "https",
