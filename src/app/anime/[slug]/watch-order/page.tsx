@@ -14,6 +14,7 @@ import {
   WatchOrderEntry,
 } from "@/lib/watch-order-builder";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 86400;
 
 interface Props {
