@@ -3,10 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  // For local dev with SQLite: DATABASE_URL="file:./dev.db"
-  // For production with PostgreSQL/Neon: DATABASE_URL="postgresql://user:pass@host/db?sslmode=require"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Anime {
