@@ -7,6 +7,12 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import AdBanner from "@/components/AdBanner";
 import BookmarkButton from "@/components/BookmarkButton";
 import ShareButtons from "@/components/ShareButtons";
+import WatchNowButton from "@/components/WatchNowButton";
+import AddToWatchlistButton from "@/components/AddToWatchlistButton";
+import EpisodeProgress from "@/components/EpisodeProgress";
+import MerchSection from "@/components/MerchSection";
+import VPNBanner from "@/components/VPNBanner";
+import ReviewSection from "@/components/ReviewSection";
 import { generateMetaTitle, generateMetaDescription } from "@/lib/content-generator";
 
 const BLUR_PLACEHOLDER = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAOCAYAAAAWo42rAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAbElEQVQoz2NkYPj/n4EBCxg1atR/BgYGRnwKGRgYGP7//8+Irhgbmx4dNWrUf0ZsLiTCRkYmBgYGhv+MDAzYXPgfi04kVY3EYxI+P+BQiO4mYhXi9AMxCsnlB7I4Aas7cQXBf1xuxJcwAHq0RckiXeZJAAAAAElFTkSuQmCC";
@@ -124,8 +130,10 @@ export default async function AnimePage({ params }: Props) {
           {anime.titleEnglish && anime.title !== anime.titleEnglish && (
             <p className="text-muted-foreground text-lg mb-2">{anime.title}</p>
           )}
-          <div className="mb-4">
+          <div className="mb-4 flex flex-wrap items-center gap-3">
+            <AddToWatchlistButton slug={anime.slug} title={displayTitle} coverImage={anime.coverImage || ''} totalEpisodes={anime.totalEpisodes || 0} />
             <ShareButtons url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://aniyume.net'}/anime/${anime.slug}`} title={`${displayTitle} - AniYume`} />
+            <WatchNowButton anime={{ title: anime.title, titleEnglish: anime.titleEnglish, slug: anime.slug, externalLinks: anime.externalLinks }} />
           </div>
 
           {/* Metadata */}
@@ -182,6 +190,13 @@ export default async function AnimePage({ params }: Props) {
             )}
           </div>
 
+          {/* Episode Progress */}
+          {anime.totalEpisodes > 0 && (
+            <div className="mb-6">
+              <EpisodeProgress slug={anime.slug} totalEpisodes={anime.totalEpisodes} />
+            </div>
+          )}
+
           {/* Genres */}
           {genres.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6">
@@ -209,6 +224,8 @@ export default async function AnimePage({ params }: Props) {
       </div>
 
       <AdBanner className="mb-8" />
+
+      <VPNBanner />
 
       {/* Guide Links */}
       <section className="mb-8">
@@ -259,70 +276,11 @@ export default async function AnimePage({ params }: Props) {
         </div>
       </section>
 
-      {/* Where to Watch */}
-      {(() => {
-        const externalLinks: { url: string; site: string; type: string | null }[] = (() => {
-          try {
-            return JSON.parse(anime.externalLinks || "[]");
-          } catch {
-            return [];
-          }
-        })();
+      {/* Merch */}
+      <MerchSection anime={{ title: anime.title, titleEnglish: anime.titleEnglish }} />
 
-        const streamingSites: Record<string, { color: string; label: string }> = {
-          "Crunchyroll": { color: "from-orange-500 to-orange-600", label: "Crunchyroll" },
-          "Funimation": { color: "from-purple-500 to-purple-700", label: "Funimation" },
-          "Netflix": { color: "from-red-600 to-red-700", label: "Netflix" },
-          "Hulu": { color: "from-green-500 to-green-600", label: "Hulu" },
-          "HIDIVE": { color: "from-blue-500 to-blue-700", label: "HIDIVE" },
-          "Disney Plus": { color: "from-blue-600 to-indigo-700", label: "Disney+" },
-          "Amazon": { color: "from-cyan-600 to-blue-600", label: "Amazon" },
-          "YouTube": { color: "from-red-500 to-red-600", label: "YouTube" },
-          "VRV": { color: "from-yellow-500 to-orange-500", label: "VRV" },
-        };
-
-        const streamingLinks = externalLinks.filter(
-          (link) => link.type === "STREAMING" || Object.keys(streamingSites).some((site) => link.site?.includes(site))
-        );
-
-        // Deduplicate by site name
-        const uniqueStreamingLinks = streamingLinks.filter(
-          (link, index, arr) => arr.findIndex((l) => l.site === link.site) === index
-        );
-
-        if (uniqueStreamingLinks.length === 0) return null;
-
-        return (
-          <section className="mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-4">
-              Where to Watch {displayTitle}
-            </h2>
-            <div className="flex flex-wrap gap-3">
-              {uniqueStreamingLinks.map((link, idx) => {
-                const siteKey = Object.keys(streamingSites).find((s) => link.site?.includes(s));
-                const siteInfo = siteKey ? streamingSites[siteKey] : null;
-
-                return (
-                  <a
-                    key={idx}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-medium shadow-lg hover:scale-105 transition-transform duration-200 ${
-                      siteInfo
-                        ? `bg-gradient-to-r ${siteInfo.color}`
-                        : "bg-gradient-to-r from-gray-600 to-gray-700"
-                    }`}
-                  >
-                    {siteInfo?.label || link.site}
-                    <span className="text-xs opacity-80">↗</span>
-                  </a>
-                );
-              })}
-            </div>
-          </section>
-        );
-      })()}
+      {/* Reviews */}
+      <ReviewSection slug={anime.slug} />
 
       {/* Related Anime */}
       {anime.relationsFrom.length > 0 && (

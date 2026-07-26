@@ -381,6 +381,43 @@ export function generateAnimeLikeContent(anime: AnimeData, similarAnime: { title
 <h3 class="text-lg font-semibold text-white mt-5 mb-2">Our Top Picks</h3>`;
 }
 
+export function generateMangaVsAnimeContent(
+  anime: AnimeData,
+  comparison: {
+    category: string;
+    summary: string;
+    storyDiff: string;
+    artQuality: string;
+    characterDev: string;
+    pacing: string;
+    fillerNote: string;
+    soundMusic: string;
+    verdict: string;
+    recommendation: string;
+  }
+): string {
+  const title = escapeHtml(anime.titleEnglish || anime.title);
+
+  return `<h2 class="text-xl font-bold text-white mt-6 mb-3">${title}: Manga vs Anime</h2>
+<p class="text-gray-300 leading-relaxed mb-4">${comparison.summary}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Story Differences</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${comparison.storyDiff}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Art & Animation Quality</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${comparison.artQuality}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Character Development</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${comparison.characterDev}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Pacing</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${comparison.pacing}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Filler Content</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${comparison.fillerNote}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Sound & Music</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${comparison.soundMusic}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Overall Verdict</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${comparison.verdict}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Which Should You Experience First?</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${comparison.recommendation}</p>`;
+}
+
 function formatStatus(status: string | null | undefined): string {
   const statusMap: Record<string, string> = {
     FINISHED: "Completed",

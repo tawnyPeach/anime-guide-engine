@@ -7,6 +7,8 @@ import AdBanner from "@/components/AdBanner";
 import LoadMore from "@/components/LoadMore";
 import FillerCarousel from "@/components/FillerCarousel";
 import AiringTimeDisplay from "@/components/AiringTimeDisplay";
+import TrackerWidget from "@/components/TrackerWidget";
+import RecentReviewsWidget from "@/components/RecentReviewsWidget";
 import { fetchTodaySchedule, AiringEntry } from "@/lib/calendar";
 
 export const dynamic = "force-dynamic";
@@ -101,6 +103,9 @@ export default async function HomePage() {
           </p>
         </div>
       </section>
+
+      {/* Tracker Widget */}
+      <TrackerWidget />
 
       {/* Currently Airing Today */}
       {todayAiring.length > 0 && (
@@ -231,6 +236,178 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* Quiz Promotion */}
+      <section className="mb-12">
+        <div className="relative bg-gradient-to-br from-primary/10 via-brand-orange/5 to-transparent border border-border rounded-2xl p-6 md:p-10 text-center overflow-hidden">
+          <div className="absolute top-0 left-1/4 w-24 h-24 bg-primary/10 rounded-full blur-2xl" />
+          <div className="absolute bottom-0 right-1/4 w-32 h-32 bg-brand-orange/10 rounded-full blur-2xl" />
+          <div className="relative z-10">
+            <div className="text-4xl mb-3">🎮</div>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+              Not Sure What to Watch?
+            </h2>
+            <p className="text-muted-foreground max-w-lg mx-auto mb-5">
+              Take our fun personality quiz and discover which legendary anime
+              character matches your vibe — we&apos;ll suggest similar shows
+              you&apos;ll love!
+            </p>
+            <Link
+              href="/quiz"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-brand-teal to-brand-orange text-white font-bold px-8 py-3 rounded-xl hover:scale-105 active:scale-95 transition-transform duration-200 shadow-lg"
+            >
+              Take the Quiz
+              <span className="text-xl">⚡</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Tier List & Random Picker Promo */}
+      <section className="mb-12 grid md:grid-cols-2 gap-6">
+        {/* Tier List Promo */}
+        <div className="relative bg-gradient-to-br from-red-500/10 via-orange-500/5 to-transparent border border-border rounded-2xl p-6 md:p-8 text-center overflow-hidden group hover:border-red-500/30 transition-colors">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-red-500/10 rounded-full blur-2xl group-hover:bg-red-500/20 transition-colors" />
+          <div className="relative z-10">
+            <div className="text-4xl mb-3">🏆</div>
+            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
+              Anime Tier List
+            </h2>
+            <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-4">
+              Rank your favorite anime from S to F tier. Drag and drop to create your ultimate tier list!
+            </p>
+            <Link
+              href="/tier-list"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold px-6 py-2.5 rounded-xl hover:scale-105 active:scale-95 transition-transform duration-200 shadow-lg"
+            >
+              Make a Tier List
+              <span className="text-lg">→</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Random Picker Promo */}
+        <div className="relative bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent border border-border rounded-2xl p-6 md:p-8 text-center overflow-hidden group hover:border-purple-500/30 transition-colors">
+          <div className="absolute bottom-0 left-0 w-20 h-20 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-colors" />
+          <div className="relative z-10">
+            <div className="text-4xl mb-3">🎰</div>
+            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
+              Surprise Me!
+            </h2>
+            <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-4">
+              Can&apos;t decide? Spin the slot machine and discover a random anime you might love!
+            </p>
+            <Link
+              href="/random"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold px-6 py-2.5 rounded-xl hover:scale-105 active:scale-95 transition-transform duration-200 shadow-lg"
+            >
+              Pick for Me
+              <span className="text-lg">🎲</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Manga vs Anime Promo */}
+      <section className="mb-12">
+        <div className="relative bg-gradient-to-br from-blue-500/10 via-orange-500/5 to-transparent border border-border rounded-2xl p-6 md:p-10 text-center overflow-hidden">
+          <div className="absolute top-0 left-1/4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl" />
+          <div className="absolute bottom-0 right-1/4 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl" />
+          <div className="relative z-10">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <span className="text-3xl">📖</span>
+              <span className="text-muted-foreground text-lg font-light">vs</span>
+              <span className="text-3xl">🎬</span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+              Manga vs Anime
+            </h2>
+            <p className="text-muted-foreground max-w-lg mx-auto mb-5">
+              Which version is better? Compare manga and anime adaptations side by side — story differences, animation quality, pacing, and our verdict.
+            </p>
+            <Link
+              href="/manga-vs-anime"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-orange-500 text-white font-bold px-8 py-3 rounded-xl hover:scale-105 active:scale-95 transition-transform duration-200 shadow-lg"
+            >
+              Explore Comparisons
+              <span className="text-xl">⚡</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Compare & Quotes Promo */}
+      <section className="mb-12 grid md:grid-cols-2 gap-6">
+        {/* Compare Anime Promo */}
+        <div className="relative bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-transparent border border-border rounded-2xl p-6 md:p-8 text-center overflow-hidden group hover:border-cyan-500/30 transition-colors">
+          <div className="absolute top-0 left-0 w-20 h-20 bg-cyan-500/10 rounded-full blur-2xl group-hover:bg-cyan-500/20 transition-colors" />
+          <div className="relative z-10">
+            <div className="text-4xl mb-3">⚔️</div>
+            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
+              Compare Anime
+            </h2>
+            <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-4">
+              Pit two anime head-to-head. Compare scores, genres, episodes, studios and see which comes out on top!
+            </p>
+            <Link
+              href="/compare"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold px-6 py-2.5 rounded-xl hover:scale-105 active:scale-95 transition-transform duration-200 shadow-lg"
+            >
+              Start Comparing
+              <span className="text-lg">⚡</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Anime Quotes Promo */}
+        <div className="relative bg-gradient-to-br from-amber-500/10 via-yellow-500/5 to-transparent border border-border rounded-2xl p-6 md:p-8 text-center overflow-hidden group hover:border-amber-500/30 transition-colors">
+          <div className="absolute bottom-0 right-0 w-20 h-20 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-colors" />
+          <div className="relative z-10">
+            <div className="text-4xl mb-3">💬</div>
+            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
+              Anime Quotes
+            </h2>
+            <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-4">
+              Iconic lines from legendary anime. Browse, filter, and share your favorite quotes from Naruto, One Piece, Death Note, and more!
+            </p>
+            <Link
+              href="/quotes"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-bold px-6 py-2.5 rounded-xl hover:scale-105 active:scale-95 transition-transform duration-200 shadow-lg"
+            >
+              Explore Quotes
+              <span className="text-lg">✨</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Recent Reviews */}
+      <RecentReviewsWidget />
+
+      {/* Ending Explained Promo */}
+      <section className="mb-12">
+        <div className="relative bg-gradient-to-br from-brand-orange/10 via-red-500/5 to-transparent border border-border rounded-2xl p-6 md:p-10 text-center overflow-hidden">
+          <div className="absolute top-0 right-1/4 w-24 h-24 bg-brand-orange/10 rounded-full blur-2xl" />
+          <div className="absolute bottom-0 left-1/4 w-32 h-32 bg-red-500/10 rounded-full blur-2xl" />
+          <div className="relative z-10">
+            <div className="text-4xl mb-3">📖</div>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+              Ending Explained
+            </h2>
+            <p className="text-muted-foreground max-w-lg mx-auto mb-5">
+              Confused by an anime ending? We break down the plot twists, character arcs, and
+              hidden meanings so you can fully appreciate the story&apos;s conclusion.
+            </p>
+            <Link
+              href="/ending-explained"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-brand-orange to-red-500 text-white font-bold px-8 py-3 rounded-xl hover:scale-105 active:scale-95 transition-transform duration-200 shadow-lg"
+            >
+              Explore Endings
+              <span className="text-xl">→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* SEO Internal Links - Genre Browse */}
       <section className="mb-12">
