@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPool } from "@/lib/db-pool";
 
 export async function POST(
   request: NextRequest,
@@ -14,12 +14,18 @@ export async function POST(
       return NextResponse.json({ error: "Vote type must be 'up' or 'down'" }, { status: 400 });
     }
 
-    const review = await prisma.review.update({
-      where: { id },
-      data: type === "up" ? { upvotes: { increment: 1 } } : { downvotes: { increment: 1 } },
-    });
+    const pool = getPool();
+    const col = type === "up" ? "upvotes" : "downvotes";
+    const result = await pool.query(
+      `UPDATE "Review" SET ${col} = ${col} + 1, "updatedAt" = NOW() WHERE id = $1 RETURNING *`,
+      [id]
+    );
 
-    return NextResponse.json(review);
+    if (result.rows.length === 0) {
+      return NextResponse.json({ error: "Review not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(result.rows[0]);
   } catch (error) {
     console.error("Error voting on review:", error);
     return NextResponse.json({ error: "Review not found" }, { status: 404 });

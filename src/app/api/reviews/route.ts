@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPool } from "@/lib/db-pool";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -10,31 +10,47 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(searchParams.get("limit") || "10", 10);
 
   try {
-    const where: Record<string, unknown> = {};
-    if (slug) where.slug = slug;
-    if (minRating > 0) where.rating = { gte: minRating };
+    const pool = getPool();
+    const conditions: string[] = [];
+    const params: unknown[] = [];
+    let idx = 1;
 
-    const orderBy: Record<string, string> =
+    if (slug) {
+      conditions.push(`slug = $${idx++}`);
+      params.push(slug);
+    }
+    if (minRating > 0) {
+      conditions.push(`rating >= $${idx++}`);
+      params.push(minRating);
+    }
+
+    const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+
+    const orderCol =
       sort === "highest"
-        ? { rating: "desc" }
+        ? "rating DESC"
         : sort === "lowest"
-          ? { rating: "asc" }
-          : { createdAt: "desc" };
+          ? "rating ASC"
+          : `"createdAt" DESC`;
 
-    const [reviews, total] = await Promise.all([
-      prisma.review.findMany({
-        where,
-        orderBy,
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
-      prisma.review.count({ where }),
-    ]);
+    const countResult = await pool.query(`SELECT COUNT(*)::int AS count FROM "Review" ${where}`, params);
+    const total = countResult.rows[0].count;
 
-    return NextResponse.json({ reviews, total, page, totalPages: Math.ceil(total / limit) });
+    const offset = (page - 1) * limit;
+    const reviewsResult = await pool.query(
+      `SELECT * FROM "Review" ${where} ORDER BY ${orderCol} LIMIT $${idx++} OFFSET $${idx++}`,
+      [...params, limit, offset]
+    );
+
+    return NextResponse.json({
+      reviews: reviewsResult.rows,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
     console.error("Error fetching reviews:", error);
-    return NextResponse.json({ error: "Failed to fetch reviews" }, { status: 500 });
+    return NextResponse.json({ reviews: [], total: 0, page, totalPages: 0 });
   }
 }
 
@@ -50,11 +66,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Rating must be 1-10" }, { status: 400 });
     }
 
-    const review = await prisma.review.create({
-      data: { slug, rating, title, content, author: author || null },
-    });
+    const pool = getPool();
+    const result = await pool.query(
+      `INSERT INTO "Review" (id, slug, rating, title, content, author, upvotes, downvotes, "createdAt", "updatedAt")
+       VALUES (gen_random_uuid()::text, $1, $2, $3, $4, $5, 0, 0, NOW(), NOW())
+       RETURNING *`,
+      [slug, rating, title, content, author || null]
+    );
 
-    return NextResponse.json(review, { status: 201 });
+    return NextResponse.json(result.rows[0], { status: 201 });
   } catch (error) {
     console.error("Error creating review:", error);
     return NextResponse.json({ error: "Failed to create review" }, { status: 500 });
