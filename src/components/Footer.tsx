@@ -104,11 +104,16 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-border mt-8 pt-8 text-center">
+        <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-muted-foreground text-sm">
             &copy; {new Date().getFullYear()} <span className="text-brand-teal">Ani</span><span className="text-brand-orange">Yume</span>. All anime
             data sourced from AniList and MyAnimeList.
           </p>
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <Link href="/about" className="hover:text-primary transition-colors">About</Link>
+            <Link href="/privacy" className="hover:text-primary transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-primary transition-colors">Terms</Link>
+          </div>
         </div>
       </div>
     </footer>
