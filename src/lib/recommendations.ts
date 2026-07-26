@@ -38,7 +38,7 @@ export async function getRecommendations(
   const candidates = await prisma.anime.findMany({
     where: {
       id: { not: animeId },
-      OR: sourceGenres.map((genre) => ({ genres: { contains: genre } })),
+      OR: sourceGenres.map((genre) => ({ genres: { contains: `"${genre}"` } })),
     },
     orderBy: { popularity: "desc" },
     take: 200,

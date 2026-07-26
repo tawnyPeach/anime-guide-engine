@@ -209,8 +209,8 @@ async function seedFillerData() {
     fillerData = getAllFillerData();
     console.log(`  ✅ Loaded ${fillerData.length} filler entries`);
   } catch {
-    console.log("  ⚠️ Failed to load filler data");
-    fillerData = getAllFillerData();
+    console.log("  ⚠️ Failed to load filler data, using empty array");
+    fillerData = [];
   }
 
   let matched = 0;
@@ -374,18 +374,41 @@ async function seedEpisodeTitles() {
   console.log(`\n✅ Episode titles updated: ${titlesUpdated} across ${processed} anime`);
 }
 
+function normalizeSlug(str: string): string {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 async function findAnimeMatch(entry: FillerEntry) {
   // Try exact slug match
   let anime = await prisma.anime.findUnique({ where: { slug: entry.slug } });
   if (anime) return anime;
 
-  // Try title search
+  // Try normalized slug (handle spelling differences like shippuden vs shippuuden)
+  const normalizedSlug = normalizeSlug(entry.slug);
+  anime = await prisma.anime.findFirst({
+    where: { slug: { contains: normalizedSlug, mode: "insensitive" } },
+  });
+  if (anime) return anime;
+
+  // Try reverse: find anime whose slug contains key words from the filler slug
+  const slugWords = normalizedSlug.split("-").filter(w => w.length > 3);
+  if (slugWords.length >= 2) {
+    const pattern = slugWords.slice(0, 2).join("-");
+    anime = await prisma.anime.findFirst({
+      where: { slug: { contains: pattern, mode: "insensitive" } },
+    });
+    if (anime) return anime;
+  }
+
+  // Try title search (case-insensitive)
   anime = await prisma.anime.findFirst({
     where: {
       OR: [
-        { title: { contains: entry.title } },
-        { titleEnglish: { contains: entry.title } },
-        { slug: { contains: entry.slug } },
+        { title: { contains: entry.title, mode: "insensitive" } },
+        { titleEnglish: { contains: entry.title, mode: "insensitive" } },
       ],
     },
   });

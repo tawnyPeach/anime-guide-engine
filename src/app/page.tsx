@@ -10,7 +10,6 @@ import AiringTimeDisplay from "@/components/AiringTimeDisplay";
 import { fetchTodaySchedule, AiringEntry } from "@/lib/calendar";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 3600;
 
 export const metadata: Metadata = {
   alternates: { canonical: '/' },

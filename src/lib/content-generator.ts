@@ -259,27 +259,125 @@ function getGenreTips(genre: string): string {
 }
 
 export function generateYearPageContent(year: number, animeCount: number): string {
-  const overviewText = year >= 2020
-    ? `${year} was a standout year for anime with high-quality productions across multiple genres and studios pushing creative boundaries.`
+  const eraDescription = year >= 2020
+    ? "the modern streaming era, where global simulcasts and original productions from platforms expanded anime's reach worldwide"
     : year >= 2010
-      ? `${year} represented the modern era of anime with improved production quality and diverse storytelling.`
-      : `${year} was part of anime's classic era, producing timeless series that continue to influence the medium today.`;
+      ? "the digital age of anime, when high-definition production and online distribution transformed how series reached audiences"
+      : year >= 2000
+        ? "the turn-of-the-millennium boom, when anime crossed into mainstream Western audiences and digital tools began supplementing traditional animation"
+        : year >= 1988
+          ? "anime's golden age, when landmark films and OVA releases proved Japanese animation could be both commercially successful and artistically groundbreaking"
+          : year >= 1979
+            ? "the era that established the modern anime industry, with mecha franchises redefining serialized storytelling and studio systems taking shape"
+            : "anime's formative years, when pioneering creators laid the foundations for the genres, conventions, and visual language that would define the medium for decades";
+
+  const milestone = getYearMilestone(year);
+
+  const trendingText = getYearTrends(year);
+
+  const recommendationsText = year >= 2020
+    ? `With so many titles launching simultaneously across streaming services, finding the right anime can feel overwhelming. Our list below filters the best of ${year}'s offerings by critical reception and audience popularity to help you prioritize.`
+    : year >= 2010
+      ? `The sheer volume of anime released during ${year} can make it hard to know where to start. We have ranked these series based on community ratings and lasting impact so you can jump straight into the most rewarding watches.`
+      : `Although ${year} released fewer titles than modern seasons, many of those series remain essential viewing today. Our rankings reflect both the enduring reputation and the historical importance of each title.`;
 
   return `<h2 class="text-xl font-bold text-white mt-6 mb-3">Best Anime of ${year}</h2>
-<p class="text-gray-300 leading-relaxed mb-4">Explore the top <strong class="text-purple-400 font-semibold">${animeCount}</strong> anime series that aired in <strong class="text-purple-400 font-semibold">${year}</strong>. From action-packed adventures to emotional dramas, ${year} brought us some incredible anime worth watching.</p>
-<h3 class="text-lg font-semibold text-white mt-5 mb-2">${year} Anime Overview</h3>
-<p class="text-gray-300 leading-relaxed mb-4">${overviewText}</p>
+<p class="text-gray-300 leading-relaxed mb-4">Discover <strong class="text-purple-400 font-semibold">${animeCount}</strong> anime series that aired in <strong class="text-purple-400 font-semibold">${year}</strong> — a year that stood out in anime history for its memorable storytelling, iconic characters, and lasting cultural impact.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">What Made ${year} Special</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${year} was part of ${eraDescription}. With <strong class="text-purple-400 font-semibold">${animeCount}</strong> notable titles released that year, viewers had access to an impressive range of genres, art styles, and narrative ambitions.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">${year} Milestones in Anime</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${milestone}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Key Trends in ${year}</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${trendingText}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Recommendations for New Viewers</h3>
+<p class="text-gray-300 leading-relaxed mb-4">${recommendationsText}</p>
 <h3 class="text-lg font-semibold text-white mt-5 mb-2">How to Use This Page</h3>
-<p class="text-gray-300 leading-relaxed mb-4">Browse our curated selection of ${year}'s best anime below. Each entry includes key information like genre, episode count, and synopsis to help you find your next watch.</p>`;
+<p class="text-gray-300 leading-relaxed mb-4">Browse our curated selection of ${year}'s best anime below. Each entry includes key information like genre, episode count, and synopsis to help you find your next watch. Titles are ranked by a combination of community ratings, cultural impact, and lasting popularity.</p>`;
+}
+
+function getYearMilestone(year: number): string {
+  const milestones: Record<number, string> = {
+    1988: "1988 was a landmark year that gave the world <em>Akira</em> and <em>Grave of the Fireflies</em> — two films that demonstrated anime's capacity for adult storytelling and helped spark international interest in Japanese animation as a serious art form.",
+    1989: "1989 saw the debut of <em>Ranma ½</em>, whose blend of martial arts comedy and romantic misunderstandings became a defining template for comedy anime to follow.",
+    1995: "1995 forever changed the landscape with <em>Neon Genesis Evangelion</em>, a series that deconstructed the mecha genre and introduced a level of psychological depth and ambiguity that still fuels debate and analysis today.",
+    1997: "1997 brought <em>Princess Mononoke</em> to theaters, a Miyazaki masterpiece that became one of the highest-grossing Japanese films at the time and proved animated films could tackle complex environmental and moral themes.",
+    1999: "1999 marked the beginning of a new era with the premiere of <em>One Piece</em>, a series that would grow into one of the best-selling manga and longest-running anime franchises in history.",
+    2001: "2001 was the year <em>Spirited Away</em> earned an Academy Award and became the highest-grossing Japanese film ever, cementing Studio Ghibli's reputation and anime's place on the world stage.",
+    2006: "2006 produced <em>The Melancholy of Haruhi Suzumiya</em>, which ignited a light-novel adaptation boom and transformed how anime studios approached non-linear storytelling and fan engagement.",
+    2009: "2009 delivered <em>Bakemonogatari</em>, whose distinctive visual style and dialogue-driven narrative redefined what a light-novel adaptation could achieve and revitalized SHAFT as a studio.",
+    2013: "2013 was a watershed year: <em>Attack on Titan</em> exploded into mainstream consciousness, <em>Space Dandy</em> aired simultaneously worldwide, and <em>The Wind Rises</em> earned international critical acclaim.",
+    2014: "2014 saw the rise of <em>Sword Art Online II</em>, <em>Tokyo Ghoul √A</em>, and <em>No Game No Life</em>, fueling the isekai and dark-fantasy boom that would define the mid-2010s anime landscape.",
+    2016: "2016 brought <em>Your Name</em> to global box offices, becoming the highest-grossing anime film worldwide and introducing a new generation of viewers to theatrical anime.",
+    2017: "2017 introduced <em>Miss Kobayashi's Dragon Maid</em> and <em>Land of the Lustrous</em>, showcasing the industry's growing willingness to explore unconventional premises with emotional sincerity.",
+    2019: "2019 delivered <em>Demon Slayer: Kimetsu no Yaiba</em>, a phenomenon whose ufotable animation quality and compelling characters made it one of the best-selling media franchises in Japanese history.",
+    2020: "Despite industry challenges, 2020 saw <em>Jujutsu Kaisen</em>, <em>Attack on Titan Final Season</em>, and <em>Demon Slayer: Mugen Train</em> dominate charts and cultural conversations.",
+    2021: "2021 was defined by <em>Jujutsu Kaisen 0</em>, the <em>Demon Slayer</em> entertainment district arc, and the continued rise of MAPPA as one of the industry's most prominent studios.",
+    2022: "2022 saw <em>Chainsaw Man</em> arrive with MAPPA's cinematic production values, signaling a new standard for how manga adaptations could be visually reimagined.",
+    2023: "2023 was dominated by <em>Jujutsu Kaisen</em>'s Shibuya arc, <em>Oshi no Ko</em>'s explosive debut, and the continued global expansion of anime through streaming platforms.",
+    2024: "2024 continued anime's global momentum with blockbuster sequels, breakout originals, and the industry pushing further into international co-productions and simultaneous worldwide releases.",
+  };
+  if (milestones[year]) return milestones[year];
+
+  if (year >= 2020) {
+    return `${year} continued anime's explosive growth as a global entertainment force. Streaming platforms invested heavily in exclusive titles, and studios delivered visually ambitious productions that pushed the boundaries of television animation quality.`;
+  } else if (year >= 2010) {
+    return `${year} reflected the maturation of digital anime production. Studios increasingly adopted digital compositing and effects, resulting in visually distinctive series that stood apart from their predecessors.`;
+  } else if (year >= 2000) {
+    return `${year} was part of a transformative period when anime studios began embracing digital tools alongside traditional cel techniques, and internet forums first began connecting global fan communities.`;
+  } else {
+    return `${year} contributed to anime's evolution during an era when hand-drawn cel animation was at its peak, and dedicated animators and directors were crafting works that would influence generations of creators.`;
+  }
+}
+
+function getYearTrends(year: number): string {
+  const trends: Record<number, string> = {
+    1995: "The mecha genre reached a philosophical turning point with <em>Evangelion</em>, shifting focus from triumphant robot battles to the psychological toll of piloting machines. Magical girl series also continued to thrive, with <em>Sailor Moon</em> and <em>Wedding Peach</em> expanding the demographic reach of anime.",
+    1999: "Long-running shounen series solidified their dominance, while comedy anime experimented with meta-humor and parody. The late '90s also saw increasing crossover between anime and video game adaptations.",
+    2006: "Light novel adaptations surged in popularity, creating a pipeline of fantasy and romance series that would shape the industry for years. Music-oriented anime and idol series also gained significant traction.",
+    2013: "Post-apocalyptic and dystopian settings were heavily featured, reflecting broader cultural anxeties. Simultaneous worldwide broadcasting began to reshape release strategies, reducing the gap between Japanese and international audiences.",
+    2016: "Isekai (transported to another world) series experienced a boom, becoming one of the most prolific subgenres. Sport anime also saw a renaissance with titles that blended athleticism with genuine emotional depth.",
+    2019: "Dark fantasy and action-oriented series dominated the zeitgeist, while slice-of-life anime continued to carve out a dedicated niche. Studio adaptations of long-running manga reached peak popularity.",
+    2020: "Remote production challenges led to creative scheduling solutions, yet the quality of flagship releases remained remarkably high. Social media buzz became an even more critical factor in a series' breakout success.",
+    2021: "Action-fantasy remained the dominant genre combination, but romance and slice-of-life series quietly amassed passionate fanbases. The winter and spring seasons were particularly strong across multiple genres.",
+    2022: "Cinematic-quality television production became more common, with studios allocating resources that blurred the line between film and episodic animation. Adaptations of niche manga found unexpectedly large audiences.",
+    2023: "Sequel seasons dominated viewership charts, reflecting the industry's investment in established franchises. Original anime continued to push creative boundaries, with several series gaining critical acclaim.",
+  };
+  if (trends[year]) return trends[year];
+
+  if (year >= 2020) {
+    return "Sequel-driven programming remained strong as studios revisited beloved franchises, while original series continued to experiment with unconventional narrative structures. Genre-blending — mixing action with romance, or comedy with existential themes — became an increasingly common creative approach.";
+  } else if (year >= 2010) {
+    return "Digital distribution transformed how anime reached audiences, with simulcasting becoming the norm rather than the exception. Fantasy and isekai subgenres grew rapidly, while the slice-of-life genre quietly built one of the most dedicated international fanbases.";
+  } else if (year >= 2000) {
+    return "The transition from cel to digital animation was reshaping production pipelines. Fan-subbing communities flourished online, helping anime build dedicated international audiences before official streaming services existed.";
+  } else {
+    return "Hand-drawn cel animation was the standard, and OVA releases allowed studios to experiment with content and styles that might not have been viable for television broadcast. Genre conventions that would define anime for decades were being established during this period.";
+  }
 }
 
 export function generateAnimeLikeContent(anime: AnimeData, similarAnime: { title: string; slug: string }[]): string {
   const title = escapeHtml(anime.titleEnglish || anime.title);
+  const genreList = anime.genres.length > 0
+    ? anime.genres.slice(0, 4).map(g => escapeHtml(g)).join(", ")
+    : "multiple genres";
+  const epNote = anime.totalEpisodes > 0
+    ? ` With <strong class="text-purple-400 font-semibold">${anime.totalEpisodes}</strong> episodes${anime.status === "FINISHED" ? " of completed storytelling" : ""}, ${title} has left a clear fingerprint on its genres that helps us pinpoint similar experiences.`
+    : "";
+
+  const genreReasoning = anime.genres.length >= 2
+    ? `<strong class="text-white font-semibold">${escapeHtml(anime.genres[0])}</strong> and <strong class="text-white font-semibold">${escapeHtml(anime.genres[1])}</strong> form the core of ${title}'s identity`
+    : anime.genres.length === 1
+      ? `<strong class="text-white font-semibold">${escapeHtml(anime.genres[0])}</strong> is at the heart of ${title}'s identity`
+      : `${title}'s unique identity`;
 
   return `<h2 class="text-xl font-bold text-white mt-6 mb-3">Anime Like ${title}</h2>
-<p class="text-gray-300 leading-relaxed mb-4">Looking for anime similar to <strong class="text-white font-semibold">${title}</strong>? Here are ${similarAnime.length} anime recommendations that share similar themes, genres, or storytelling styles.</p>
-<h3 class="text-lg font-semibold text-white mt-5 mb-2">Why These Recommendations?</h3>
-<p class="text-gray-300 leading-relaxed mb-4">We selected these anime based on shared genres (${anime.genres.slice(0, 3).map(g => escapeHtml(g)).join(", ")}), similar narrative structures, comparable art styles, and positive fan overlap. If you enjoyed ${title}, these series should appeal to your taste.</p>
+<p class="text-gray-300 leading-relaxed mb-4">Looking for anime similar to <strong class="text-white font-semibold">${title}</strong>? Below you will find ${similarAnime.length} carefully selected recommendations that share similar themes, character dynamics, and storytelling approaches.${epNote}</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">How We Choose These Recommendations</h3>
+<p class="text-gray-300 leading-relaxed mb-4">Our recommendations go beyond simple genre tags. We analyze what makes ${title} resonate with viewers — from its narrative structure and character archetypes to its pacing and tonal balance — and match those qualities against a wide catalog of series. ${genreReasoning} as a foundation, but we also consider atmosphere, storytelling ambition, and the kind of emotional experience a viewer takes away.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">Why Genres Matter for Recommendations</h3>
+<p class="text-gray-300 leading-relaxed mb-4">Genres like ${genreList} each carry their own conventions, pacing expectations, and audience expectations. A ${escapeHtml(anime.genres[0] || "drama")}-focused series will deliver different emotional beats than a comedy, even if both feature school settings. By identifying which genre elements matter most to ${title}'s appeal, we can recommend series that preserve the experience you loved rather than just surface-level similarities.</p>
+<h3 class="text-lg font-semibold text-white mt-5 mb-2">What Makes a Good Recommendation</h3>
+<p class="text-gray-300 leading-relaxed mb-4">A strong recommendation captures the <em>feeling</em> of watching ${title}, not just its premise. That means matching tone — whether dark and contemplative or upbeat and adventurous — alongside shared themes like personal growth, found family, moral conflict, or the thrill of discovery. The recommendations below are ranked by how closely they replicate the experience that made ${title} memorable for its fans.</p>
 <h3 class="text-lg font-semibold text-white mt-5 mb-2">Our Top Picks</h3>`;
 }
 
@@ -292,26 +390,6 @@ function formatStatus(status: string | null | undefined): string {
     HIATUS: "On Hiatus",
   };
   return statusMap[status || ""] || "Unknown";
-}
-
-function getGenreDescription(genre: string): string {
-  const descriptions: Record<string, string> = {
-    Action: "Action anime features intense combat sequences, epic battles, and high-stakes confrontations. These series typically follow protagonists who must fight to protect what they believe in, featuring impressive choreography and power systems.",
-    Adventure: "Adventure anime takes viewers on journeys through vast worlds, following characters as they explore unknown territories, discover ancient secrets, and grow through their experiences on the road.",
-    Comedy: "Comedy anime aims to entertain through humor, featuring witty dialogue, absurd situations, slapstick moments, and clever parodies that keep viewers laughing episode after episode.",
-    Drama: "Drama anime explores deep emotional themes, complex character relationships, and realistic portrayals of human struggles. These series often tackle heavy subjects with nuance and sensitivity.",
-    Fantasy: "Fantasy anime transports viewers to magical worlds filled with supernatural elements, mythical creatures, and extraordinary powers. These series often feature complex magic systems and epic world-building.",
-    Romance: "Romance anime focuses on love stories and relationships, exploring the development of romantic connections between characters through tender moments, misunderstandings, and emotional growth.",
-    "Sci-Fi": "Science fiction anime explores futuristic technologies, space exploration, artificial intelligence, and speculative scenarios that challenge our understanding of reality and humanity's potential.",
-    Horror: "Horror anime creates atmospheric dread and terror through supernatural threats, psychological horror, and disturbing imagery designed to unsettle and frighten viewers.",
-    Mystery: "Mystery anime engages viewers with puzzles, investigations, and hidden truths waiting to be uncovered. These series reward attentive viewers who enjoy piecing together clues.",
-    Thriller: "Thriller anime keeps viewers on the edge of their seats with suspenseful plots, psychological mind games, and unexpected twists that create a sense of urgency and tension.",
-    Sports: "Sports anime captures the excitement of athletic competition, following dedicated athletes as they train, compete, and push their limits while building teamwork and rivalries.",
-    Supernatural: "Supernatural anime deals with phenomena beyond natural explanation, featuring ghosts, demons, psychic abilities, and otherworldly forces that exist alongside or threaten the everyday world.",
-    Slice_of_Life: "Slice of Life anime portrays everyday experiences in a relatable and often heartwarming way, finding beauty and meaning in ordinary moments and everyday interactions.",
-    Mecha: "Mecha anime features giant robots and mechanical suits, often set against the backdrop of war or alien invasions, combining action with themes of technology and humanity.",
-  };
-  return descriptions[genre] || `${genre} anime encompasses a wide range of series that share thematic elements and storytelling approaches unique to this genre, offering viewers diverse experiences within a focused narrative framework.`;
 }
 
 // SEO Meta generators

@@ -12,7 +12,6 @@ import {
 } from "@/lib/content-generator";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 86400;
 
 interface Props {
   params: Promise<{ slug: string }>;

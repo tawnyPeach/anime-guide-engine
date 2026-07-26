@@ -1,5 +1,7 @@
 import { MetadataRoute } from "next";
 import prisma from "@/lib/prisma";
+import fs from "fs";
+import path from "path";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://aniyume.net";
 
@@ -22,6 +24,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.6,
     },
   ];
 
@@ -163,19 +171,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  // Compare pages (top 20 anime paired)
-  const comparePages: MetadataRoute.Sitemap = [];
-  const topForCompare = allAnime.slice(0, 20);
-  for (let i = 0; i < topForCompare.length - 1 && comparePages.length < 30; i++) {
-    const next = topForCompare[i + 1];
-    if (next) {
-      comparePages.push({
-        url: `${SITE_URL}/compare/${topForCompare[i].slug}-vs-${next.slug}`,
+  // Blog post pages
+  let blogPostPages: MetadataRoute.Sitemap = [];
+  try {
+    const blogDir = path.join(process.cwd(), "src/content/blog");
+    if (fs.existsSync(blogDir)) {
+      const files = fs.readdirSync(blogDir).filter((f) => f.endsWith(".md"));
+      blogPostPages = files.map((file) => ({
+        url: `${SITE_URL}/blog/${file.replace(".md", "")}`,
         lastModified: new Date(),
         changeFrequency: "monthly" as const,
         priority: 0.5,
-      });
+      }));
     }
+  } catch {
+    // skip
   }
 
   // After pages (What to Watch After) - anime with at least one relation
@@ -190,7 +200,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
       select: { slug: true, updatedAt: true },
       orderBy: { popularity: "desc" },
-      take: 200,
+      take: 100,
     });
     afterPages = animeWithRelations.map((anime) => ({
       url: `${SITE_URL}/after/${anime.slug}`,
@@ -214,7 +224,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...studioPages,
     ...seasonPages,
     ...topPages,
-    ...comparePages,
+    ...blogPostPages,
     ...afterPages,
   ];
 }
