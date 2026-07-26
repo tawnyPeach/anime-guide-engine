@@ -40,19 +40,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  try {
-    const anime = await prisma.anime.findMany({
-      select: { slug: true },
-      orderBy: { popularity: "desc" },
-      take: 50,
-    });
-    return anime.map((a) => ({ slug: a.slug }));
-  } catch {
-    return [];
-  }
-}
-
 export default async function AfterPage({ params }: Props) {
   const { slug } = await params;
   const anime = await prisma.anime.findUnique({
@@ -135,6 +122,7 @@ export default async function AfterPage({ params }: Props) {
               src={anime.bannerImage}
               alt={`${displayTitle} banner`}
               fill
+              sizes="(max-width: 768px) 100vw, 800px"
               className="object-cover"
               placeholder="blur"
               blurDataURL={BLUR_PLACEHOLDER}
@@ -144,6 +132,7 @@ export default async function AfterPage({ params }: Props) {
               src={anime.coverImage}
               alt={`${displayTitle} cover`}
               fill
+              sizes="(max-width: 768px) 100vw, 800px"
               className="object-cover object-top opacity-40"
               placeholder="blur"
               blurDataURL={BLUR_PLACEHOLDER}

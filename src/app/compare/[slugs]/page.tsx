@@ -44,42 +44,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  try {
-    const topAnime = await prisma.anime.findMany({
-      select: { slug: true, genres: true },
-      orderBy: { popularity: "desc" },
-      take: 30,
-    });
-
-    const params: { slugs: string }[] = [];
-    for (const anime of topAnime) {
-      const genres: string[] = JSON.parse(anime.genres || "[]");
-      if (genres.length === 0) continue;
-
-      // Find the first similar anime (shares a genre)
-      const similar = topAnime.find(
-        (a) =>
-          a.slug !== anime.slug &&
-          JSON.parse(a.genres || "[]").some((g: string) => genres.includes(g))
-      );
-
-      if (similar) {
-        const slugsStr = `${anime.slug}-vs-${similar.slug}`;
-        if (!params.some((p) => p.slugs === slugsStr)) {
-          params.push({ slugs: slugsStr });
-        }
-      }
-
-      if (params.length >= 30) break;
-    }
-
-    return params;
-  } catch {
-    return [];
-  }
-}
-
 export default async function ComparePage({ params }: Props) {
   const { slugs } = await params;
   const vsIndex = slugs.lastIndexOf("-vs-");
@@ -186,6 +150,7 @@ export default async function ComparePage({ params }: Props) {
                 src={anime1.coverImage}
                 alt={title1}
                 fill
+                sizes="(max-width: 768px) 50vw, 200px"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
@@ -205,6 +170,7 @@ export default async function ComparePage({ params }: Props) {
                 src={anime2.coverImage}
                 alt={title2}
                 fill
+                sizes="(max-width: 768px) 50vw, 200px"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (

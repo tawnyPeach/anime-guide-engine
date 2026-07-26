@@ -85,41 +85,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  try {
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth(); // 0-indexed
-
-    // Determine current season
-    let currentSeasonIdx: number;
-    if (currentMonth < 3) currentSeasonIdx = 0; // Winter
-    else if (currentMonth < 6) currentSeasonIdx = 1; // Spring
-    else if (currentMonth < 9) currentSeasonIdx = 2; // Summer
-    else currentSeasonIdx = 3; // Fall
-
-    const params: { season: string }[] = [];
-    let year = currentYear;
-    let seasonIdx = currentSeasonIdx;
-
-    // Generate 8 recent seasons going backwards
-    for (let i = 0; i < 8; i++) {
-      params.push({
-        season: `${SEASONS[seasonIdx].toLowerCase()}-${year}`,
-      });
-      seasonIdx--;
-      if (seasonIdx < 0) {
-        seasonIdx = 3;
-        year--;
-      }
-    }
-
-    return params;
-  } catch {
-    return [];
-  }
-}
-
 export default async function SeasonPage({ params }: Props) {
   const { season: seasonParam } = await params;
   const parsed = parseSeasonParam(seasonParam);

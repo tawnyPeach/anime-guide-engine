@@ -67,17 +67,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  return [
-    { type: "highest-rated" },
-    { type: "most-popular" },
-    { type: "longest-running" },
-    { type: "currently-airing" },
-    { type: "most-filler" },
-    { type: "least-filler" },
-  ];
-}
-
 interface AnimeWithFiller {
   id: number;
   title: string;

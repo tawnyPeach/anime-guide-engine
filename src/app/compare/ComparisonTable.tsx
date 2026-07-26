@@ -81,6 +81,7 @@ export default function ComparisonTable({ anime1, anime2 }: ComparisonTableProps
                 src={anime1.coverImage}
                 alt={title1}
                 fill
+                sizes="(max-width: 768px) 50vw, 200px"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
@@ -107,6 +108,7 @@ export default function ComparisonTable({ anime1, anime2 }: ComparisonTableProps
                 src={anime2.coverImage}
                 alt={title2}
                 fill
+                sizes="(max-width: 768px) 50vw, 200px"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (

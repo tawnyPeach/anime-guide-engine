@@ -213,6 +213,7 @@ export default async function MangaVsAnimePage({ params }: Props) {
                 src={anime.coverImage}
                 alt={`${displayTitle} cover`}
                 fill
+                sizes="(max-width: 768px) 100vw, 256px"
                 className="object-cover"
                 priority
                 placeholder="blur"

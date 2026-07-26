@@ -45,47 +45,86 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  try {
-    const anime = await prisma.anime.findMany({
-      select: { slug: true },
-      orderBy: { popularity: "desc" },
-      take: 200,
-    });
-    return anime.map((a) => ({ slug: a.slug }));
-  } catch {
-    return [];
-  }
+function ErrorFallback({ slug }: { slug: string }) {
+  return (
+    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
+      <Breadcrumbs
+        items={[
+          { label: "Anime", href: "/" },
+          { label: "Error" },
+        ]}
+      />
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
+        <div className="bg-card border border-border rounded-xl p-8 max-w-md">
+          <span className="text-5xl mb-4 block">⚠️</span>
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            Something went wrong
+          </h1>
+          <p className="text-muted-foreground mb-6">
+            We couldn&apos;t load this anime page. The database may be temporarily unavailable. Please try again in a moment.
+          </p>
+          <Link
+            href={`/anime/${slug}`}
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors"
+          >
+            Try Again
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default async function AnimePage({ params }: Props) {
   const { slug } = await params;
-  const anime = await prisma.anime.findUnique({
-    where: { slug },
-    include: {
-      fillerMapping: true,
-      watchOrder: true,
-      relationsFrom: {
-        include: { toAnime: true },
+
+  let anime;
+  try {
+    anime = await prisma.anime.findUnique({
+      where: { slug },
+      include: {
+        fillerMapping: true,
+        watchOrder: true,
+        relationsFrom: {
+          include: { toAnime: true },
+        },
       },
-    },
-  });
+    });
+  } catch {
+    return <ErrorFallback slug={slug} />;
+  }
 
   if (!anime) notFound();
 
-  const genres: string[] = JSON.parse(anime.genres || "[]");
-  const studios: string[] = JSON.parse(anime.studios || "[]");
+  let genres: string[];
+  try {
+    genres = JSON.parse(anime.genres || "[]");
+  } catch {
+    genres = [];
+  }
+
+  let studios: string[];
+  try {
+    studios = JSON.parse(anime.studios || "[]");
+  } catch {
+    studios = [];
+  }
+
   const displayTitle = anime.titleEnglish || anime.title;
 
-  // Find similar anime (same genres)
-  const similarAnime = await prisma.anime.findMany({
-    where: {
-      id: { not: anime.id },
-      genres: { contains: genres[0] || "" },
-    },
-    orderBy: { popularity: "desc" },
-    take: 8,
-  });
+  let similarAnime: { id: number; slug: string; title: string; titleEnglish: string | null; coverImage: string | null }[] = [];
+  try {
+    similarAnime = await prisma.anime.findMany({
+      where: {
+        id: { not: anime.id },
+        genres: { contains: genres[0] || "" },
+      },
+      orderBy: { popularity: "desc" },
+      take: 8,
+    });
+  } catch {
+    similarAnime = [];
+  }
 
   return (
     <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-6 py-8">
@@ -106,6 +145,7 @@ export default async function AnimePage({ params }: Props) {
                 src={anime.coverImage}
                 alt={`${displayTitle} cover`}
                 fill
+                sizes="(max-width: 768px) 100vw, 256px"
                 className="object-cover"
                 priority
                 placeholder="blur"

@@ -28,20 +28,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  try {
-    // Only generate static params when database is available (production build)
-    await prisma.$queryRaw`SELECT 1`;
-    const currentYear = new Date().getFullYear();
-    const years = Array.from({ length: 30 }, (_, i) => ({
-      year: String(currentYear - i),
-    }));
-    return years;
-  } catch {
-    return [];
-  }
-}
-
 export default async function YearPage({ params }: Props) {
   const { year: yearStr } = await params;
   const year = parseInt(yearStr, 10);

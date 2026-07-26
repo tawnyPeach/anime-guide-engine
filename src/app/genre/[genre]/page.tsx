@@ -59,21 +59,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  try {
-    // Only generate static params when database is available (production build)
-    await prisma.$queryRaw`SELECT 1`;
-    const genres = [
-      "action", "adventure", "comedy", "drama", "fantasy",
-      "horror", "mystery", "romance", "sci-fi", "thriller",
-      "sports", "supernatural", "slice-of-life", "mecha",
-    ];
-    return genres.map((genre) => ({ genre }));
-  } catch {
-    return [];
-  }
-}
-
 export default async function GenrePage({ params }: Props) {
   const { genre } = await params;
   const genreName = formatGenreName(genre);

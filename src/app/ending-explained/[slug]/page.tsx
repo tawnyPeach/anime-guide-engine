@@ -31,20 +31,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  try {
-    const anime = await prisma.anime.findMany({
-      where: { status: "FINISHED" },
-      select: { slug: true },
-      orderBy: { popularity: "desc" },
-      take: 100,
-    });
-    return anime.map((a) => ({ slug: a.slug }));
-  } catch {
-    return [];
-  }
-}
-
 function generateEndingContent(anime: {
   title: string;
   titleEnglish?: string | null;
@@ -187,6 +173,7 @@ export default async function EndingExplainedDetailPage({ params }: Props) {
                   src={anime.coverImage}
                   alt={`${displayTitle} cover`}
                   fill
+                  sizes="(max-width: 768px) 100vw, 256px"
                   className="object-cover"
                   priority
                 />

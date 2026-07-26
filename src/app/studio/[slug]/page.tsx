@@ -44,27 +44,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  try {
-    const allAnime = await prisma.anime.findMany({
-      select: { studios: true },
-      where: { studios: { not: null } },
-    });
-
-    const studioSet = new Set<string>();
-    for (const anime of allAnime) {
-      const studios: string[] = JSON.parse(anime.studios || "[]");
-      studios.forEach((s) => studioSet.add(s));
-    }
-
-    return Array.from(studioSet)
-      .slice(0, 50)
-      .map((studio) => ({ slug: studioToSlug(studio) }));
-  } catch {
-    return [];
-  }
-}
-
 export default async function StudioPage({ params }: Props) {
   const { slug } = await params;
   const studioName = formatStudioName(slug);
