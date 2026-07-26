@@ -62,16 +62,16 @@
 
 ## Current Database State
 
-| Table | Count | Description |
+ | Table | Count | Description |
 |-------|-------|-------------|
-| Anime | 1,000 | Top 1000 anime from AniList API |
-| Episode | 17,779+ | Episode placeholders + some with Jikan titles |
+| Anime | 997 | Top anime from AniList API |
+| Episode | 17,779+ | Episode placeholders + 5,902 with Jikan titles |
 | FillerMapping | 8 | Only 8 anime matched with filler data (needs improvement) |
-| WatchOrder | 86 | Generated from anime relations |
-| AnimeRelation | 588 | Sequel/prequel/side-story connections |
-| SEOPage | 254 | Generated filler/episode/genre/year SEO pages |
+| WatchOrder | 431 | Generated from anime relations |
+| AnimeRelation | 632 | Sequel/prequel/side-story connections |
+| SEOPage | 1,075 | Generated filler/episode/genre/year SEO pages |
 
-**Note:** A seed script is currently running in background (PID check with `ps aux | grep seed.ts`). It's fetching episode titles from Jikan API for anime with MAL IDs. The main 1000 anime are already seeded.
+**Seed completed.** Full 997 anime with episode titles from Jikan, 431 watch orders, 1,075 SEO pages.
 
 ---
 
@@ -198,11 +198,12 @@ anime-guide-engine/
 - Removed 78 zero-filler entries (bloat cleanup)
 - Removed unused `getGenreDescription` function
 
-### Phase 5: Full Re-seed (in progress)
-- Re-running seed with 1000 anime (20 pages from AniList)
-- Fetching episode titles from Jikan API
-- Better filler slug matching
-- Currently at ~400/1000 anime fetching episode titles (40% done)
+### Phase 5: Full Re-seed ✅ COMPLETE
+- Seeded 997 anime from AniList API (20 pages × 50)
+- Fetched episode titles from Jikan API: 5,902 titles across 990 anime (7 skipped due to 504s)
+- Watch orders generated: 431
+- Relations: 632
+- SEO pages: 1,075
 
 ### Phase 6: V2 Feature Suite (commit 344b0bf)
 - Branch: `v2` (based on `ui`)
