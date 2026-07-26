@@ -24,25 +24,31 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const anime = await prisma.anime.findUnique({ where: { slug } });
-  if (!anime) return { title: "Not Found" };
+  try {
+    const { slug } = await params;
+    const anime = await prisma.anime.findUnique({ where: { slug } });
+    if (!anime) return { title: "Not Found" };
 
-  const genres = JSON.parse(anime.genres || "[]");
-  const animeData = { ...anime, genres };
+    let genres: string[] = [];
+    try { genres = JSON.parse(anime.genres || "[]"); } catch { /* ignore */ }
+    const animeData = { ...anime, genres };
 
-  return {
-    title: generateMetaTitle("anime", animeData),
-    description: generateMetaDescription("anime", animeData),
-    alternates: { canonical: `/anime/${slug}` },
-    openGraph: {
-      title: anime.titleEnglish || anime.title,
-      description: anime.description?.substring(0, 200) || undefined,
-      images: anime.coverImage
-        ? [{ url: anime.coverImage }]
-        : [{ url: `/api/og?title=${encodeURIComponent(anime.titleEnglish || anime.title)}&type=anime` }],
-    },
-  };
+    return {
+      title: generateMetaTitle("anime", animeData),
+      description: generateMetaDescription("anime", animeData),
+      alternates: { canonical: `/anime/${slug}` },
+      openGraph: {
+        title: anime.titleEnglish || anime.title,
+        description: anime.description?.substring(0, 200) || undefined,
+        images: anime.coverImage
+          ? [{ url: anime.coverImage }]
+          : [{ url: `/api/og?title=${encodeURIComponent(anime.titleEnglish || anime.title)}&type=anime` }],
+      },
+    };
+  } catch {
+    const { slug } = await params;
+    return { title: `${slug.replace(/-/g, " ")} | AniYume` };
+  }
 }
 
 function ErrorFallback({ slug }: { slug: string }) {
